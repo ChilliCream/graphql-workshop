@@ -216,3 +216,147 @@ Commands Explained
 1. Click in the schema explorer and click on the speakers field in order to check the return type of the speakers field.
 
     ![Explore GraphQL schema with Banana Cakepop](images/3_bcp_schema_explorer.png)
+
+## Adding Mutations
+
+So, far we have added the Query root type to our schema, which allows us to query speakers. However, at this point, there is no way to add or modify any data. In this section, we are going to add the root Mutation type to add new speakers to our database.
+
+> For mutations we are using the [relay mutation pattern](https://relay.dev/docs/en/graphql-server-specification.html#mutations) which is commonly used in GraphQL.
+
+A mutation consists of three components, the input, the payload and the mutation itself. In our case we want to create a mutation called `addSpeaker`, by convention, mutations are named as verbs, their inputs are the name with "Input" appended at the end, and they return an object that is the name with "Payload" appended.
+
+So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `AddSpeakerPayload`.
+
+1. Add a class `AddSpeakerInput` to your project with the following code:
+
+   ```csharp
+    namespace GraphQL
+    {
+        public class AddSpeakerInput
+        {
+            public AddSpeakerInput(string name, string bio, string webSite, string clientMutationId)
+            {
+                Name = name;
+                Bio = bio;
+                WebSite = webSite;
+                ClientMutationId = clientMutationId;
+            }
+
+            public string Name { get; }
+
+            public string Bio { get; }
+
+            public string WebSite { get; }
+
+            public string ClientMutationId { get; }
+        }
+    }
+   ```
+
+   > The input and output (payload) both contain a client mutation identifier used to reconcile requests and responses in some client frameworks.
+
+1. Next we add our `AddSpeakerPayload` which represents the output of our GraphQL mutation by adding the following code:
+
+   ```csharp
+    using ConferencePlanner.GraphQL.Data;
+
+    namespace GraphQL
+    {
+        public class AddSpeakerPayload
+        {
+            public AddSpeakerPayload(Speaker speaker, string clientMutationId)
+            {
+                Speaker = speaker;
+                ClientMutationId = clientMutationId;
+            }
+
+            public Speaker Speaker { get; }
+
+            public string ClientMutationId { get; }
+        }
+    }
+   ```
+
+1. Now lets add the actual mutation type with our `addSpeaker` mutation in it.
+
+   ```csharp
+    using System.Threading.Tasks;
+    using ConferencePlanner.GraphQL.Data;
+    using HotChocolate;
+
+    namespace GraphQL
+    {
+        public class Mutation
+        {
+            public async Task<AddSpeakerPayload> AddSpeakerAsync(
+                AddSpeakerInput input,
+                [Service] ApplicationDbContext context)
+            {
+                var speaker = new Speaker
+                {
+                    Name = input.Name,
+                    Bio = input.Bio,
+                    WebSite = input.WebSite
+                };
+
+                context.Speakers.Add(speaker);
+                await context.SaveChangesAsync();
+
+                return new AddSpeakerPayload(speaker, input.ClientMutationId);
+            }
+        }
+    }
+   ```
+
+1. Last but not least you need to add the new `Mutation` type to your schema:
+
+   ```csharp
+    services.AddGraphQL(
+        SchemaBuilder.New()
+            .AddQueryType<Query>()
+            .AddMutationType<Mutation>());
+   ```
+
+1. Start the server again in order to validate if it is working properly.
+   1. `dotnet run --project GraphQL`
+
+1. Explore with Banana Cakepop the changes schema to the schema. There should now be a mutation type and the `addSpeaker` mutation.
+    ![GraphQL type explorer](images/4_bcp_schema_explorer_mutation.png)
+
+1. Next add a speaker by writing a GraphQL mutation.
+
+   ```graphql
+    mutation AddSpeaker {
+      addSpeaker(input: {
+        name: "Speaker Name"
+        bio: "Speaker Bio"
+        webSite: "http://speaker.website" }) {
+        speaker {
+          id
+        }
+      }
+    }
+   ```
+
+    ![Add speaker](images/5_bcp_mutation_add_addspeaker.png)
+
+1. Query the names of all the speakers in the database.
+
+   ```graphql
+    query GetSpeakerNames {
+      speakers {
+        name
+      }
+    }
+   ```
+
+    ![Query speaker names](images/6_bcp_query_get_speakers.png)
+
+## Summary
+
+In this first session, you have learned how you can create a simple GraphQL project on top of ASP.NET Core.
+You have leveraged Entity Framework to create your models and save those to the database.
+Together, ASP.NET Core, Entity Framework, and Hot Chocolate let you build a simple GraphQL server quickly.
+
+In the next session, we will expand on what we have built here, bring in more data model that defines
+the object model we want to create and also bringing in support for proper nullability.
