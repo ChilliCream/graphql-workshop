@@ -37,4 +37,4 @@ In this workshop, you'll learn by building a full-featured GraphQL Server with A
 | [Session #5](/docs/) | Add user association and personal agenda |
 | [Session #6](docs/) | Deployment, Azure and other production environments, configuring environments, diagnostics |
 | [Session #7](/docs/) | Challenges |
-| [Session #8](/docs/8.%20SPA%20FrontEnd.md) | SPA front-end |
+| [Session #8](/docs/) | SPA front-end |
