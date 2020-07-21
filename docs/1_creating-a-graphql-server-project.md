@@ -1,5 +1,5 @@
 
-# Creating a new GraphQL server project
+# Create a new GraphQL server project
 
 1. Create a new project for our GraphQL Server.
    1. `dotnet new sln -n ConferencePlanner`
