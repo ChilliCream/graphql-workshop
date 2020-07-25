@@ -6,16 +6,11 @@
    1. `dotnet new web -n GraphQL`
    1. `dotnet sln add GraphQL`
 1. Add a new folder `Data` where we want to place all our database related code.
-   1. `cd GraphQL`
-   1. `mkdir Data`
-1. Add a new Speaker class using the following code:
+   1. `mkdir GraphQL/Data`
+1. Add a new file `Speaker.cs` in the `Data` directory using the following code:
 
    ```csharp
-    using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     namespace ConferencePlanner.GraphQL.Data
     {
@@ -37,7 +32,7 @@
    ```
 
 1. Add a reference to the NuGet package package `Microsoft.EntityFrameworkCore.Sqlite` version `3.1.6`.
-   1. `dotnet add package Microsoft.EntityFrameworkCore.Sqlite --version 3.1.6`
+   1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Sqlite --version 3.1.6`
 1. Next we'll create a new Entity Framework DbContext. Create a new `ApplicationDbContext` class in the `Data` folder using the following code:
 
     ```csharp
@@ -71,7 +66,7 @@
 ## Configuring EF Migrations
 
 1. Add a reference to the NuGet package `Microsoft.EntityFrameworkCore.Tools` version `3.1.6`.
-   1. `dotnet add package Microsoft.EntityFrameworkCore.Tools --version 3.1.6`
+   1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Tools --version 3.1.6`
 
 ### Visual Studio: Package Manager Console
 
@@ -98,9 +93,9 @@
 3. Run the following commands in the command prompt:
 
     ```console
-    dotnet build
-    dotnet ef migrations add Initial
-    dotnet ef database update
+    dotnet build GraphQL
+    dotnet ef migrations add Initial --project GraphQL
+    dotnet ef database update --project GraphQL
     ```
 
 Commands Explained
@@ -115,7 +110,7 @@ Commands Explained
 ## Adding GraphQL
 
 1. Add a reference to the NuGet package package `HotChocolate.AspNetCore` version `10.5.0`.
-   1. `dotnet add package HotChocolate.AspNetCore --version 10.5.0`
+   1. `dotnet add GraphQL package HotChocolate.AspNetCore --version 10.5.0`
 1. Next we'll create our query root type and add a resolver that fetches all of our speakers.
 
     ```csharp
@@ -230,7 +225,7 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
 1. Add a class `AddSpeakerInput` to your project with the following code:
 
    ```csharp
-    namespace GraphQL
+    namespace ConferencePlanner.GraphQL
     {
         public class AddSpeakerInput
         {
@@ -260,7 +255,7 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
    ```csharp
     using ConferencePlanner.GraphQL.Data;
 
-    namespace GraphQL
+    namespace ConferencePlanner.GraphQL
     {
         public class AddSpeakerPayload
         {
@@ -284,7 +279,7 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
     using ConferencePlanner.GraphQL.Data;
     using HotChocolate;
 
-    namespace GraphQL
+    namespace ConferencePlanner.GraphQL
     {
         public class Mutation
         {
