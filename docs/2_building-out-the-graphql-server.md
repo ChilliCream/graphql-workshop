@@ -305,81 +305,210 @@ The GraphQL execution engine will always try to execute fields in parallel in or
 
 In order to expand our GraphQL server model further we've got several more data models to add, and unfortunately it's a little mechanical. You can copy the following classes manually, or open the completed solution which is shown at the end.
 
-1. Create an `Attendee.cs` class in the *ConferenceDTO* project with the following code:
+1. Create an `Attendee.cs` class in the `Data` directory with the following code:
+
    ```csharp
-   using System;
    using System.Collections.Generic;
    using System.ComponentModel.DataAnnotations;
-   
-   namespace ConferenceDTO
+
+   namespace ConferencePlanner.GraphQL.Data
    {
        public class Attendee
        {
            public int Id { get; set; }
-   
+
            [Required]
            [StringLength(200)]
-           public virtual string FirstName { get; set; }
-   
+           public string? FirstName { get; set; }
+
            [Required]
            [StringLength(200)]
-           public virtual string LastName { get; set; }
-   
+           public string? LastName { get; set; }
+
            [Required]
            [StringLength(200)]
-           public string UserName { get; set; }
-           
+           public string? UserName { get; set; }
+
            [StringLength(256)]
-           public virtual string EmailAddress { get; set; }
+           public string? EmailAddress { get; set; }
+
+           public ICollection<SessionAttendee> SessionsAttendees { get; set; } =
+               new List<SessionAttendee>();
        }
    }
    ```
+
 1. Create a `Session.cs` class with the following code:
+
    ```csharp
    using System;
-   using System.Collections;
    using System.Collections.Generic;
    using System.ComponentModel.DataAnnotations;
-   
-   namespace ConferenceDTO
+
+   namespace ConferencePlanner.GraphQL.Data
    {
        public class Session
        {
            public int Id { get; set; }
-   
+
            [Required]
            [StringLength(200)]
-           public string Title { get; set; }
-   
+           public string? Title { get; set; }
+
            [StringLength(4000)]
-           public virtual string Abstract { get; set; }
-   
-           public virtual DateTimeOffset? StartTime { get; set; }
-   
-           public virtual DateTimeOffset? EndTime { get; set; }
-   
+           public string? Abstract { get; set; }
+
+           public DateTimeOffset? StartTime { get; set; }
+
+           public DateTimeOffset? EndTime { get; set; }
+
            // Bonus points to those who can figure out why this is written this way
-           public TimeSpan Duration => EndTime?.Subtract(StartTime ?? EndTime ?? DateTimeOffset.MinValue) ?? TimeSpan.Zero;
-   
+           public TimeSpan Duration => 
+               EndTime?.Subtract(StartTime ?? EndTime ?? DateTimeOffset.MinValue) ?? 
+                   TimeSpan.Zero;
+
            public int? TrackId { get; set; }
+
+           public ICollection<SessionSpeaker> SessionSpeakers { get; set; } = 
+               new List<SessionSpeaker>();
+
+           public ICollection<SessionAttendee> SessionAttendees { get; set; } = 
+               new List<SessionAttendee>();
+
+           public Track? Track { get; set; }
        }
    }
    ```
+
 1. Create a new `Track.cs` class with the following code:
+
    ```csharp
-   using System;
    using System.Collections.Generic;
    using System.ComponentModel.DataAnnotations;
-   
-   namespace ConferenceDTO
+
+   namespace ConferencePlanner.GraphQL.Data
    {
        public class Track
        {
            public int Id { get; set; }
-   
+
            [Required]
            [StringLength(200)]
-           public string Name { get; set; }
+           public string? Name { get; set; }
+
+           public ICollection<Session> Sessions { get; set; } = 
+               new List<Session>();
        }
    }
    ```
+
+1. Create a `SessionAttendee.cs` class with the following code:
+
+   ```csharp
+   namespace ConferencePlanner.GraphQL.Data
+   {
+       public class SessionAttendee
+       {
+           public int SessionId { get; set; }
+
+           public Session? Session { get; set; }
+
+           public int AttendeeId { get; set; }
+
+           public Attendee? Attendee { get; set; }
+       }
+   }
+   ```
+
+1. Create a `SessionSpeaker` class with the following code:
+
+   ```csharp
+   namespace ConferencePlanner.GraphQL.Data
+   {
+       public class SessionSpeaker
+       {
+           public int SessionId { get; set; }
+
+           public Session? Session { get; set; }
+
+           public int SpeakerId { get; set; }
+
+           public Speaker? Speaker { get; set; }
+       }
+   }
+   ```
+
+1. Next, modify the `Speaker` class and add the following property to it:
+
+   ```csharp
+   public ICollection<SessionSpeaker> SessionSpeakers { get; set; } = 
+       new List<SessionSpeaker>();
+   ```
+
+    The class should now look like the following:
+
+    ```csharp
+   using System.Collections.Generic;
+   using System.ComponentModel.DataAnnotations;
+   using System.Linq;
+   using System.Threading.Tasks;
+
+   namespace ConferencePlanner.GraphQL.Data
+   {
+       public class Speaker
+       {
+           public int Id { get; set; }
+
+           [Required]
+           [StringLength(200)]
+           public string? Name { get; set; }
+
+           [StringLength(4000)]
+           public string? Bio { get; set; }
+
+           [StringLength(1000)]
+           public string? WebSite { get; set; }
+
+           public ICollection<SessionSpeaker> SessionSpeakers { get; set; } = 
+               new List<SessionSpeaker>();
+       }
+   }
+    ```
+
+Now, that we have all of our models in we need to create another migration and update our database.
+
+1. First, validate your project by building it.
+
+    ```console
+    dotnet build GraphQL
+    ```
+
+1. Next, generate a new migration for the database.
+
+    ```console
+    dotnet ef migrations add Refactoring --project GraphQL
+    ```
+
+1. Last, update the database with the new migration.
+
+    ```console
+    dotnet ef database update --project GraphQL
+    ```
+
+After having everything in let us have a look at our schema and see if something changed.
+
+1. Start, your server.
+
+    ```console
+    dotnet run --project GraphQL
+    ```
+
+1. Open Banana Cakepop and refresh the schema.
+
+1. Head over to the schema explorer and have a look at the speaker.
+
+   ![Connect to GraphQL server with Banana Cakepop](images/10_bcp_schema_updated.png)
+
+## Adding DataLoader
+
+   
