@@ -30,8 +30,8 @@ In this workshop, you'll learn by building a full-featured GraphQL Server with A
 
 | Session | Topics |
 | ----- | ---- |
-| [Session #1](docs/1_creating-a-graphql-server-project.md) | Building a basic GraphQL server API |
-| [Session #2](docs/2_building-out-the-graphql-server.md) | Controlling nullability, adding more database models and adding more queries and mutations.  |  |
+| [Session #1](docs/1_creating-a-graphql-server-project.md) | Building a basic GraphQL server API. |
+| [Session #2](docs/2_building-out-the-graphql-server.md) | Controlling nullability and understanding DataLoader.  |  |
 | [Session #3](docs/) | Adding Paging, Filtering, DataLoader and relay compliance |
 | [Session #4](docs/) | Adding security concepts |
 | [Session #5](docs/) | Add user association and personal agenda |

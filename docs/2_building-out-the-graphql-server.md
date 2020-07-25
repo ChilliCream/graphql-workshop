@@ -1,5 +1,5 @@
 
-# Build out the GraphQL server project
+# Controlling nullability and understanding DataLoader.
 
 ## Configure Nullability
 
@@ -554,4 +554,278 @@ After having everything in let us have a look at our schema and see if something
 
 ## Adding DataLoader
 
-   
+1. Add a new directory `DataLoader` to your project:
+
+   ```console
+    mkdir GraphQL/DataLoader
+   ```
+
+1. Add a new class called `SpeakerByIdDataLoader` to the `DataLoader` directory with the following code:
+
+   ```csharp
+   using System;
+   using System.Collections.Generic;
+   using System.Linq;
+   using System.Threading;
+   using System.Threading.Tasks;
+   using Microsoft.EntityFrameworkCore;
+   using Microsoft.EntityFrameworkCore.Internal;
+   using ConferencePlanner.GraphQL.Data;
+   using HotChocolate.DataLoader;
+
+   namespace ConferencePlanner.GraphQL.DataLoader
+   {
+       public class SpeakerByIdDataLoader : BatchDataLoader<int, Speaker>
+       {
+           private readonly DbContextPool<ApplicationDbContext> _dbContextPool;
+
+           public SpeakerByIdDataLoader(DbContextPool<ApplicationDbContext> dbContextPool)
+           {
+               _dbContextPool = dbContextPool ?? throw new ArgumentNullException(nameof(dbContextPool));
+           }
+
+           protected override async Task<IReadOnlyDictionary<int, Speaker>> LoadBatchAsync(
+               IReadOnlyList<int> keys, 
+               CancellationToken cancellationToken)
+           {
+               ApplicationDbContext dbContext = _dbContextPool.Rent();
+               try
+               {
+                   return await dbContext.Speakers
+                       .Where(s => keys.Contains(s.Id))
+                       .ToDictionaryAsync(t => t.Id, cancellationToken);
+               }
+               finally
+               {
+                   _dbContextPool.Return(dbContext);
+               }
+           }
+       }
+   }
+   ```
+
+1. Now, register your `DataLoader` with the dependency injection like the following in the `Startup.cs`:
+
+   ```csharp
+   services.AddDataLoader<SpeakerByIdDataLoader>();
+   ```
+
+1. Add a new method `GetSpeakerAsync` to your `Query.cs`.
+
+   ```csharp
+   public Task<Speaker> GetSpeakerAsync(
+       int id,
+       SpeakerByIdDataLoader dataLoader,
+       CancellationToken cancellationToken) =>
+       dataLoader.LoadAsync(id, cancellationToken);
+   ```
+
+   The `Query.cs` should now look like the following:
+
+   ```csharp
+   using HotChocolate;
+   using ConferencePlanner.GraphQL.Data;
+   using Microsoft.EntityFrameworkCore;
+   using System.Collections.Generic;
+   using System.Threading.Tasks;
+   using ConferencePlanner.GraphQL.DataLoader;
+   using System.Threading;
+
+   namespace ConferencePlanner.GraphQL
+   {
+       public class Query
+       {
+           [UseApplicationDbContext]
+           public Task<List<Speaker>> GetSpeakersAsync(
+               [ScopedService] ApplicationDbContext context) =>
+               context.Speakers.ToListAsync();
+
+           public Task<Speaker> GetSpeakerAsync(
+               int id,
+               SpeakerByIdDataLoader dataLoader,
+               CancellationToken cancellationToken) =>
+               dataLoader.LoadAsync(id, cancellationToken);
+       }
+   }
+   ```
+
+1. Let us have a look at the new schema with Banana Cakepop. For this start your server and refresh Banana Cakepop.
+
+   ```console
+   dotnet run --project GraphQL
+   ```
+
+   ![Connect to GraphQL server with Banana Cakepop](images/11_bcp_schema_updated.png)
+
+1. Now try out if the new field works right.
+
+   ```graphql
+   query GetSpecificSpeakerById {
+     a: speaker(id: 1) {
+       name
+     }
+     b: speaker(id: 1) {
+       name
+     }
+   }
+   ```
+
+   ![Connect to GraphQL server with Banana Cakepop](images/12_bcp_speaker_query.png)
+
+## Fluent type configurations
+
+At this very moment, we are purely inferring the schema from our C# classes. In some cases where we have everything under control, this might be a good thing, and everything is okay.
+
+But if we, for instance, have some parts of the API not under control and want to change the GraphQL schema representation of these APIs, fluent type configurations can help. With Hot Chocolate, we can mix in those type configurations where we need them or even go full in and declare our whole schema purely with our fluent type API.
+
+In our specific case, we want to make the GraphQL API nicer and remove the relationship objects like `SessionSpeaker`.
+
+1. Create a new file `SessionBySpeakerIdDataLoader` in the `DataLoader` directory with the following code:
+
+   ```csharp
+   using System;
+   using System.Collections.Generic;
+   using System.Linq;
+   using System.Threading;
+   using System.Threading.Tasks;
+   using Microsoft.EntityFrameworkCore;
+   using Microsoft.EntityFrameworkCore.Internal;
+   using ConferencePlanner.GraphQL.Data;
+   using HotChocolate.DataLoader;
+
+   namespace ConferencePlanner.GraphQL.DataLoader
+   {
+       public class SessionBySpeakerIdDataLoader : GroupedDataLoader<int, Session>
+       {
+           private readonly DbContextPool<ApplicationDbContext> _dbContextPool;
+
+           public SessionBySpeakerIdDataLoader(DbContextPool<ApplicationDbContext> dbContextPool)
+           {
+               _dbContextPool = dbContextPool ?? throw new ArgumentNullException(nameof(dbContextPool));
+           }
+
+           protected override async Task<ILookup<int, Session>> LoadGroupedBatchAsync(
+               IReadOnlyList<int> keys,
+               CancellationToken cancellationToken)
+           {
+               ApplicationDbContext dbContext = _dbContextPool.Rent();
+               try
+               {
+                   List<SessionSpeaker> speakers = await dbContext.Speakers
+                       .Where(speaker => keys.Contains(speaker.Id))
+                       .Include(speaker => speaker.SessionSpeakers)
+                       .SelectMany(speaker => speaker.SessionSpeakers)
+                       .Include(sessionSpeaker => sessionSpeaker.Session)
+                       .ToListAsync();
+
+                   return speakers
+                       .Where(t => t.Session is { })
+                       .ToLookup(t => t.SpeakerId, t => t.Session!);
+               }
+               finally
+               {
+                   _dbContextPool.Return(dbContext);
+               }
+           }
+       }
+   }
+   ```
+
+1. Next, register your DataLoader with the dependency injection by adding the following like to your `Startup.cs`:
+
+   ```csharp
+   services.AddDataLoader<SessionBySpeakerIdDataLoader>();
+   ```
+
+1. Create a new directory `Types`.
+
+   ```console
+   mkdir GraphQL/Types
+   ```
+
+1. Create a new class `SessionType` in the directory types with the following code:
+
+   ```csharp
+   using System.Collections.Generic;
+   using System.Threading;
+   using System.Threading.Tasks;
+   using ConferencePlanner.GraphQL.Data;
+   using ConferencePlanner.GraphQL.DataLoader;
+   using HotChocolate.Types;
+
+   namespace ConferencePlanner.GraphQL.Types
+   {
+       public class SpeakerType : ObjectType<Speaker>
+       {
+           protected override void Configure(IObjectTypeDescriptor<Speaker> descriptor)
+           {
+               descriptor
+                   .Field(t => t.SessionSpeakers)
+                   .ResolveWith<SpeakerResolvers>(t => t.GetSessionsAsync(default!, default!, default))
+                   .Name("sessions");
+           }
+
+           private class SpeakerResolvers
+           {
+               public async Task<IEnumerable<Session>> GetSessionsAsync(
+                   Speaker speaker,
+                   SessionBySpeakerIdDataLoader sessionBySpeakerId,
+                   CancellationToken cancellationToken) =>
+                   await sessionBySpeakerId.LoadAsync(speaker.Id, cancellationToken);
+           }
+       }
+   }
+   ```
+
+   > In the type configuration we are giving `SessionSpeakers` a new name `sessions`.
+   > Also, we are binding a new resolver to this field which also rewrites the result type.
+   > The new field `sessions` now returns `[Session]`.
+
+1. Register the type with the schema builder in the `Startup.cs`:
+
+   ```csharp
+   services.AddGraphQL(
+       SchemaBuilder.New()
+           .AddQueryType<Query>()
+           .AddMutationType<Mutation>()
+           .AddType<SessionType>());
+   ```
+
+   The new GraphQL representation of our speaker type is now:
+
+   ```GraphQL
+   type Speaker {
+       id: Int!
+       name: String!
+       sessions: [Sessions!]!
+       bio: String
+       bio: String
+   }
+   ```
+
+1. Start your GraphQL server again.
+
+   ```console
+   dotnet run --project GraphQL
+   ```
+
+1. Go back to Banana Cakepop, refresh the schema and execute the following query:
+
+   ```graphql
+    query GetSpeakerWithSessions {
+       speaker {
+           name
+           sessions {
+               title
+           }
+       }
+    }
+   ```
+
+   > Since we do not have any data for sessions yet the server will return an empty list for session. Still, our server works already and we will soon be able to add more data.
+
+## Summary
+
+In this session, we have further discovered the GraphQL type system, by understanding how nullability works in GraphQL and how Hot Chocolate infers nullability from .NET types. We have found new ways to declare types with the fluent configuration API and schema types.
+
+Further, we have added batch- and group-DataLoader to our GraphQL API and learned what DataLoader is.
