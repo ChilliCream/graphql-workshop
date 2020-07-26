@@ -1,4 +1,3 @@
-
 # Schema Design
 
 ## Reorganize mutation types
@@ -300,24 +299,346 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
 
 1. Add missing DataLoader to the `DataLoader` directory.
 
+`AttendeeByIdDataLoader.cs`
+
 ```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using ConferencePlanner.GraphQL.Data;
+using HotChocolate.DataLoader;
+
+namespace ConferencePlanner.GraphQL.DataLoader
+{
+    public class AttendeeByIdDataLoader : BatchDataLoader<int, Attendee>
+    {
+        private readonly DbContextPool<ApplicationDbContext> _dbContextPool;
+
+        public AttendeeByIdDataLoader(DbContextPool<ApplicationDbContext> dbContextPool)
+        {
+            _dbContextPool = dbContextPool ?? throw new ArgumentNullException(nameof(dbContextPool));
+        }
+
+        protected override async Task<IReadOnlyDictionary<int, Attendee>> LoadBatchAsync(
+            IReadOnlyList<int> keys,
+            CancellationToken cancellationToken)
+        {
+            ApplicationDbContext dbContext = _dbContextPool.Rent();
+            try
+            {
+                return await dbContext.Attendees
+                    .Where(s => keys.Contains(s.Id))
+                    .ToDictionaryAsync(t => t.Id, cancellationToken);
+            }
+            finally
+            {
+                _dbContextPool.Return(dbContext);
+            }
+        }
+    }
+}
+```
+
+`AttendeeBySessionIdDataLoader.cs`
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using ConferencePlanner.GraphQL.Data;
+using HotChocolate.DataLoader;
+
+namespace ConferencePlanner.GraphQL.DataLoader
+{
+    public class AttendeeBySessionIdDataLoader : GroupedDataLoader<int, Attendee>
+    {
+        private readonly DbContextPool<ApplicationDbContext> _dbContextPool;
+
+        public AttendeeBySessionIdDataLoader(DbContextPool<ApplicationDbContext> dbContextPool)
+        {
+            _dbContextPool = dbContextPool ?? throw new ArgumentNullException(nameof(dbContextPool));
+        }
+
+        protected override async Task<ILookup<int, Attendee>> LoadGroupedBatchAsync(
+            IReadOnlyList<int> keys,
+            CancellationToken cancellationToken)
+        {
+            ApplicationDbContext dbContext = _dbContextPool.Rent();
+            try
+            {
+                List<SessionAttendee> speakers = await dbContext.Sessions
+                    .Where(session => keys.Contains(session.Id))
+                    .Include(session => session.SessionAttendees)
+                    .SelectMany(session => session.SessionAttendees)
+                    .ToListAsync();
+
+                return speakers.Where(t => t.Attendee is { }).ToLookup(t => t.SessionId, t => t.Attendee!);
+            }
+            finally
+            {
+                _dbContextPool.Return(dbContext);
+            }
+        }
+    }
+}
+```
+
+`SessionByAttendeeIdDataLoader.cs`
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using ConferencePlanner.GraphQL.Data;
+using HotChocolate.DataLoader;
+
+namespace ConferencePlanner.GraphQL.DataLoader
+{
+    public class SessionByAttendeeIdDataLoader : GroupedDataLoader<int, Session>
+    {
+        private readonly DbContextPool<ApplicationDbContext> _dbContextPool;
+
+        public SessionByAttendeeIdDataLoader(DbContextPool<ApplicationDbContext> dbContextPool)
+        {
+            _dbContextPool = dbContextPool ?? throw new ArgumentNullException(nameof(dbContextPool));
+        }
+
+        protected override async Task<ILookup<int, Session>> LoadGroupedBatchAsync(
+            IReadOnlyList<int> keys,
+            CancellationToken cancellationToken)
+        {
+            ApplicationDbContext dbContext = _dbContextPool.Rent();
+            try
+            {
+                List<SessionAttendee> speakers = await dbContext.Attendees
+                    .Where(speaker => keys.Contains(speaker.Id))
+                    .Include(speaker => speaker.SessionsAttendees)
+                    .SelectMany(speaker => speaker.SessionsAttendees)
+                    .Include(sessionSpeaker => sessionSpeaker.Session)
+                    .ToListAsync();
+
+                return speakers
+                    .Where(t => t.Session is { })
+                    .ToLookup(t => t.AttendeeId, t => t.Session!);
+            }
+            finally
+            {
+                _dbContextPool.Return(dbContext);
+            }
+        }
+    }
+}
+```
+
+`SessionByIdDataLoader.cs`
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using ConferencePlanner.GraphQL.Data;
+using HotChocolate.DataLoader;
+
+namespace ConferencePlanner.GraphQL.DataLoader
+{
+    public class SessionByIdDataLoader : BatchDataLoader<int, Session>
+    {
+        private readonly DbContextPool<ApplicationDbContext> _dbContextPool;
+
+        public SessionByIdDataLoader(DbContextPool<ApplicationDbContext> dbContextPool)
+        {
+            _dbContextPool = dbContextPool ?? throw new ArgumentNullException(nameof(dbContextPool));
+        }
+
+        protected override async Task<IReadOnlyDictionary<int, Session>> LoadBatchAsync(
+            IReadOnlyList<int> keys,
+            CancellationToken cancellationToken)
+        {
+            ApplicationDbContext dbContext = _dbContextPool.Rent();
+            try
+            {
+                return await dbContext.Sessions
+                    .Where(s => keys.Contains(s.Id))
+                    .ToDictionaryAsync(t => t.Id, cancellationToken);
+            }
+            finally
+            {
+                _dbContextPool.Return(dbContext);
+            }
+        }
+    }
+}
+```
+
+`SessionByTrackIdDataLoader.cs`
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using ConferencePlanner.GraphQL.Data;
+using HotChocolate.DataLoader;
+
+namespace ConferencePlanner.GraphQL.DataLoader
+{
+    public class SessionByTrackIdDataLoader : GroupedDataLoader<int, Session>
+    {
+        private readonly DbContextPool<ApplicationDbContext> _dbContextPool;
+
+        public SessionByTrackIdDataLoader(DbContextPool<ApplicationDbContext> dbContextPool)
+        {
+            _dbContextPool = dbContextPool ?? throw new ArgumentNullException(nameof(dbContextPool));
+        }
+
+        protected override async Task<ILookup<int, Session>> LoadGroupedBatchAsync(
+            IReadOnlyList<int> keys,
+            CancellationToken cancellationToken)
+        {
+            ApplicationDbContext dbContext = _dbContextPool.Rent();
+            try
+            {
+                List<Session> speakers = await dbContext.Sessions
+                    .Where(session => keys.Contains(session.TrackId ?? 0))
+                    .ToListAsync();
+
+                return speakers.ToLookup(t => t.TrackId!.Value);
+            }
+            finally
+            {
+                _dbContextPool.Return(dbContext);
+            }
+        }
+    }
+}
+```
+
+`SpeakerBySessionIdDataLoader.cs`
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using ConferencePlanner.GraphQL.Data;
+using HotChocolate.DataLoader;
+
+namespace ConferencePlanner.GraphQL.DataLoader
+{
+    public class SpeakerBySessionIdDataLoader : GroupedDataLoader<int, Speaker>
+    {
+        private readonly DbContextPool<ApplicationDbContext> _dbContextPool;
+
+        public SpeakerBySessionIdDataLoader(DbContextPool<ApplicationDbContext> dbContextPool)
+        {
+            _dbContextPool = dbContextPool ?? throw new ArgumentNullException(nameof(dbContextPool));
+        }
+
+        protected override async Task<ILookup<int, Speaker>> LoadGroupedBatchAsync(
+            IReadOnlyList<int> keys,
+            CancellationToken cancellationToken)
+        {
+            ApplicationDbContext dbContext = _dbContextPool.Rent();
+            try
+            {
+                List<SessionSpeaker> speakers = await dbContext.Sessions
+                    .Where(session => keys.Contains(session.Id))
+                    .Include(session => session.SessionSpeakers)
+                    .SelectMany(session => session.SessionSpeakers)
+                    .Include(sessionSpeaker => sessionSpeaker.Speaker)
+                    .ToListAsync();
+
+                return speakers
+                    .Where(t => t.Speaker is { })
+                    .ToLookup(t => t.SessionId, t => t.Speaker!);
+            }
+            finally
+            {
+                _dbContextPool.Return(dbContext);
+            }
+        }
+    }
+}
+```
+
+`TrackByIdDataLoader.cs`
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using ConferencePlanner.GraphQL.Data;
+using HotChocolate.DataLoader;
+
+namespace ConferencePlanner.GraphQL.DataLoader
+{
+    public class TrackByIdDataLoader : BatchDataLoader<int, Track>
+    {
+        private readonly DbContextPool<ApplicationDbContext> _dbContextPool;
+
+        public TrackByIdDataLoader(DbContextPool<ApplicationDbContext> dbContextPool)
+        {
+            _dbContextPool = dbContextPool ?? throw new ArgumentNullException(nameof(dbContextPool));
+        }
+
+        protected override async Task<IReadOnlyDictionary<int, Track>> LoadBatchAsync(
+            IReadOnlyList<int> keys, 
+            CancellationToken cancellationToken)
+        {
+            ApplicationDbContext dbContext = _dbContextPool.Rent();
+            try
+            {
+                return await dbContext.Tracks
+                    .Where(s => keys.Contains(s.Id))
+                    .ToDictionaryAsync(t => t.Id, cancellationToken);
+            }
+            finally
+            {
+                _dbContextPool.Return(dbContext);
+            }
+        }
+    }
+}
 ```
 
 ```csharp
-```
 
-
-```csharp
 ```
 
 ```csharp
+
 ```
 
 ```csharp
+
 ```
 
 ```csharp
-```
 
-```csharp
 ```
