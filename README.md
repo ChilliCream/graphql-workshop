@@ -1,4 +1,4 @@
-# GraphQL - Workshop
+# Getting started with GraphQL on ASP.NET Core - Workshop
 
 [![Build Status](https://dev.azure.com/dotnet/AspNetCoreWorkshop/_apis/build/status/ASP.NET%20Workshop-ASP.NET%20Core%203.x?branchName=master)](https://dev.azure.com/dotnet/AspNetCoreWorkshop/_build/latest?definitionId=71&branchName=master)
 
