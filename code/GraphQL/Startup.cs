@@ -15,6 +15,7 @@ using ConferencePlanner.GraphQL.DataLoader;
 using ConferencePlanner.GraphQL.Types;
 using ConferencePlanner.GraphQL.Speakers;
 using ConferencePlanner.GraphQL.Sessions;
+using ConferencePlanner.GraphQL.Attendees;
 
 namespace ConferencePlanner.GraphQL
 {
@@ -38,9 +39,12 @@ namespace ConferencePlanner.GraphQL
 
             services.AddGraphQL(
                 SchemaBuilder.New()
-                    .AddQueryType(d => d.Name("Mutation"))
+                    .AddQueryType(d => d.Name("Query"))
+                        .AddType<SessionQueries>()
                         .AddType<SpeakerQueries>()
                     .AddMutationType(d => d.Name("Mutation"))
+                        .AddType<AttendeeMutations>()
+                        .AddType<SessionMutations>()
                         .AddType<SpeakerMutations>()
                     .AddType<AttendeeType>()
                     .AddType<SessionType>()
