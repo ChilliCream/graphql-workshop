@@ -1,5 +1,5 @@
 
-# Controlling nullability and understanding DataLoader.
+# Controlling nullability and understanding DataLoader
 
 ## Configure Nullability
 

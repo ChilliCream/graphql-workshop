@@ -208,7 +208,7 @@ Commands Explained
 
     ![Connect to GraphQL server with Banana Cakepop](images/2_bcp_connect_to_server.png)
 
-1. Click in the schema explorer and click on the speakers field in order to check the return type of the speakers field.
+1. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.
 
     ![Explore GraphQL schema with Banana Cakepop](images/3_bcp_schema_explorer.png)
 
