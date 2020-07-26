@@ -847,7 +847,27 @@ services.AddGraphQL(
         .EnableRelaySupport());
 ```
 
-Great, we now have our base schema read to dive into some general schema design topics. Although, GraphQL has a single root type Hot Chocolate allows to split the root types into multiple classes which allows us to organize our schema around topics instead of having to divide it structurally.
+Great, we now have our base schema and are ready to dive into some schema design topics. Although GraphQL has a single root query type, a single root mutation type, and a single root subscription type, Hot Chocolate allows splitting the root types into multiple classes, which will enable us to organize our schema around topics rather than divide it along its root types.
+
+### Think beyond CRUD
+
+GraphQL represents a much better way to expose APIs over HTTP. GraphQL wants us to think beyond standard CRUD APIs. By using action or behavior specific fields and mutations, we can create a more human-readable API that helps clients use our API.
+
+In this chapter, we will design our mutation API by really thinking about the use-cases of our conference API. We do not just want to expose our database model to the user; we want to create an understandable and easy-to-use API driven by use-cases rather than the raw data structures.
+
+First, we will focus on the sessions. The session is the primary data model we are interacting with. People want to lookup sessions, schedule sessions, search for sessions, or even file new sessions.
+
+Conferences typically first ask for papers; after some time, they will accept some of the proposed talks. After more time, they will build from these sessions the schedule. Often the program is divided into tracks. A talk will also often be moved around until the conference starts, but even at this point, schedule changes might happen.
+
+This reflection on our subject at hand leads us to two mutations that we need. First, we need to be able to add new sessions; then, we need to be able to schedule sessions on a specific track and time slot.
+
+1. Create a new directory called `Sessions`
+
+```console
+mkdir GraphQL/Sessions
+```
+
+1. Next add a new class `SessionMutations` in the `Sessions.cs`
 
 ```csharp
 
