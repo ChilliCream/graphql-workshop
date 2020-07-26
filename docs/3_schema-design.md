@@ -230,7 +230,7 @@ Now, that we have some base classes for our mutation types let us start to reorg
            .EnableRelaySupport());
    ```
 
-2. Configure the speaker entity to implement the `Node` interface by adding the node configuration to the `SpeakerType`.
+1. Configure the speaker entity to implement the `Node` interface by adding the node configuration to the `SpeakerType`.
 
    ```csharp
    using System.Collections.Generic;
@@ -291,3 +291,33 @@ Now, that we have some base classes for our mutation types let us start to reorg
 1. Head to Banana Cakepop and refresh the schema.
 
    ![Connect to GraphQL server with Banana Cakepop](images/12_bcp_speaker_query.png)
+
+## Build out the schema
+
+This step will add more DataLoader and schema types, while this will be a bit mechanical, it will form the basis for our ventures in proper GraphQL schema design.
+
+We will start by adding the rest of the DataLoader that we will need. Then we will add types for `Attendee`, `Track`, and `Session`. Last, we will reorganize our query type so that we can split this as well. Once we have all this in, we will start diving into some schema design rules and how to apply them.
+
+1. Add missing DataLoader to the `DataLoader` directory.
+
+```csharp
+```
+
+```csharp
+```
+
+
+```csharp
+```
+
+```csharp
+```
+
+```csharp
+```
+
+```csharp
+```
+
+```csharp
+```
