@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using ConferencePlanner.GraphQL.Common;
 using ConferencePlanner.GraphQL.Data;
