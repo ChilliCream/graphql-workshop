@@ -216,3 +216,78 @@ Now, that we have some base classes for our mutation types let us start to reorg
            .AddType<SpeakerType>());
    ```
 
+## Enable Relay support
+
+1. Enable relay support for the schema.
+
+   ```csharp
+   services.AddGraphQL(
+       SchemaBuilder.New()
+           .AddQueryType<Query>()
+           .AddMutationType(d => d.Name("Mutation"))
+               .AddType<SpeakerMutations>()
+           .AddType<SpeakerType>()
+           .EnableRelaySupport());
+   ```
+
+2. Configure the speaker entity to implement the `Node` interface by adding the node configuration to the `SpeakerType`.
+
+   ```csharp
+   using System.Collections.Generic;
+   using System.Threading;
+   using System.Threading.Tasks;
+   using ConferencePlanner.GraphQL.Data;
+   using ConferencePlanner.GraphQL.DataLoader;
+   using HotChocolate.Resolvers;
+   using HotChocolate.Types;
+   using HotChocolate.Types.Relay;
+
+   namespace ConferencePlanner.GraphQL.Types
+   {
+       public class SpeakerType : ObjectType<Speaker>
+       {
+           protected override void Configure(IObjectTypeDescriptor<Speaker> descriptor)
+           {
+               descriptor
+                   .AsNode()
+                   .IdField(t => t.Id)
+                   .NodeResolver((ctx, id) =>
+                       ctx.DataLoader<SpeakerByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+
+               descriptor
+                   .Field(t => t.SessionSpeakers)
+                   .ResolveWith<SpeakerResolvers>(t => t.GetSessionsAsync(default!, default!, default))
+                   .Name("sessions");
+           }
+
+           private class SpeakerResolvers
+           {
+               public async Task<IEnumerable<Session>> GetSessionsAsync(
+                   Speaker speaker,
+                   SessionBySpeakerIdDataLoader sessionBySpeakerId,
+                   CancellationToken cancellationToken) =>
+                   await sessionBySpeakerId.LoadAsync(speaker.Id, cancellationToken);
+           }
+       }
+   }
+   ```
+
+1. Head over to the `Query.cs` and annotate the `id` argument of `GetSpeaker` with the `ID` attribute.
+
+   ```csharp
+   public Task<Speaker> GetSpeakerAsync(
+       [ID(nameof(Speaker))]int id,
+       SpeakerByIdDataLoader dataLoader,
+       CancellationToken cancellationToken) =>
+       dataLoader.LoadAsync(id, cancellationToken);
+   ```
+
+1. Start the GraphQL server.
+
+   ```console
+   dotent run --project GraphQL
+   ```
+
+1. Head to Banana Cakepop and refresh the schema.
+
+   ![Connect to GraphQL server with Banana Cakepop](images/12_bcp_speaker_query.png)
