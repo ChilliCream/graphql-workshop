@@ -38,14 +38,14 @@ namespace ConferencePlanner.GraphQL
 
             services.AddGraphQL(
                 SchemaBuilder.New()
-                    .AddQueryType<Query>()
+                    .AddQueryType(d => d.Name("Mutation"))
+                        .AddType<SpeakerQueries>()
                     .AddMutationType(d => d.Name("Mutation"))
                         .AddType<SpeakerMutations>()
-                        .AddType<SessionMutations>()
-                    .AddType<SpeakerType>()
                     .AddType<AttendeeType>()
-                    .AddType<Track>()
                     .AddType<SessionType>()
+                    .AddType<SpeakerType>()
+                    .AddType<TrackType>()
                     .EnableRelaySupport());
         }
 
