@@ -32,9 +32,8 @@ In this workshop, you'll learn by building a full-featured GraphQL Server with A
 | ----- | ---- |
 | [Session #1](docs/1_creating-a-graphql-server-project.md) | Building a basic GraphQL server API. |
 | [Session #2](docs/2_building-out-the-graphql-server.md) | Controlling nullability and understanding DataLoader.  |  |
-| [Session #3](docs/) | Adding Paging, Filtering, DataLoader and relay compliance |
-| [Session #4](docs/) | Adding security concepts |
-| [Session #5](docs/) | Add user association and personal agenda |
-| [Session #6](docs/) | Deployment, Azure and other production environments, configuring environments, diagnostics |
-| [Session #7](docs/) | Challenges |
-| [Session #8](docs/) | SPA front-end |
+| [Session #3](docs/3_schema-design.md) | GraphQL schema design approaches. |
+| [Session #4](docs/) | Understanding middleware. |
+| [Session #5](docs/) | Adding complex filter capabilities. |
+| [Session #6](docs/) | Getting the GraphQL server production ready. |
+

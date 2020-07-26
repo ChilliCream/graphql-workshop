@@ -1,4 +1,4 @@
-# Schema Design
+# GraphQL schema design approaches
 
 ## Reorganize mutation types
 
