@@ -1,70 +1,10 @@
-![ChilliCream](docs/images/ChilliCream.svg)
-
-# Getting started with GraphQL on ASP.NET Core and Hot Chocolate - Workshop
-
-If you want to browse the GraphQL server head over [here](https://aspnetcorews-backend.azurewebsites.net).
-
-## Prerequisites
-
-For this workshop we need a couple of prerequisites. First, we need the [.NET Core SDK 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1).
-
-Then we need some IDE/Editor in order to do some proper C# coding, you can use [VSCode](https://code.visualstudio.com/) or if you have already on your system Visual Studio or JetBrains Rider.
-
-Last but not least we will use our GraphQL IDE [Banana Cakepop](https://hotchocolate.io/docs/banana-cakepop).
-
-> Note: When installing Visual Studio you only need to install the `ASP.NET and web development` workload.
-
-## What you'll be building
-
-In this workshop, you'll learn by building a full-featured GraphQL Server with ASP.NET Core and Hot Chocolate from scratch. We'll start from File/New and build up a full-featured GraphQL server with custom middleware, filters, subscription and relay support.
-
-**Database Schema**:
-
-![Database Schema Diagram](docs/images/21-conference-planner-db-diagram.png)
-
-**GraphQL Schema**:
-
-```graphql
 schema {
   query: Query
   mutation: Mutation
   subscription: Subscription
 }
 
-type Query {
-  attendeeById(id: ID!): Attendee!
-  attendeesAsync(after: String before: String first: PaginationAmount last: PaginationAmount): AttendeeConnection
-  attendeesById(ids: [ID]): [Attendee!]!
-  node(id: ID!): Node
-  sessionById(id: ID!): Session!
-  sessions(after: String before: String first: PaginationAmount last: PaginationAmount order_by: SessionSort where: SessionFilter): SessionConnection
-  sessionsById(ids: [ID]): [Session!]!
-  speakerById(id: ID!): Speaker!
-  speakers(after: String before: String first: PaginationAmount last: PaginationAmount): SpeakerConnection
-  speakersById(ids: [ID]): [Speaker!]!
-  trackById(id: ID!): Track!
-  trackByName(name: String!): Track!
-  trackByNames(names: [String!]!): [Track!]!
-  tracks(after: String before: String first: PaginationAmount last: PaginationAmount): TrackConnection
-}
-
-type Mutation {
-  addSession(input: AddSessionInput!): AddSessionPayload!
-  addSpeaker(input: AddSpeakerInput!): AddSpeakerPayload!
-  addTrack(input: AddTrackInput!): AddTrackPayload!
-  checkInAttendee(input: CheckInAttendeeInput!): CheckInAttendeePayload!
-  modifySpeaker(input: ModifySpeakerInput!): ModifySpeakerPayload!
-  registerAttendee(input: RegisterAttendeeInput!): RegisterAttendeePayload!
-  renameTrack(input: RenameTrackInput!): RenameTrackPayload!
-  scheduleSession(input: ScheduleSessionInput!): ScheduleSessionPayload!
-}
-
-type Subscription {
-  onAttendeeCheckedInAsync(sessionId: ID!): SessionAttendeeCheckIn!
-  onSessionScheduled: Session!
-}
-
-"The node interface is implemented by entities that have a global unique identifier."
+"The node interface is implemented by entities that have a gloabl unique identifier."
 interface Node {
   id: ID!
 }
@@ -127,6 +67,17 @@ type ModifySpeakerPayload {
   speaker: Speaker
 }
 
+type Mutation {
+  addSession(input: AddSessionInput!): AddSessionPayload!
+  addSpeaker(input: AddSpeakerInput!): AddSpeakerPayload!
+  addTrack(input: AddTrackInput!): AddTrackPayload!
+  checkInAttendee(input: CheckInAttendeeInput!): CheckInAttendeePayload!
+  modifySpeaker(input: ModifySpeakerInput!): ModifySpeakerPayload!
+  registerAttendee(input: RegisterAttendeeInput!): RegisterAttendeePayload!
+  renameTrack(input: RenameTrackInput!): RenameTrackPayload!
+  scheduleSession(input: ScheduleSessionInput!): ScheduleSessionPayload!
+}
+
 "Information about pagination in a connection."
 type PageInfo {
   "When paginating forwards, the cursor to continue."
@@ -137,6 +88,23 @@ type PageInfo {
   hasPreviousPage: Boolean!
   "When paginating backwards, the cursor to continue."
   startCursor: String
+}
+
+type Query {
+  attendeeById(id: ID!): Attendee!
+  attendeesAsync(after: String before: String first: PaginationAmount last: PaginationAmount): AttendeeConnection
+  attendeesById(ids: [ID]): [Attendee!]!
+  node(id: ID!): Node
+  sessionById(id: ID!): Session!
+  sessions(after: String before: String first: PaginationAmount last: PaginationAmount order_by: SessionSort where: SessionFilter): SessionConnection
+  sessionsById(ids: [ID]): [Session!]!
+  speakerById(id: ID!): Speaker!
+  speakers(after: String before: String first: PaginationAmount last: PaginationAmount): SpeakerConnection
+  speakersById(ids: [ID]): [Speaker!]!
+  trackById(id: ID!): Track!
+  trackByName(name: String!): Track!
+  trackByNames(names: [String!]!): [Track!]!
+  tracks(after: String before: String first: PaginationAmount last: PaginationAmount): TrackConnection
 }
 
 type RegisterAttendeePayload {
@@ -225,6 +193,11 @@ type SpeakerEdge {
   node: Speaker
 }
 
+type Subscription {
+  onAttendeeCheckedInAsync(sessionId: ID!): SessionAttendeeCheckIn!
+  onSessionScheduled: Session!
+}
+
 type Track implements Node {
   id: ID!
   name: String!
@@ -311,11 +284,74 @@ input ScheduleSessionInput {
 }
 
 input SessionFilter {
-  # fields removed for brevity
+  abstract: String
+  abstract_contains: String
+  abstract_ends_with: String
+  abstract_in: [String]
+  abstract_not: String
+  abstract_not_contains: String
+  abstract_not_ends_with: String
+  abstract_not_in: [String]
+  abstract_not_starts_with: String
+  abstract_starts_with: String
+  AND: [SessionFilter!]
+  duration: TimeSpan
+  duration_gt: TimeSpan
+  duration_gte: TimeSpan
+  duration_in: [TimeSpan!]
+  duration_lt: TimeSpan
+  duration_lte: TimeSpan
+  duration_not: TimeSpan
+  duration_not_gt: TimeSpan
+  duration_not_gte: TimeSpan
+  duration_not_in: [TimeSpan!]
+  duration_not_lt: TimeSpan
+  duration_not_lte: TimeSpan
+  endTime: DateTime
+  endTime_gt: DateTime
+  endTime_gte: DateTime
+  endTime_in: [DateTime]
+  endTime_lt: DateTime
+  endTime_lte: DateTime
+  endTime_not: DateTime
+  endTime_not_gt: DateTime
+  endTime_not_gte: DateTime
+  endTime_not_in: [DateTime]
+  endTime_not_lt: DateTime
+  endTime_not_lte: DateTime
+  OR: [SessionFilter!]
+  startTime: DateTime
+  startTime_gt: DateTime
+  startTime_gte: DateTime
+  startTime_in: [DateTime]
+  startTime_lt: DateTime
+  startTime_lte: DateTime
+  startTime_not: DateTime
+  startTime_not_gt: DateTime
+  startTime_not_gte: DateTime
+  startTime_not_in: [DateTime]
+  startTime_not_lt: DateTime
+  startTime_not_lte: DateTime
+  title: String
+  title_contains: String
+  title_ends_with: String
+  title_in: [String!]
+  title_not: String
+  title_not_contains: String
+  title_not_ends_with: String
+  title_not_in: [String!]
+  title_not_starts_with: String
+  title_starts_with: String
 }
 
 input SessionSort {
-  # fields removed for brevity
+  abstract: SortOperationKind
+  duration: SortOperationKind
+  endTime: SortOperationKind
+  id: SortOperationKind
+  startTime: SortOperationKind
+  title: SortOperationKind
+  trackId: SortOperationKind
 }
 
 enum SortOperationKind {
@@ -341,15 +377,3 @@ scalar PaginationAmount
 scalar String
 
 scalar TimeSpan
-```
-
-## Sessions
-
-| Session | Topics |
-| ----- | ---- |
-| [Session #1](docs/1-creating-a-graphql-server-project.md) | Building a basic GraphQL server API. |
-| [Session #2](docs/2-building-out-the-graphql-server.md) | Controlling nullability and understanding DataLoader.  |  |
-| [Session #3](docs/3-schema-design.md) | GraphQL schema design approaches. |
-| [Session #4](docs/4-understanding-middleware.md) | Understanding middleware. |
-| [Session #5](docs/) | Adding complex filter capabilities. |
-| [Session #6](docs/) | Getting the GraphQL server production ready. |
