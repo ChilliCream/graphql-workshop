@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
 using HotChocolate;
@@ -15,9 +15,9 @@ namespace ConferencePlanner.GraphQL
     {
         [UseApplicationDbContext]
         [UsePaging]
-        public Task<List<Speaker>> GetSpeakersAsync(
+        public IQueryable<Speaker> GetSpeakers(
             [ScopedService] ApplicationDbContext context) =>
-            context.Speakers.ToListAsync();
+            context.Speakers.OrderBy(t => t.Name);
 
         public Task<Speaker> GetSpeakerByIdAsync(
             [ID(nameof(Speaker))]int id,

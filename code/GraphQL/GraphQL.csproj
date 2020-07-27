@@ -9,6 +9,8 @@
   <ItemGroup>
     <PackageReference Include="HotChocolate.AspNetCore" Version="10.5.0-rc.7" />
     <PackageReference Include="HotChocolate.Subscriptions.InMemory" Version="10.5.0-rc.7" />
+    <PackageReference Include="HotChocolate.Types.Filters" Version="10.5.0-rc.7" />
+    <PackageReference Include="HotChocolate.Types.Sorting" Version="10.5.0-rc.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.6">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -7,6 +7,7 @@ using ConferencePlanner.GraphQL.DataLoader;
 using HotChocolate;
 using HotChocolate.Types;
 using HotChocolate.Types.Relay;
+using System.Linq;
 
 namespace ConferencePlanner.GraphQL.Attendees
 {
@@ -15,10 +16,9 @@ namespace ConferencePlanner.GraphQL.Attendees
     {
         [UseApplicationDbContext]
         [UsePaging]
-        public async Task<IEnumerable<Attendee>> GetAttendeesAsync(
-            [ScopedService] ApplicationDbContext context,
-            CancellationToken cancellationToken) => 
-            await context.Attendees.ToListAsync(cancellationToken);
+        public IQueryable<Attendee> GetAttendeesAsync(
+            [ScopedService] ApplicationDbContext context) => 
+            context.Attendees;
 
         public Task<Attendee> GetAttendeeByIdAsync(
             [ID(nameof(Attendee))]int id,
