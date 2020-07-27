@@ -116,7 +116,7 @@ Let us start by implementing the last Relay server specification we are still mi
        context.Attendees;
    ```
 
-We have now replaced all the root level list fields and are now using our pagination middleware. There are still more lists left where we should apply pagination if we wanted to really have a refined schema. Let us change the API a bit more to incorporate this.
+   We have now replaced all the root level list fields and are now using our pagination middleware. There are still more lists left where we should apply pagination if we wanted to really have a refined schema. Let us change the API a bit more to incorporate this.
 
 1. First, go back to the `SessionQueries.cs` in the `Sessions` directory and replace the `[UsePaging]` with `[UsePaging(SchemaType = typeof(NonNullType<SessionType>))]`.
 
