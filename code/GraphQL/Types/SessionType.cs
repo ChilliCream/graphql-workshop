@@ -32,6 +32,10 @@ namespace ConferencePlanner.GraphQL.Types
             descriptor
                 .Field(t => t.Track)
                 .ResolveWith<SessionResolvers>(t => t.GetTrackAsync(default!, default!, default));
+
+            descriptor
+                .Field(t => t.TrackId)
+                .ID(nameof(Track));
         }
 
         private class SessionResolvers

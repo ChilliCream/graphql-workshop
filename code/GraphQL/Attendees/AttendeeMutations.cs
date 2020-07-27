@@ -10,7 +10,7 @@ namespace ConferencePlanner.GraphQL.Attendees
     public class AttendeeMutations
     {
         [UseApplicationDbContext]
-        public async Task<RegisterAttendeePayload> ScheduleSessionAsync(
+        public async Task<RegisterAttendeePayload> RegisterAttendeeAsync(
             RegisterAttendeeInput input,
             [ScopedService] ApplicationDbContext context)
         {
@@ -30,7 +30,7 @@ namespace ConferencePlanner.GraphQL.Attendees
         }
 
         [UseApplicationDbContext]
-        public async Task<CheckInAttendeePayload> ScheduleSessionAsync(
+        public async Task<CheckInAttendeePayload> CheckInAttendeeAsync(
             CheckInAttendeeInput input,
             [ScopedService] ApplicationDbContext context)
         {

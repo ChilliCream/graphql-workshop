@@ -40,7 +40,7 @@ namespace ConferencePlanner.GraphQL
             services.AddGraphQL(
                 SchemaBuilder.New()
                     .AddQueryType(d => d.Name("Query"))
-                        .AddType<SessionQueries>()
+                        .AddType<AttendeeQueries>()
                         .AddType<SpeakerQueries>()
                     .AddMutationType(d => d.Name("Mutation"))
                         .AddType<AttendeeMutations>()
