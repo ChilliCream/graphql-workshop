@@ -17,7 +17,7 @@ using ConferencePlanner.GraphQL.Tracks;
 using ConferencePlanner.GraphQL.Types;
 using HotChocolate;
 using HotChocolate.AspNetCore;
-
+using HotChocolate.AspNetCore.Voyager;
 
 namespace ConferencePlanner.GraphQL
 {
@@ -77,6 +77,8 @@ namespace ConferencePlanner.GraphQL
             app.UseRouting();
 
             app.UseGraphQL();
+            app.UsePlayground();
+            app.UseVoyager();
 
             app.UseEndpoints(endpoints =>
             {
