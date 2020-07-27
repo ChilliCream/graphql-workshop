@@ -317,7 +317,7 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
 
 1. Head to Banana Cakepop and refresh the schema.
 
-   ![Connect to GraphQL server with Banana Cakepop](images/12_bcp_speaker_query.png)
+   ![Connect to GraphQL server with Banana Cakepop](images/12-bcp-speaker-query.png)
 
 ## Build out the schema
 

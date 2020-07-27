@@ -24,7 +24,7 @@ In this workshop, you'll learn by building a full-featured GraphQL Server with A
 
 ### Database Schema
 
-![Database Schema Diagram](/docs/conference-planner-db-diagram.png)
+![Database Schema Diagram](docs/images/21-conference-planner-db-diagram.png)
 
 ## Sessions
 

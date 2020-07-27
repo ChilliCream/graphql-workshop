@@ -202,15 +202,15 @@ Commands Explained
 1. Start the server.
    1. `dotnet run --project GraphQL`
 
-    ![Start GraphQL server](images/1_start_server.png)
+    ![Start GraphQL server](images/1-start-server.png)
 
 1. Start Banana Cakepop and connect to our server.
 
-    ![Connect to GraphQL server with Banana Cakepop](images/2_bcp_connect_to_server.png)
+    ![Connect to GraphQL server with Banana Cakepop](images/2-bcp_connect-to-server.png)
 
 1. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.
 
-    ![Explore GraphQL schema with Banana Cakepop](images/3_bcp_schema_explorer.png)
+    ![Explore GraphQL schema with Banana Cakepop](images/3-bcp-schema-explorer.png)
 
 ## Adding Mutations
 
@@ -316,7 +316,7 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
    1. `dotnet run --project GraphQL`
 
 1. Explore with Banana Cakepop the changes schema to the schema. There should now be a mutation type and the `addSpeaker` mutation.
-    ![GraphQL type explorer](images/4_bcp_schema_explorer_mutation.png)
+    ![GraphQL type explorer](images/4-bcp-schema-explorer-mutation.png)
 
 1. Next add a speaker by writing a GraphQL mutation.
 
@@ -333,7 +333,7 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
     }
    ```
 
-    ![Add speaker](images/5_bcp_mutation_add_addspeaker.png)
+    ![Add speaker](images/5-bcp-mutation-add-addspeaker.png)
 
 1. Query the names of all the speakers in the database.
 
@@ -345,7 +345,7 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
     }
    ```
 
-    ![Query speaker names](images/6_bcp_query_get_speakers.png)
+    ![Query speaker names](images/6-bcp-query-get-speakers.png)
 
 ## Summary
 

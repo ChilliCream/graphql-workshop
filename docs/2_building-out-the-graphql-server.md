@@ -146,7 +146,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
    }
    ```
 
-   ![Connect to GraphQL server with Banana Cakepop](images/8_bcp_dbcontext_error.png)
+   ![Connect to GraphQL server with Banana Cakepop](images/8-bcp-dbcontext-error.png)
 
     We ran the field to fetch the speaker three times in parallel, which used the same `DBContext` and lead to the exception by the `DBContext`.
 
@@ -297,7 +297,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
    }
    ```
 
-   ![Connect to GraphQL server with Banana Cakepop](images/9_bcp_dbcontext_works_inparallel.png)
+   ![Connect to GraphQL server with Banana Cakepop](images/9-bcp-dbcontext-works-inparallel.png)
 
    This time our query works like expected.
 
@@ -550,7 +550,7 @@ After having everything in let us have a look at our schema and see if something
 
 1. Head over to the schema explorer and have a look at the speaker.
 
-   ![Connect to GraphQL server with Banana Cakepop](images/10_bcp_schema_updated.png)
+   ![Connect to GraphQL server with Banana Cakepop](images/10-bcp-schema-updated.png)
 
 ## Adding DataLoader
 
@@ -655,7 +655,7 @@ After having everything in let us have a look at our schema and see if something
    dotnet run --project GraphQL
    ```
 
-   ![Connect to GraphQL server with Banana Cakepop](images/11_bcp_schema_updated.png)
+   ![Connect to GraphQL server with Banana Cakepop](images/11-bcp-schema-updated.png)
 
 1. Now try out if the new field works right.
 
@@ -670,7 +670,7 @@ After having everything in let us have a look at our schema and see if something
    }
    ```
 
-   ![Connect to GraphQL server with Banana Cakepop](images/12_bcp_speaker_query.png)
+   ![Connect to GraphQL server with Banana Cakepop](images/12-bcp-speaker-query.png)
 
 ## Fluent type configurations
 
