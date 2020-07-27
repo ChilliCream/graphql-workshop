@@ -206,7 +206,7 @@ Commands Explained
 
 1. Start Banana Cakepop and connect to our server.
 
-    ![Connect to GraphQL server with Banana Cakepop](images/2-bcp_connect-to-server.png)
+    ![Connect to GraphQL server with Banana Cakepop](images/2-bcp-connect-to-server.png)
 
 1. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.
 
