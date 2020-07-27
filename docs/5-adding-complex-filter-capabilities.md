@@ -171,9 +171,15 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 
 ![Filter Middleware Flow](images/20-middleware-flow.png)
 
-1. Head over to the `SessionQueries.cs` which is located in the `Sessions` directory.
+1. Add a reference to the NuGet package package `HotChocolate.Types.Filters` version `10.5.0`.
+   1. `dotnet add GraphQL package HotChocolate.Types.Filters --version 10.5.0`
 
-1. Replace the `GetSessions` resolver with the following code:
+1. Add a reference to the NuGet package package `HotChocolate.Types.Sorting` version `10.5.0`.
+   1. `dotnet add GraphQL package HotChocolate.Types.Sorting --version 10.5.0`
+
+2. Head over to the `SessionQueries.cs` which is located in the `Sessions` directory.
+
+3. Replace the `GetSessions` resolver with the following code:
 
    ```csharp
    [UseApplicationDbContext]
@@ -187,7 +193,7 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 
    > By default the filter middleware would infer a filter type that exposes all the fields of the entity. In our case it would be better to remove filtering for ids and internal fields and focus on fields that the user really can use.
 
-1. Create a new `SessionFilterInputType.cs` in the `Sessions` directory with the following code:
+4. Create a new `SessionFilterInputType.cs` in the `Sessions` directory with the following code:
 
    ```csharp
    using ConferencePlanner.GraphQL.Data;
@@ -208,7 +214,7 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 
    > We essentially have remove the ID fields and leave the rest in.
 
-1. Go back to the `SessionQueries.cs` which is located in the `Sessions` directory and replace the `[UseFiltering]` attribute on top of the `GetSessions` resolver with the following `[UseFiltering(FilterType = typeof(SessionFilterInputType))]`.
+5. Go back to the `SessionQueries.cs` which is located in the `Sessions` directory and replace the `[UseFiltering]` attribute on top of the `GetSessions` resolver with the following `[UseFiltering(FilterType = typeof(SessionFilterInputType))]`.
 
    ```csharp
    [UseApplicationDbContext]
@@ -220,19 +226,19 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
        context.Sessions;
    ```
 
-1. Start your GraphQL server.
+6. Start your GraphQL server.
 
    ```console
    dotnet run --project GraphQL
    ```
 
-1. Open Banana Cake Pop and refresh the schema and head over to the schema browser.
+7. Open Banana Cake Pop and refresh the schema and head over to the schema browser.
 
    ![Session Filter Type](images/29-bcp-filter-type.png)
 
    > We now have an argument `where` on our field that exposes a rich filter type to us.
 
-1. Write the following query to look for all the sessions that contain `2` in their title.
+8. Write the following query to look for all the sessions that contain `2` in their title.
 
    ```graphql
    query GetSessionsContaining2InTitle {
