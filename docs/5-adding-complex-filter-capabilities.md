@@ -116,32 +116,138 @@ Let us start by implementing the last Relay server specification we are still mi
        context.Attendees;
    ```
 
-We have now replaced all the root level list fields and are now using our pagination middleware. There are still more lists left where we should apply pagination like the 
+We have now replaced all the root level list fields and are now using our pagination middleware. There are still more lists left where we should apply pagination if we wanted to really have a refined schema. Let us change the API a bit more to incorporate this.
 
-```csharp
+1. First, go back to the `SessionQueries.cs` in the `Sessions` directory and replace the `[UsePaging]` with `[UsePaging(SchemaType = typeof(NonNullType<SessionType>))]`.
 
-```
+   ```csharp
+   [UseApplicationDbContext]
+   [UsePaging(SchemaType = typeof(NonNullType<SessionType>))]
+   public IQueryable<Session> GetSessions(
+       [ScopedService] ApplicationDbContext context) =>
+       context.Sessions;
+   ```
 
-```csharp
+   > It is important that a connection type works with a fixed item type if we mix attribute and fluent syntax.
 
-```
+1. Next, open the `TrackType.cs` in the `Types` directory and add `.UsePaging<NonNullType<SessionType>>()` to the `Sessions` field descriptor.
 
-```csharp
+   ```csharp
+   descriptor
+       .Field(t => t.Sessions)
+       .ResolveWith<TrackResolvers>(t => t.GetSessionsAsync(default!, default!, default))
+       .UsePaging<NonNullType<SessionType>>()
+       .Name("sessions");
+   ```
 
-```
+1. Now go back to Banana Cake Pop and refresh the schema.
 
-```csharp
+   ![Query speaker names](images/27-bcp-schema.png)
 
-```
+1. Fetch a specific track and get the first session of this track:
 
-```csharp
+   ```graphql
+   query GetTrackWithSessions {
+       trackById(id: "VHJhY2sKaTI=") {
+         id
+         sessions(first: 1) {
+           nodes {
+             title
+           }
+         }
+       }
+   }
+   ```
 
-```
+   ![Query speaker names](images/28-bcp-GetTrackWithSessions.png)
 
-```csharp
+   > There is one caveat in our implementation. Since, we are using a group DataLoader we are essentially fetching the whole list from the database into memory and only then apply paging to the list. If we really wanted to have native paging like in the top-level fields we would need to rewrite the resolver to expose `IQueryable<Session>`. Since this is just a demo we will move on with the knowledge how to do it right in a real-world application.
 
-```
+## Add filter capabilities to the top-level field `sessions`
 
-```csharp
+Exposing rich filters to a public API can lead to unpredictable performance implications, but using filters wisely on select fields can make your API much better to use. In our conference API it would make almost no sense to expose filters on top of the `tracks` field since the `Track` type really only has one field `name` and filtering on that really seems overkill. The `sessions` field on the other hand could be improved with filter capabilities. The user of our conference app could with filters search for a session in a specific time-window or for sessions of a specific speaker he/she likes.
 
-```
+Filters like paging is a middleware that can be applied on `IQueryable`, like mentioned in the middleware session order is important with middleware. This means our paging middleware has to execute last.
+
+![Filter Middleware Flow](images/20-middleware-flow.png)
+
+1. Head over to the `SessionQueries.cs` which is located in the `Sessions` directory.
+
+1. Replace the `GetSessions` resolver with the following code:
+
+   ```csharp
+   [UseApplicationDbContext]
+   [UsePaging(SchemaType = typeof(NonNullType<SessionType>))]
+   [UseFiltering]
+   [UseSorting]
+   public IQueryable<Session> GetSessions(
+       [ScopedService] ApplicationDbContext context) =>
+       context.Sessions;
+   ```
+
+   > By default the filter middleware would infer a filter type that exposes all the fields of the entity. In our case it would be better to remove filtering for ids and internal fields and focus on fields that the user really can use.
+
+1. Create a new `SessionFilterInputType.cs` in the `Sessions` directory with the following code:
+
+   ```csharp
+   using ConferencePlanner.GraphQL.Data;
+   using HotChocolate.Types.Filters;
+   
+   namespace ConferencePlanner.GraphQL.Types
+   {
+       public class SessionFilterInputType : FilterInputType<Session>
+       {
+           protected override void Configure(IFilterInputTypeDescriptor<Session> descriptor)
+           {
+               descriptor.Ignore(t => t.Id);
+               descriptor.Ignore(t => t.TrackId);
+           }
+       }
+   }
+   ```
+
+   > We essentially have remove the ID fields and leave the rest in.
+
+1. Go back to the `SessionQueries.cs` which is located in the `Sessions` directory and replace the `[UseFiltering]` attribute on top of the `GetSessions` resolver with the following `[UseFiltering(FilterType = typeof(SessionFilterInputType))]`.
+
+   ```csharp
+   [UseApplicationDbContext]
+   [UsePaging(SchemaType = typeof(NonNullType<SessionType>))]
+   [UseFiltering(FilterType = typeof(SessionFilterInputType))]
+   [UseSorting]
+   public IQueryable<Session> GetSessions(
+       [ScopedService] ApplicationDbContext context) =>
+       context.Sessions;
+   ```
+
+1. Start your GraphQL server.
+
+   ```console
+   dotnet run --project GraphQL
+   ```
+
+1. Open Banana Cake Pop and refresh the schema and head over to the schema browser.
+
+   ![Session Filter Type](images/29-bcp-filter-type.png)
+
+   > We now have an argument `where` on our field that exposes a rich filter type to us.
+
+1. Write the following query to look for all the sessions that contain `2` in their title.
+
+   ```graphql
+   query GetSessionsContaining2InTitle {
+       sessions(where: { title_contains: "2" }) {
+         nodes {
+           title
+         }
+       }
+   }
+   ```
+
+   ![Apply Filter on Sessions](images/30-bcp-get-sessions.png)
+
+## Summary
+
+With cursor base pagination, we have introduced a strong pagination concept and also put the last piece in to be fully Relay compliant. We have learned that we can page within a paged result; in fact, you can create large paging hierarchies.
+
+Further, we have looked at filtering where we can apply a simple middleware that infers from our data model a powerful filter structure. Filters are rewritten into native database queries on top of `IQueryable` but can also be applied to in-memory lists. Use filters where they make sense and control them by providing filter types that limit what a user can do to keep performance predictable.

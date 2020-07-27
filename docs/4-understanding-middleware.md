@@ -148,7 +148,7 @@ To use middleware on plain C# types, we can wrap them in so-called descriptor at
 
 The following diagram shows the complete field request pipeline with filtering and pagination. You can see how, existing middleware are ordered. You have full control over how to order middleware or inject new custom middleware as necessary for your scenarios.
 
-![Connect to GraphQL server with Banana Cake Pop](images/20-middleware-flow.png)
+![Middleware Flow](images/20-middleware-flow.png)
 
 The thing here is that if you take for instance UseFiltering and UsePaging, it would make no sense to first apply paging and basically trim the result in order to then apply filters onto that trimmed result set, the other way around however makes perfect sense.
 
