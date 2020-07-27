@@ -26,11 +26,13 @@ namespace ConferencePlanner.GraphQL.DataLoader
             ApplicationDbContext dbContext = _dbContextPool.Rent();
             try
             {
-                List<Session> speakers = await dbContext.Sessions
-                    .Where(session => keys.Contains(session.TrackId ?? 0))
+                var sessions = await dbContext.Tracks
+                    .Where(track => keys.Contains(track.Id))
+                    .Include(track => track.Sessions)
+                    .SelectMany(track => track.Sessions)
                     .ToListAsync();
 
-                return speakers.ToLookup(t => t.TrackId!.Value);
+                return sessions.ToLookup(t => t.TrackId!.Value);
             }
             finally
             {

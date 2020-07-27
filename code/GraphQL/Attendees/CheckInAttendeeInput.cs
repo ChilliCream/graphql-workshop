@@ -17,9 +17,9 @@ namespace ConferencePlanner.GraphQL.Attendees
         }
 
         [ID(nameof(Session))]
-        public int SessionId { get; set; }
+        public int SessionId { get; }
 
         [ID(nameof(Attendee))]
-        public int AttendeeId { get; set; }
+        public int AttendeeId { get; }
     }
 }

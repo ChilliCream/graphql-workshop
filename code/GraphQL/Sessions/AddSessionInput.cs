@@ -19,9 +19,9 @@ namespace ConferencePlanner.GraphQL.Sessions
             SpeakerIds = speakerIds;
         }
 
-        public string Title { get; set; }
+        public string Title { get; }
 
-        public string? Abstract { get; set; }
+        public string? Abstract { get; }
 
         [ID(nameof(Speaker))]
         public IReadOnlyList<int> SpeakerIds { get; }

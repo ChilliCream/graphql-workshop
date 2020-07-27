@@ -21,14 +21,14 @@ namespace ConferencePlanner.GraphQL.Attendees
 
         public Task<Attendee> GetAttendeeByIdAsync(
             [ID(nameof(Attendee))]int id,
-            AttendeeByIdDataLoader sessionById,
+            AttendeeByIdDataLoader attendeeById,
             CancellationToken cancellationToken) => 
-            sessionById.LoadAsync(id, cancellationToken);
+            attendeeById.LoadAsync(id, cancellationToken);
 
         public async Task<IEnumerable<Attendee>> GetAttendeesByIdAsync(
             [ID(nameof(Attendee))]int[] ids,
-            AttendeeByIdDataLoader sessionById,
+            AttendeeByIdDataLoader attendeeById,
             CancellationToken cancellationToken) => 
-            await sessionById.LoadAsync(ids, cancellationToken);
+            await attendeeById.LoadAsync(ids, cancellationToken);
     }
 }

@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Common;
 using ConferencePlanner.GraphQL.Data;
@@ -12,7 +13,8 @@ namespace ConferencePlanner.GraphQL.Attendees
         [UseApplicationDbContext]
         public async Task<RegisterAttendeePayload> RegisterAttendeeAsync(
             RegisterAttendeeInput input,
-            [ScopedService] ApplicationDbContext context)
+            [ScopedService] ApplicationDbContext context,
+            CancellationToken cancellationToken)
         {
             var attendee = new Attendee
             {
@@ -24,7 +26,7 @@ namespace ConferencePlanner.GraphQL.Attendees
 
             context.Attendees.Add(attendee);
 
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
 
             return new RegisterAttendeePayload(attendee, input.ClientMutationId);
         }
@@ -32,9 +34,10 @@ namespace ConferencePlanner.GraphQL.Attendees
         [UseApplicationDbContext]
         public async Task<CheckInAttendeePayload> CheckInAttendeeAsync(
             CheckInAttendeeInput input,
-            [ScopedService] ApplicationDbContext context)
+            [ScopedService] ApplicationDbContext context,
+            CancellationToken cancellationToken)
         {
-            Attendee attendee = await context.Attendees.FindAsync(input.AttendeeId);
+            Attendee attendee = await context.Attendees.FindAsync(input.AttendeeId, cancellationToken);
 
             if (attendee is null)
             {
@@ -49,7 +52,7 @@ namespace ConferencePlanner.GraphQL.Attendees
                     SessionId = input.SessionId
                 });
 
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
 
             return new CheckInAttendeePayload(attendee, input.SessionId, input.ClientMutationId);
         }

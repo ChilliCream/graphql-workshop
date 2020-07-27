@@ -8,14 +8,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ConferencePlanner.GraphQL.Attendees;
 using ConferencePlanner.GraphQL.Data;
+using ConferencePlanner.GraphQL.DataLoader;
+using ConferencePlanner.GraphQL.Sessions;
+using ConferencePlanner.GraphQL.Speakers;
+using ConferencePlanner.GraphQL.Tracks;
+using ConferencePlanner.GraphQL.Types;
 using HotChocolate;
 using HotChocolate.AspNetCore;
-using ConferencePlanner.GraphQL.DataLoader;
-using ConferencePlanner.GraphQL.Types;
-using ConferencePlanner.GraphQL.Speakers;
-using ConferencePlanner.GraphQL.Sessions;
-using ConferencePlanner.GraphQL.Attendees;
+
 
 namespace ConferencePlanner.GraphQL
 {
@@ -25,7 +27,8 @@ namespace ConferencePlanner.GraphQL
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContextPool<ApplicationDbContext>(options => options.UseSqlite("Data Source=conferences.db"));
+            services.AddDbContextPool<ApplicationDbContext>(
+                options => options.UseSqlite("Data Source=conferences.db"));
 
             services.AddDataLoader<AttendeeByIdDataLoader>();
             services.AddDataLoader<AttendeeBySessionIdDataLoader>();
@@ -37,15 +40,23 @@ namespace ConferencePlanner.GraphQL
             services.AddDataLoader<SpeakerBySessionIdDataLoader>();
             services.AddDataLoader<TrackByIdDataLoader>();
 
+            services.AddInMemorySubscriptions();
+
             services.AddGraphQL(
                 SchemaBuilder.New()
                     .AddQueryType(d => d.Name("Query"))
                         .AddType<AttendeeQueries>()
+                        .AddType<SessionQueries>()
                         .AddType<SpeakerQueries>()
+                        .AddType<TrackQueries>()
                     .AddMutationType(d => d.Name("Mutation"))
                         .AddType<AttendeeMutations>()
                         .AddType<SessionMutations>()
                         .AddType<SpeakerMutations>()
+                        .AddType<TrackMutations>()
+                    .AddSubscriptionType(d => d.Name("Subscription"))
+                        .AddType<AttendeeSubscriptions>()
+                        .AddType<SessionSubscriptions>()
                     .AddType<AttendeeType>()
                     .AddType<SessionType>()
                     .AddType<SpeakerType>()
@@ -60,6 +71,8 @@ namespace ConferencePlanner.GraphQL
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseWebSockets();
 
             app.UseRouting();
 

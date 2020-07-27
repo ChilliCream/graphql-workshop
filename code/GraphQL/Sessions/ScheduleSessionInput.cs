@@ -25,10 +25,10 @@ namespace ConferencePlanner.GraphQL.Sessions
         public int SessionId { get; }
 
         [ID(nameof(Track))]
-        public int TrackId { get; set; }
+        public int TrackId { get; }
 
-        public DateTimeOffset StartTime { get; set; }
+        public DateTimeOffset StartTime { get; }
 
-        public DateTimeOffset EndTime { get; set; }
+        public DateTimeOffset EndTime { get; }
     }
 }

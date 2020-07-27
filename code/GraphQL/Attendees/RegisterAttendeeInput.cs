@@ -18,12 +18,12 @@ namespace ConferencePlanner.GraphQL.Attendees
             EmailAddress = emailAddress;
         }
 
-        public string FirstName { get; set; }
+        public string FirstName { get; }
 
-        public string LastName { get; set; }
+        public string LastName { get; }
 
-        public string UserName { get; set; }
+        public string UserName { get; }
 
-        public string EmailAddress { get; set; }
+        public string EmailAddress { get; }
     }
 }
