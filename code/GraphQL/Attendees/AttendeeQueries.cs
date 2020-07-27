@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
 using HotChocolate;
@@ -16,7 +15,7 @@ namespace ConferencePlanner.GraphQL.Attendees
     {
         [UseApplicationDbContext]
         [UsePaging]
-        public IQueryable<Attendee> GetAttendeesAsync(
+        public IQueryable<Attendee> GetAttendees(
             [ScopedService] ApplicationDbContext context) => 
             context.Attendees;
 
