@@ -127,7 +127,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
 1. Start your GraphQL Server.
    1. `dotnet run --project Graphql`
 
-1. Start Banana Cakepop and run the following query:
+1. Start Banana Cake Pop and run the following query:
 
    ```graphql
    query GetSpeakerNamesInParallel {
@@ -146,7 +146,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
    }
    ```
 
-   ![Connect to GraphQL server with Banana Cakepop](images/8-bcp-dbcontext-error.png)
+   ![Connect to GraphQL server with Banana Cake Pop](images/8-bcp-dbcontext-error.png)
 
     We ran the field to fetch the speaker three times in parallel, which used the same `DBContext` and lead to the exception by the `DBContext`.
 
@@ -278,7 +278,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
 1. Start your GraphQL Server again.
    1. `dotnet run --project Graphql`
 
-1. Start Banana Cakepop again and run the following query again:
+1. Start Banana Cake Pop again and run the following query again:
 
    ```graphql
    query GetSpeakerNamesInParallel {
@@ -297,7 +297,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
    }
    ```
 
-   ![Connect to GraphQL server with Banana Cakepop](images/9-bcp-dbcontext-works-inparallel.png)
+   ![Connect to GraphQL server with Banana Cake Pop](images/9-bcp-dbcontext-works-inparallel.png)
 
    This time our query works like expected.
 
@@ -546,11 +546,11 @@ After having everything in let us have a look at our schema and see if something
     dotnet run --project GraphQL
     ```
 
-1. Open Banana Cakepop and refresh the schema.
+1. Open Banana Cake Pop and refresh the schema.
 
 1. Head over to the schema explorer and have a look at the speaker.
 
-   ![Connect to GraphQL server with Banana Cakepop](images/10-bcp-schema-updated.png)
+   ![Connect to GraphQL server with Banana Cake Pop](images/10-bcp-schema-updated.png)
 
 ## Adding DataLoader
 
@@ -649,13 +649,13 @@ After having everything in let us have a look at our schema and see if something
    }
    ```
 
-1. Let us have a look at the new schema with Banana Cakepop. For this start your server and refresh Banana Cakepop.
+1. Let us have a look at the new schema with Banana Cake Pop. For this start your server and refresh Banana Cake Pop.
 
    ```console
    dotnet run --project GraphQL
    ```
 
-   ![Connect to GraphQL server with Banana Cakepop](images/11-bcp-schema-updated.png)
+   ![Connect to GraphQL server with Banana Cake Pop](images/11-bcp-schema-updated.png)
 
 1. Now try out if the new field works right.
 
@@ -670,9 +670,9 @@ After having everything in let us have a look at our schema and see if something
    }
    ```
 
-   ![Connect to GraphQL server with Banana Cakepop](images/12-bcp-speaker-query.png)
+   ![Connect to GraphQL server with Banana Cake Pop](images/12-bcp-speaker-query.png)
 
-## Fluent type configurations
+## Fluent type configurations
 
 At this very moment, we are purely inferring the schema from our C# classes. In some cases where we have everything under control, this might be a good thing, and everything is okay.
 
@@ -809,7 +809,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
    dotnet run --project GraphQL
    ```
 
-1. Go back to Banana Cakepop, refresh the schema and execute the following query:
+1. Go back to Banana Cake Pop, refresh the schema and execute the following query:
 
    ```graphql
     query GetSpeakerWithSessions {
@@ -824,7 +824,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
 
    > Since we do not have any data for sessions yet the server will return an empty list for session. Still, our server works already and we will soon be able to add more data.
 
-## Summary
+## Summary
 
 In this session, we have further discovered the GraphQL type system, by understanding how nullability works in GraphQL and how Hot Chocolate infers nullability from .NET types. We have found new ways to declare types with the fluent configuration API and schema types.
 

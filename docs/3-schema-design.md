@@ -315,11 +315,11 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
    dotent run --project GraphQL
    ```
 
-1. Head to Banana Cakepop and refresh the schema.
+1. Head to Banana Cake Pop and refresh the schema.
 
-   ![Connect to GraphQL server with Banana Cakepop](images/12-bcp-speaker-query.png)
+   ![Connect to GraphQL server with Banana Cake Pop](images/12-bcp-speaker-query.png)
 
-## Build out the schema
+## Build out the schema
 
 This step will add more DataLoader and schema types, while this will be a bit mechanical, it will form the basis for our ventures into proper GraphQL schema design.
 
@@ -1640,7 +1640,7 @@ In this section, we will optimize our `Query` type by bringing in more query and
            .EnableRelaySupport());
    ```
 
-1. Start you GraphQL server and verify with Banana Cakepop that you can use the new queries.
+1. Start you GraphQL server and verify with Banana Cake Pop that you can use the new queries.
 
    ```console
    dotnet run --project GraphQL
