@@ -15,6 +15,7 @@ namespace ConferencePlanner.GraphQL.Tracks
     public class TrackQueries
     {
         [UseApplicationDbContext]
+        [UsePaging]
         public async Task<IEnumerable<Track>> GetTracksAsync(
             [ScopedService] ApplicationDbContext context,
             CancellationToken cancellationToken) =>

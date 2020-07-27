@@ -14,6 +14,7 @@ namespace ConferencePlanner.GraphQL.Sessions
     public class SessionQueries
     {
         [UseApplicationDbContext]
+        [UsePaging]
         public async Task<IEnumerable<Session>> GetSessionsAsync(
             [ScopedService] ApplicationDbContext context,
             CancellationToken cancellationToken) =>

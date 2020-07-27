@@ -14,6 +14,7 @@ namespace ConferencePlanner.GraphQL.Attendees
     public class AttendeeQueries
     {
         [UseApplicationDbContext]
+        [UsePaging]
         public async Task<IEnumerable<Attendee>> GetAttendeesAsync(
             [ScopedService] ApplicationDbContext context,
             CancellationToken cancellationToken) => 
