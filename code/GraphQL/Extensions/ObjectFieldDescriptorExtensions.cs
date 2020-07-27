@@ -15,5 +15,19 @@ namespace ConferencePlanner.GraphQL
                 create: s => s.GetRequiredService<DbContextPool<TDbContext>>().Rent(),
                 dispose: (s, c) => s.GetRequiredService<DbContextPool<TDbContext>>().Return(c));
         }
+
+        public static IObjectFieldDescriptor UseUpperCase(
+            this IObjectFieldDescriptor descriptor)
+        {
+            return descriptor.Use(next => async context =>
+            {
+                await next(context);
+
+                if (context.Result is string s)
+                {
+                    context.Result = s.ToUpperInvariant();
+                }
+            });
+        }
     }
 }
