@@ -19,6 +19,7 @@ using HotChocolate;
 using HotChocolate.AspNetCore;
 using HotChocolate.AspNetCore.Voyager;
 using HotChocolate.Execution;
+using HotChocolate.Execution.Configuration;
 
 namespace ConferencePlanner.GraphQL
 {
