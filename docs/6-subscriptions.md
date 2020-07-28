@@ -250,7 +250,7 @@ Now, that we have the mutation in to register new attendees let us move on to ad
            {
            }
 
-           public async Task<Session?> GetAttendeeAsync(
+           public async Task<Session?> GetSessionAsync(
                SessionByIdDataLoader sessionById,
                CancellationToken cancellationToken)
            {
@@ -274,7 +274,7 @@ Now, that we have the mutation in to register new attendees let us move on to ad
        [ScopedService] ApplicationDbContext context,
        CancellationToken cancellationToken)
    {
-       Attendee attendee = await context.Attendees.FindAsync(input.AttendeeId, cancellationToken);
+       Attendee attendee = await context.Attendees.FirstOrDefaultAsync(t => t.Id == input.AttendeeId, cancellationToken);
 
        if (attendee is null)
        {
@@ -363,25 +363,25 @@ Now, that we have the mutation in to register new attendees let us move on to ad
 
 1. Head over to the `Startup.cs` and register the query and mutation type that we have just added with the schema builder.
 
-```csharp
-services.AddGraphQL(
-    SchemaBuilder.New()
-        .AddQueryType(d => d.Name("Query"))
-            .AddType<AttendeeQueries>()
-            .AddType<SessionQueries>()
-            .AddType<SpeakerQueries>()
-            .AddType<TrackQueries>()
-        .AddMutationType(d => d.Name("Mutation"))
-            .AddType<AttendeeMutations>()
-            .AddType<SessionMutations>()
-            .AddType<SpeakerMutations>()
-            .AddType<TrackMutations>()
-        .AddType<AttendeeType>()
-        .AddType<SessionType>()
-        .AddType<SpeakerType>()
-        .AddType<TrackType>()
-        .EnableRelaySupport());
-```
+   ```csharp
+   services.AddGraphQL(
+       SchemaBuilder.New()
+           .AddQueryType(d => d.Name("Query"))
+               .AddType<AttendeeQueries>()
+               .AddType<SessionQueries>()
+               .AddType<SpeakerQueries>()
+               .AddType<TrackQueries>()
+           .AddMutationType(d => d.Name("Mutation"))
+               .AddType<AttendeeMutations>()
+               .AddType<SessionMutations>()
+               .AddType<SpeakerMutations>()
+               .AddType<TrackMutations>()
+           .AddType<AttendeeType>()
+           .AddType<SessionType>()
+           .AddType<SpeakerType>()
+           .AddType<TrackType>()
+           .EnableRelaySupport());
+   ```
 
 1. Start your GraphQL server.
 
@@ -647,7 +647,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to dynamic 
        [Service] ITopicEventSender eventSender,
        CancellationToken cancellationToken)
    {
-       Attendee attendee = await context.Attendees.FindAsync(input.AttendeeId, cancellationToken);
+       Attendee attendee = await context.Attendees.FirstOrDefaultAsync(t => t.Id == input.AttendeeId, cancellationToken);
 
        if (attendee is null)
        {
@@ -680,6 +680,44 @@ The `onSessionScheduled` was quite simple since we did not subscribe to dynamic 
               "OnAttendeeCheckedIn_" + input.SessionId,
               input.AttendeeId,
               cancellationToken);
+   ```
+
+1. Add a new class `SessionAttendeeCheckIn` to the `Attendees` directory. This will be our subscription payload.
+
+   ```csharp
+   public class SessionAttendeeCheckIn
+   {
+       public SessionAttendeeCheckIn(int attendeeId, int sessionId)
+       {
+           AttendeeId = attendeeId;
+           SessionId = sessionId;
+       }
+
+       [ID(nameof(Attendee))]
+       public int AttendeeId { get; }
+
+       [ID(nameof(Session))]
+       public int SessionId { get; }
+
+       [UseApplicationDbContext]
+       public async Task<int> CheckInCountAsync(
+           [ScopedService] ApplicationDbContext context,
+           CancellationToken cancellationToken) =>
+           await context.Sessions
+               .Where(session => session.Id == SessionId)
+               .SelectMany(session => session.SessionAttendees)
+               .CountAsync(cancellationToken);
+
+       public Task<Attendee> GetAttendeeAsync(
+           AttendeeByIdDataLoader attendeeById,
+           CancellationToken cancellationToken) =>
+           attendeeById.LoadAsync(AttendeeId, cancellationToken);
+
+       public Task<Session> GetAttendeeAsync(
+           SessionByIdDataLoader sessionById,
+           CancellationToken cancellationToken) =>
+           sessionById.LoadAsync(AttendeeId, cancellationToken);
+   }
    ```
 
 1. Create a new class `AttendeeSubscriptions` and put it in the `Attendees` directory.
@@ -729,4 +767,114 @@ The `onSessionScheduled` was quite simple since we did not subscribe to dynamic 
            "OnAttendeeCheckedIn_" + sessionId, cancellationToken);
    ```
 
-   The subscribe resolver is using `ITopicEventReceiver` to subscribe to a topic. A subscribe resolver can return `IAsyncEnumerable<T>`, `IEnumerable<T>` or `IObservable<T>` to represent the subscription stream. The subscribe resolver has access to all 
+   The subscribe resolver is using `ITopicEventReceiver` to subscribe to a topic. A subscribe resolver can return `IAsyncEnumerable<T>`, `IEnumerable<T>` or `IObservable<T>` to represent the subscription stream. The subscribe resolver has access to all the arguments that the actual resolver has access to.
+
+   1. Head back to the `Startup.cs` and register this new subscription type with the schema builder.
+
+   ```csharp
+   services.AddGraphQL(
+       SchemaBuilder.New()
+           .AddQueryType(d => d.Name("Query"))
+               .AddType<AttendeeQueries>()
+               .AddType<SessionQueries>()
+               .AddType<SpeakerQueries>()
+               .AddType<TrackQueries>()
+           .AddMutationType(d => d.Name("Mutation"))
+               .AddType<AttendeeMutations>()
+               .AddType<SessionMutations>()
+               .AddType<SpeakerMutations>()
+               .AddType<TrackMutations>()
+           .AddSubscriptionType(d => d.Name("Subscription"))
+               .AddType<AttendeeSubscriptions>()
+               .AddType<SessionSubscriptions>()
+           .AddType<AttendeeType>()
+           .AddType<SessionType>()
+           .AddType<SpeakerType>()
+           .AddType<TrackType>()
+           .EnableRelaySupport());
+   ```
+
+   1. Start your GraphQL server again.
+
+   ```console
+   dotnet run --project GraphQL
+   ```
+
+   1. Open a new tab and put the following query document in:
+
+   ```graphql
+   query GetSessions {
+     sessions {
+       nodes {
+         id
+       }
+     }
+   }
+
+   mutation RegisterAttendee {
+     registerAttendee(
+       input: {
+         emailAddress: "michael@chillicream.com"
+         firstName: "michael"
+         lastName: "staib"
+         userName: "michael"
+       }
+     ) {
+       attendee {
+         id
+       }
+     }
+   }
+
+   mutation CheckInAttendee {
+     checkInAttendee(
+       input: { attendeeId: "QXR0ZW5kZWUKaTE=", sessionId: "U2Vzc2lvbgppMQ==" }
+     ) {
+       attendee {
+         userName
+       }
+       session {
+         title
+       }
+     }
+   }
+   ```
+
+   Execute `GetSessions` first the resulting session ID and feed it into the `CheckInAttendee` operation.
+
+   ![Execute GetSessions](images/34-bcp-GetSessions.png)
+
+   Next, Execute `RegisterAttendee` take the resulting attendee ID and feed it into the `CheckInAttendee` operation.
+
+   ![Execute RegisterAttendee](images/35-bcp-RegisterAttendee.png)
+
+   1. Open another tab in Banana Cake Pop and add the following query document:
+
+   ```graphql
+   subscription OnAttendeeCheckedIn {
+     onAttendeeCheckedIn(sessionId: "U2Vzc2lvbgppMQ==") {
+       checkInCount
+       attendee {
+         userName
+       }
+     }
+   }
+   ```
+
+   Feed in the session ID the you gathered earlier and pass it into the `sessionId` argument of `OnAttendeeCheckedIn`.
+
+   Execute `OnAttendeeCheckedIn`, again nothing will happen at this point and the query tab is just waiting for incoming messages.
+
+   ![Execute OnAttendeeCheckedIn](images/37-bcp-OnAttendeeCheckedIn.png)
+
+   1. Get back to the earlier tab and execute the `CheckInAttendee` operation.
+
+   ![Execute CheckInAttendee](images/36-bcp-CheckInAttendee.png)
+
+   1. Click on the subscription tab to verify that we have received the message that an attendee has checked into our session.
+
+   ![OnAttendeeCheckedIn Received Result](images/38-bcp-OnAttendeeCheckedIn.png)
+
+## Summary
+
+In this session we have learned how we can use GraphQL subscription to provide real-time events. GraphQL really makes it easy to work with real-time data since we can specify what data we really want to receive when an event happens on our system.

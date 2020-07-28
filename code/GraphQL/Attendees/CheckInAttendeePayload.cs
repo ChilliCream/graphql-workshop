@@ -22,7 +22,7 @@ namespace ConferencePlanner.GraphQL.Attendees
         {
         }
 
-        public async Task<Session?> GetAttendeeAsync(
+        public async Task<Session?> GetSessionAsync(
             SessionByIdDataLoader sessionById,
             CancellationToken cancellationToken)
         {

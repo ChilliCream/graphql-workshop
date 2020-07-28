@@ -5,6 +5,7 @@ using ConferencePlanner.GraphQL.Data;
 using HotChocolate;
 using HotChocolate.Types;
 using HotChocolate.Subscriptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Attendees
 {
@@ -39,7 +40,7 @@ namespace ConferencePlanner.GraphQL.Attendees
             [Service] ITopicEventSender eventSender,
             CancellationToken cancellationToken)
         {
-            Attendee attendee = await context.Attendees.FindAsync(input.AttendeeId, cancellationToken);
+            Attendee attendee = await context.Attendees.FirstOrDefaultAsync(t => t.Id == input.AttendeeId, cancellationToken);
 
             if (attendee is null)
             {
