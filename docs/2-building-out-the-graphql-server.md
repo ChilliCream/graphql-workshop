@@ -22,7 +22,7 @@ The GraphQL type system distinguishes between nullable and non-nullable types. T
      </PropertyGroup>
 
      <ItemGroup>
-       <PackageReference Include="HotChocolate.AspNetCore" Version="10.5.1-rc.0" />
+       <PackageReference Include="HotChocolate.AspNetCore" Version="10.5.2-rc.0" />
        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.6" />
        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.6">
          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
