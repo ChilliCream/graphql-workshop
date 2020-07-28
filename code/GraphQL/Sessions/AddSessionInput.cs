@@ -10,7 +10,7 @@ namespace ConferencePlanner.GraphQL.Sessions
         public AddSessionInput(
             string title,
             string? @abstract,
-            IReadOnlyList<int> speakerIds,
+            List<int> speakerIds,
             string? clientMutationId)
             : base(clientMutationId)
         {
@@ -24,6 +24,6 @@ namespace ConferencePlanner.GraphQL.Sessions
         public string? Abstract { get; }
 
         [ID(nameof(Speaker))]
-        public IReadOnlyList<int> SpeakerIds { get; }
+        public List<int> SpeakerIds { get; }
     }
 }
