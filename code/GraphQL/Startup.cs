@@ -18,6 +18,7 @@ using ConferencePlanner.GraphQL.Types;
 using HotChocolate;
 using HotChocolate.AspNetCore;
 using HotChocolate.AspNetCore.Voyager;
+using HotChocolate.Execution;
 
 namespace ConferencePlanner.GraphQL
 {
@@ -41,27 +42,33 @@ namespace ConferencePlanner.GraphQL
             services.AddDataLoader<TrackByIdDataLoader>();
 
             services.AddInMemorySubscriptions();
+            services.AddReadOnlyFileSystemQueryStorage("./Queries");
 
             services.AddGraphQL(
-                SchemaBuilder.New()
-                    .AddQueryType(d => d.Name("Query"))
-                        .AddType<AttendeeQueries>()
-                        .AddType<SessionQueries>()
-                        .AddType<SpeakerQueries>()
-                        .AddType<TrackQueries>()
-                    .AddMutationType(d => d.Name("Mutation"))
-                        .AddType<AttendeeMutations>()
-                        .AddType<SessionMutations>()
-                        .AddType<SpeakerMutations>()
-                        .AddType<TrackMutations>()
-                    .AddSubscriptionType(d => d.Name("Subscription"))
-                        .AddType<AttendeeSubscriptions>()
-                        .AddType<SessionSubscriptions>()
-                    .AddType<AttendeeType>()
-                    .AddType<SessionType>()
-                    .AddType<SpeakerType>()
-                    .AddType<TrackType>()
-                    .EnableRelaySupport());
+                services => 
+                    SchemaBuilder.New()
+                        .AddServices(services)
+                        .AddQueryType(d => d.Name("Query"))
+                            .AddType<AttendeeQueries>()
+                            .AddType<SessionQueries>()
+                            .AddType<SpeakerQueries>()
+                            .AddType<TrackQueries>()
+                        .AddMutationType(d => d.Name("Mutation"))
+                            .AddType<AttendeeMutations>()
+                            .AddType<SessionMutations>()
+                            .AddType<SpeakerMutations>()
+                            .AddType<TrackMutations>()
+                        .AddSubscriptionType(d => d.Name("Subscription"))
+                            .AddType<AttendeeSubscriptions>()
+                            .AddType<SessionSubscriptions>()
+                        .AddType<AttendeeType>()
+                        .AddType<SessionType>()
+                        .AddType<SpeakerType>()
+                        .AddType<TrackType>()
+                        .EnableRelaySupport()
+                        .Create(),
+                (IQueryExecutionBuilder builder) => 
+                    builder.UsePersistedQueryPipeline());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,0 +1,18 @@
+query GetSessions(
+  $first: PaginationAmount! = 10,
+  $after: String) {
+  sessions(
+    first: $first 
+    after: $after
+    where: { startTime_not: null }
+    order_by: { title: ASC }) {
+    nodes {
+      title
+      startTime
+      endTime
+    }
+    pageInfo {
+        endCursor
+    }
+  }
+}
