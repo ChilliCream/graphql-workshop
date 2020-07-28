@@ -73,18 +73,18 @@ namespace ConferencePlanner.GraphQL
             }
 
             app.UseWebSockets();
-
             app.UseRouting();
-
             app.UseGraphQL();
+            
             app.UsePlayground();
             app.UseVoyager();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
+                endpoints.MapGet("/", context =>
                 {
-                    await context.Response.WriteAsync("Hello World!");
+                    context.Response.Redirect("/playground");
+                    return Task.CompletedTask;
                 });
             });
         }

@@ -1170,8 +1170,7 @@ mkdir GraphQL/Sessions
    [UseApplicationDbContext]
    public async Task<ScheduleSessionPayload> ScheduleSessionAsync(
        ScheduleSessionInput input,
-       [ScopedService] ApplicationDbContext context,
-       [Service]ITopicEventSender eventSender)
+       [ScopedService] ApplicationDbContext context)
    {
        if (input.EndTime < input.StartTime)
        {
@@ -1195,10 +1194,6 @@ mkdir GraphQL/Sessions
        session.EndTime = input.EndTime;
 
        await context.SaveChangesAsync();
-
-       await eventSender.SendAsync(
-           nameof(SessionSubscriptions.OnSessionScheduledAsync),
-           session.Id);
 
        return new ScheduleSessionPayload(session, input.ClientMutationId);
    }

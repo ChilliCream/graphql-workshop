@@ -152,7 +152,7 @@ The following diagram shows the complete field request pipeline with filtering a
 
 The thing here is that if you take for instance UseFiltering and UsePaging, it would make no sense to first apply paging and basically trim the result in order to then apply filters onto that trimmed result set, the other way around however makes perfect sense.
 
-Middleware order is important!
+**Middleware order is important!**
 
 That also means that the order of middleware attributes is important since they form the request pipeline.
 

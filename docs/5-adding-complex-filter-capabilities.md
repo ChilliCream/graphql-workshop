@@ -2,7 +2,7 @@
 
 So far, our GraphQL server only exposes plain lists that would, at some point, grow so large that our server would time out. Moreover, we miss some filter capabilities for our session list so that the application using our backend can filter for tracks, titles, or search the abstract for topics.
 
-# Add paging to your lists
+## Add paging to your lists
 
 Let us start by implementing the last Relay server specification we are still missing in our server by adding Relay compliant paging to our lists. In general, you should avoid plain lists wherever lists grow or are very large. Relay describes a curser based paging where you can navigate between edges through their cursors. Cursor based paging is ideal whenever you implement infinite scrolling solutions. In contrast to offset-pagination, you cannot jump to a specific page, but you can jump to a particular curser and navigate from there.
 
@@ -148,14 +148,14 @@ Let us start by implementing the last Relay server specification we are still mi
 
    ```graphql
    query GetTrackWithSessions {
-       trackById(id: "VHJhY2sKaTI=") {
-         id
-         sessions(first: 1) {
-           nodes {
-             title
-           }
+     trackById(id: "VHJhY2sKaTI=") {
+       id
+       sessions(first: 1) {
+         nodes {
+           title
          }
        }
+     }
    }
    ```
 
@@ -172,14 +172,16 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 ![Filter Middleware Flow](images/20-middleware-flow.png)
 
 1. Add a reference to the NuGet package package `HotChocolate.Types.Filters` version `10.5.0`.
+
    1. `dotnet add GraphQL package HotChocolate.Types.Filters --version 10.5.0`
 
 1. Add a reference to the NuGet package package `HotChocolate.Types.Sorting` version `10.5.0`.
+
    1. `dotnet add GraphQL package HotChocolate.Types.Sorting --version 10.5.0`
 
-2. Head over to the `SessionQueries.cs` which is located in the `Sessions` directory.
+1. Head over to the `SessionQueries.cs` which is located in the `Sessions` directory.
 
-3. Replace the `GetSessions` resolver with the following code:
+1. Replace the `GetSessions` resolver with the following code:
 
    ```csharp
    [UseApplicationDbContext]
@@ -193,12 +195,12 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 
    > By default the filter middleware would infer a filter type that exposes all the fields of the entity. In our case it would be better to remove filtering for ids and internal fields and focus on fields that the user really can use.
 
-4. Create a new `SessionFilterInputType.cs` in the `Sessions` directory with the following code:
+1. Create a new `SessionFilterInputType.cs` in the `Sessions` directory with the following code:
 
    ```csharp
    using ConferencePlanner.GraphQL.Data;
    using HotChocolate.Types.Filters;
-   
+
    namespace ConferencePlanner.GraphQL.Types
    {
        public class SessionFilterInputType : FilterInputType<Session>
@@ -214,7 +216,7 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 
    > We essentially have remove the ID fields and leave the rest in.
 
-5. Go back to the `SessionQueries.cs` which is located in the `Sessions` directory and replace the `[UseFiltering]` attribute on top of the `GetSessions` resolver with the following `[UseFiltering(FilterType = typeof(SessionFilterInputType))]`.
+1. Go back to the `SessionQueries.cs` which is located in the `Sessions` directory and replace the `[UseFiltering]` attribute on top of the `GetSessions` resolver with the following `[UseFiltering(FilterType = typeof(SessionFilterInputType))]`.
 
    ```csharp
    [UseApplicationDbContext]
@@ -226,27 +228,27 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
        context.Sessions;
    ```
 
-6. Start your GraphQL server.
+1. Start your GraphQL server.
 
    ```console
    dotnet run --project GraphQL
    ```
 
-7. Open Banana Cake Pop and refresh the schema and head over to the schema browser.
+1. Open Banana Cake Pop and refresh the schema and head over to the schema browser.
 
    ![Session Filter Type](images/29-bcp-filter-type.png)
 
    > We now have an argument `where` on our field that exposes a rich filter type to us.
 
-8. Write the following query to look for all the sessions that contain `2` in their title.
+1. Write the following query to look for all the sessions that contain `2` in their title.
 
    ```graphql
    query GetSessionsContaining2InTitle {
-       sessions(where: { title_contains: "2" }) {
-         nodes {
-           title
-         }
+     sessions(where: { title_contains: "2" }) {
+       nodes {
+         title
        }
+     }
    }
    ```
 
