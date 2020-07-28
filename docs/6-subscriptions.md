@@ -10,9 +10,9 @@ The second case that we have for subscriptions is whenever a user checks in to a
 
 Before we can start with introducing our new subscriptions, we need first to bring in some new types and add some more packages.
 
-1. Add a reference to the NuGet package package `HotChocolate.Subscriptions.InMemory` version `10.5.0`.
+1. Add a reference to the NuGet package package `HotChocolate.Subscriptions.InMemory` version `10.5.1`.
 
-   1. `dotnet add GraphQL package HotChocolate.Subscriptions.InMemory --version 10.5.0`
+   1. `dotnet add GraphQL package HotChocolate.Subscriptions.InMemory --version 10.5.1`
 
    > This brings an in-memory subscription bus, which is enough if you have just one server. If you want to use multiple GraphQL servers with a robust pub/sub system like Redis, you can use `HotChocolate.Subscriptions.Redis` for instance.
 
