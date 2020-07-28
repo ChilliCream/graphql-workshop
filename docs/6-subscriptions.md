@@ -8,13 +8,13 @@ The second case that we have for subscriptions is whenever a user checks in to a
 
 ## Refactor GraphQL API
 
-Before we can start with introducing our new subscriptions we need to first bring in some new types and add some more packages.
+Before we can start with introducing our new subscriptions, we need first to bring in some new types and add some more packages.
 
 1. Add a reference to the NuGet package package `HotChocolate.Subscriptions.InMemory` version `10.5.0`.
 
    1. `dotnet add GraphQL package HotChocolate.Subscriptions.InMemory --version 10.5.0`
 
-   > This brings an in-memory subscription bus which is enough if you have just one server. If you want to use multiple GraphQL servers with a strong pub/sub system like Redis you can use `HotChocolate.Subscriptions.Redis` for instance.
+   > This brings an in-memory subscription bus, which is enough if you have just one server. If you want to use multiple GraphQL servers with a robust pub/sub system like Redis, you can use `HotChocolate.Subscriptions.Redis` for instance.
 
 1. Add a new directory `Attendees`.
 
@@ -90,7 +90,7 @@ Before we can start with introducing our new subscriptions we need to first brin
 
 ### Add `registerAttendee` Mutation
 
-We have now the base types integrated and can start adding the attendee mutations. We will start by adding in the `registerAttendee` Mutation.
+We now have the base types integrated and can start adding the attendee mutations. We will begin by adding in the `registerAttendee` Mutation.
 
 1. Add a new class `RegisterAttendeeInput` to the `Attendees` directory.
 
@@ -191,7 +191,7 @@ We have now the base types integrated and can start adding the attendee mutation
 
 ### Add `checkInAttendee` Mutation
 
-Now, that we have the mutation in to register new attendees let us move on to add another mutation that will let us check-in a user to a session.
+Now that we have the mutation in to register new attendees, let us move on to add another mutation that will allow us to check-in a user to a session.
 
 1. Add the `CheckInAttendeeInput` to the `Attendees` directory.
 
@@ -393,7 +393,7 @@ Now, that we have the mutation in to register new attendees let us move on to ad
 
 ## Add `onSessionScheduled` Subscription
 
-With the base in we now can focus on putting subscriptions on our GraphQL server. GraphQL subscriptions by default work over websockets but could also work over SignalR or gRPC. We will first update our request pipeline to use websockets and then we will setup the subscription pub/sub system. After having our server prepared we will put in the subscriptions to our API.
+With the base in, we now can focus on putting subscriptions on our GraphQL server. GraphQL subscriptions by default work over WebSockets but could also work over SignalR or gRPC. We will first update our request pipeline to use WebSockets, and then we will set up the subscription pub/sub-system. After having our server prepared, we will put in the subscriptions to our API.
 
 1. Head over to `Startup.cs` and add `app.WebSockets` to the request pipeline. Middleware order is also important with ASP.NET Core, so this middleware needs to come before the GraphQL middleware.
 
@@ -482,9 +482,9 @@ With the base in we now can focus on putting subscriptions on our GraphQL server
    }
    ```
 
-   > The `[Topic]` attribute can be put on the method or on a parameter of the method and will infer the pub/sub-topic for this subscription.
+   > The `[Topic]` attribute can be put on the method or a parameter of the method and will infer the pub/sub-topic for this subscription.
 
-   > The `[Subscribe]` attribute tells the schema builder that this resolver method needs to be hooked up to the pub/sub-system. This means that in the background the resolver compiler will create a so-called subscribe resolver that handles subscribing to the pub/sub-system.
+   > The `[Subscribe]` attribute tells the schema builder that this resolver method needs to be hooked up to the pub/sub-system. This means that in the background, the resolver compiler will create a so-called subscribe resolver that handles subscribing to the pub/sub-system.
 
    > The `[EventMessage]` attribute marks the parameter where the execution engine shall inject the message payload of the pub/sub-system.
 
@@ -512,7 +512,7 @@ With the base in we now can focus on putting subscriptions on our GraphQL server
            .EnableRelaySupport());
    ```
 
-   The subscription type itself is now registered, but we still need something to trigger the event. So, next we are going to update our `scheduleSession` resolver to trigger an event.
+   The subscription type itself is now registered, but we still need something to trigger the event. So, next, we are going to update our `scheduleSession` resolver to trigger an event.
 
 1. Head over to the `SessionMutations` class in the `Sessions` directory and replace `ScheduleSessionAsync` with the following code:
 
@@ -564,7 +564,7 @@ With the base in we now can focus on putting subscriptions on our GraphQL server
        session.Id);
    ```
 
-   > Since we added the `[Topic]` attribute on our resolver method in the `SessionSubscriptions` class the topic is now the name of this method. A topic can be anything that can be serialized and has equality implemented so you could also use an object.
+   > Since we added the `[Topic]` attribute on our resolver method in the `SessionSubscriptions` class, the topic is now the name of this method. A topic can be anything that can be serialized and has equality implemented so you could also use an object.
 
 1. Start your GraphQL server.
 
@@ -585,7 +585,7 @@ With the base in we now can focus on putting subscriptions on our GraphQL server
    }
    ```
 
-   Execute the subscription query. Nothing will happen at this point and you will just see a loading indicator.
+   Execute the subscription query. Nothing will happen at this point, and you will just see a loading indicator.
 
    ![Subscription Waiting for Events](images/31-bcp-subscribe.png)
 
@@ -629,13 +629,13 @@ With the base in we now can focus on putting subscriptions on our GraphQL server
 
    ![Subscription Waiting for Events](images/33-bcp-subscription-result.png)
 
-   The event was raised and our subscription query was executed. But we also can see that the loading indicator is still turning since we are still subscribed and we will get new responses whenever the event is raised. With GraphQL a subscription stream can be infinite or finite. A finite stream will at some point automatically complete, whenever the server chooses to complete the topic `ITopicEventSender.CompleteAsync`.
+   The event was raised, and our subscription query was executed. We can also see that the loading indicator is still turning since we are still subscribed, and we will get new responses whenever the event is raised. With GraphQL a subscription stream can be infinite or finite. A finite stream will automatically complete whenever the server chooses to complete the topic `ITopicEventSender.CompleteAsync`.
 
-   To stop the subscription from the client-side click on the stop button right of the loading indicator.
+   To stop the subscription from the client-side, click on the stop button right of the loading indicator.
 
 ## Add `onAttendeeCheckedIn` subscription
 
-The `onSessionScheduled` was quite simple since we did not subscribe to dynamic topic. Meaning a topic that is defined at the moment we subscribe or a topic that depends on the user-context. With `onAttendeeCheckedIn` we will subscribe to a specific session to see who checked in and how quickly it is filling up.
+The `onSessionScheduled` was quite simple since we did not subscribe to a dynamic topic. Meaning a topic that is defined at the moment we subscribe to it or a topic that depends on the user-context. With `onAttendeeCheckedIn`, we will subscribe to a specific session to see who checked in and how quickly it fills up.
 
 1. Head over to the `AttendeeMutations` class and replace the `CheckInAttendeeAsync` resolver with the following code:
 
@@ -673,7 +673,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to dynamic 
    }
    ```
 
-   In this instance we are again using our `ITopicEventSender` to send in messages to our pub/sub-system. However we are no creating a string topic combined of parts of the input `input.SessionId` and a string describing the event `OnAttendeeCheckedIn_`. If nobody is subscribed the messages will just be dropped.
+   In this instance, we are again using our `ITopicEventSender` to send messages to our pub/sub-system. However, we are now creating a string topic combined with parts of the input `input.SessionId` and a string describing the event `OnAttendeeCheckedIn_`. If nobody is subscribed, the messages will just be dropped.
 
    ```csharp
    await eventSender.SendAsync(
@@ -720,7 +720,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to dynamic 
    }
    ```
 
-1. Create a new class `AttendeeSubscriptions` and put it in the `Attendees` directory.
+1. Create a new class, `AttendeeSubscriptions` and put it in the `Attendees` directory.
 
    ```csharp
    using System.Collections.Generic;
@@ -861,9 +861,9 @@ The `onSessionScheduled` was quite simple since we did not subscribe to dynamic 
    }
    ```
 
-   Feed in the session ID the you gathered earlier and pass it into the `sessionId` argument of `OnAttendeeCheckedIn`.
+   Feed-in the session ID you gathered earlier and pass it into the `sessionId` argument of `OnAttendeeCheckedIn`.
 
-   Execute `OnAttendeeCheckedIn`, again nothing will happen at this point and the query tab is just waiting for incoming messages.
+   Execute `OnAttendeeCheckedIn`, again nothing will happen at this point, and the query tab is just waiting for incoming messages.
 
    ![Execute OnAttendeeCheckedIn](images/37-bcp-OnAttendeeCheckedIn.png)
 
@@ -877,4 +877,4 @@ The `onSessionScheduled` was quite simple since we did not subscribe to dynamic 
 
 ## Summary
 
-In this session we have learned how we can use GraphQL subscription to provide real-time events. GraphQL really makes it easy to work with real-time data since we can specify what data we really want to receive when an event happens on our system.
+In this session, we have learned how we can use GraphQL subscription to provide real-time events. GraphQL makes it easy to work with real-time data since we can specify what data we want to receive when an event happens on our system.
