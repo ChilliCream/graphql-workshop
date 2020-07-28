@@ -35,5 +35,5 @@ The GraphQL schema can be found [here](code/schema.graphql).
 | [Session #3](docs/3-schema-design.md) | GraphQL schema design approaches. |
 | [Session #4](docs/4-understanding-middleware.md) | Understanding middleware. |
 | [Session #5](docs/5-adding-complex-filter-capabilities.md) | Adding complex filter capabilities. |
-| [Session #6](docs/) | Adding real-time functionality with subscriptions. |
+| [Session #6](docs/6-subscriptions.md) | Adding real-time functionality with subscriptions. |
 | [Session #7](docs/) | Getting the GraphQL server production ready. |
