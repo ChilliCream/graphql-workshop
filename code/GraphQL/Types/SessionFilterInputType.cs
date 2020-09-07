@@ -1,5 +1,5 @@
 using ConferencePlanner.GraphQL.Data;
-using HotChocolate.Types.Filters;
+using HotChocolate.Data.Filters;
 
 namespace ConferencePlanner.GraphQL.Types
 {
@@ -8,7 +8,7 @@ namespace ConferencePlanner.GraphQL.Types
         protected override void Configure(IFilterInputTypeDescriptor<Session> descriptor)
         {
             descriptor.Ignore(t => t.Id);
-            descriptor.Ignore(t => t.TrackId);
+            descriptor.Ignore(t => t.TrackId); // todo : fix nullability issue with the descriptor.
         }
     }
 }

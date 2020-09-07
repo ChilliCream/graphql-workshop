@@ -3,9 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
+using HotChocolate;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
-using HotChocolate.Types.Relay;
 
 namespace ConferencePlanner.GraphQL.Types
 {
@@ -14,7 +14,7 @@ namespace ConferencePlanner.GraphQL.Types
         protected override void Configure(IObjectTypeDescriptor<Attendee> descriptor)
         {
             descriptor
-                .AsNode()
+                .AsNode() // todo : maybe we should move the extension to HotChocolate.Types or move it back to relay
                 .IdField(t => t.Id)
                 .NodeResolver((ctx, id) =>
                     ctx.DataLoader<AttendeeByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));

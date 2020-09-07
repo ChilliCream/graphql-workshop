@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,10 +12,6 @@ using ConferencePlanner.GraphQL.Speakers;
 using ConferencePlanner.GraphQL.Tracks;
 using ConferencePlanner.GraphQL.Types;
 using HotChocolate;
-using HotChocolate.AspNetCore;
-using HotChocolate.AspNetCore.Voyager;
-using HotChocolate.Execution;
-using HotChocolate.Execution.Configuration;
 
 namespace ConferencePlanner.GraphQL
 {
@@ -32,7 +24,7 @@ namespace ConferencePlanner.GraphQL
             services.AddDbContextPool<ApplicationDbContext>(
                 options => options.UseSqlite("Data Source=conferences.db"));
 
-            services.AddReadOnlyFileSystemQueryStorage("./Queries");
+            services.AddReadOnlyFileSystemQueryStorage("./Queries"); // TODO : integrate with request executor builder
 
             services
                 .AddGraphQLServer()

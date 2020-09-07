@@ -9,6 +9,7 @@ using HotChocolate.Types.Relay;
 using ConferencePlanner.GraphQL.DataLoader;
 using System.Linq;
 using ConferencePlanner.GraphQL.Types;
+using HotChocolate.Data;
 
 namespace ConferencePlanner.GraphQL.Sessions
 {
