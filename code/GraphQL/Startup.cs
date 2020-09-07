@@ -32,44 +32,39 @@ namespace ConferencePlanner.GraphQL
             services.AddDbContextPool<ApplicationDbContext>(
                 options => options.UseSqlite("Data Source=conferences.db"));
 
-            services.AddDataLoader<AttendeeByIdDataLoader>();
-            services.AddDataLoader<AttendeeBySessionIdDataLoader>();
-            services.AddDataLoader<SessionByAttendeeIdDataLoader>();
-            services.AddDataLoader<SessionByIdDataLoader>();
-            services.AddDataLoader<SessionBySpeakerIdDataLoader>();
-            services.AddDataLoader<SessionByTrackIdDataLoader>();
-            services.AddDataLoader<SpeakerByIdDataLoader>();
-            services.AddDataLoader<SpeakerBySessionIdDataLoader>();
-            services.AddDataLoader<TrackByIdDataLoader>();
-
-            services.AddInMemorySubscriptions();
             services.AddReadOnlyFileSystemQueryStorage("./Queries");
 
-            services.AddGraphQL(
-                services => 
-                    SchemaBuilder.New()
-                        .AddServices(services)
-                        .AddQueryType(d => d.Name("Query"))
-                            .AddType<AttendeeQueries>()
-                            .AddType<SessionQueries>()
-                            .AddType<SpeakerQueries>()
-                            .AddType<TrackQueries>()
-                        .AddMutationType(d => d.Name("Mutation"))
-                            .AddType<AttendeeMutations>()
-                            .AddType<SessionMutations>()
-                            .AddType<SpeakerMutations>()
-                            .AddType<TrackMutations>()
-                        .AddSubscriptionType(d => d.Name("Subscription"))
-                            .AddType<AttendeeSubscriptions>()
-                            .AddType<SessionSubscriptions>()
-                        .AddType<AttendeeType>()
-                        .AddType<SessionType>()
-                        .AddType<SpeakerType>()
-                        .AddType<TrackType>()
-                        .EnableRelaySupport()
-                        .Create(),
-                (IQueryExecutionBuilder builder) => 
-                    builder.UsePersistedQueryPipeline());
+            services
+                .AddGraphQLServer()
+                    .AddQueryType(d => d.Name("Query"))
+                        .AddType<AttendeeQueries>()
+                        .AddType<SessionQueries>()
+                        .AddType<SpeakerQueries>()
+                        .AddType<TrackQueries>()
+                    .AddMutationType(d => d.Name("Mutation"))
+                        .AddType<AttendeeMutations>()
+                        .AddType<SessionMutations>()
+                        .AddType<SpeakerMutations>()
+                        .AddType<TrackMutations>()
+                    .AddSubscriptionType(d => d.Name("Subscription"))
+                        .AddType<AttendeeSubscriptions>()
+                        .AddType<SessionSubscriptions>()
+                    .AddType<AttendeeType>()
+                    .AddType<SessionType>()
+                    .AddType<SpeakerType>()
+                    .AddType<TrackType>()
+                    // .EnableRelaySupport()
+                    .AddDataLoader<AttendeeByIdDataLoader>()
+                    .AddDataLoader<AttendeeBySessionIdDataLoader>()
+                    .AddDataLoader<SessionByAttendeeIdDataLoader>()
+                    .AddDataLoader<SessionByIdDataLoader>()
+                    .AddDataLoader<SessionBySpeakerIdDataLoader>()
+                    .AddDataLoader<SessionByTrackIdDataLoader>()
+                    .AddDataLoader<SpeakerByIdDataLoader>()
+                    .AddDataLoader<SpeakerBySessionIdDataLoader>()
+                    .AddDataLoader<TrackByIdDataLoader>()
+                    .AddInMemorySubscriptions()
+                    .UsePersistedQueryPipeline();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,16 +77,17 @@ namespace ConferencePlanner.GraphQL
 
             app.UseWebSockets();
             app.UseRouting();
-            app.UseGraphQL();
             
-            app.UsePlayground();
-            app.UseVoyager();
+            // app.UsePlayground();
+            // app.UseVoyager();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGraphQL();
+
                 endpoints.MapGet("/", context =>
                 {
-                    context.Response.Redirect("/playground");
+                    // context.Response.Redirect("/playground");
                     return Task.CompletedTask;
                 });
             });

@@ -14,7 +14,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Snapshooter.Xunit;
 using Xunit;
 
-
 namespace GraphQL.Tests
 {
     public class AttendeeTests
@@ -46,40 +45,41 @@ namespace GraphQL.Tests
         public async Task RegisterAttendee()
         {
             // arrange
-            var services = new ServiceCollection();
-            services.AddDbContextPool<ApplicationDbContext>(
-                options => options.UseInMemoryDatabase("Data Source=conferences.db"));
-
-            IQueryExecutor executor = SchemaBuilder.New()
-                .AddServices(services.BuildServiceProvider())
-                .AddQueryType(d => d.Name("Query"))
-                    .AddType<AttendeeQueries>()
-                .AddMutationType(d => d.Name("Mutation"))
-                    .AddType<AttendeeMutations>()
-                .AddType<AttendeeType>()
-                .AddType<SessionType>()
-                .AddType<SpeakerType>()
-                .AddType<TrackType>()
-                .EnableRelaySupport()
-                .Create()
-                .MakeExecutable();
+            IServiceProvider services = new ServiceCollection()
+                .AddDbContextPool<ApplicationDbContext>(
+                    options => options.UseInMemoryDatabase("Data Source=conferences.db"))
+                .AddGraphQL()
+                    .AddQueryType(d => d.Name("Query"))
+                        .AddType<AttendeeQueries>()
+                    .AddMutationType(d => d.Name("Mutation"))
+                        .AddType<AttendeeMutations>()
+                    .AddType<AttendeeType>()
+                    .AddType<SessionType>()
+                    .AddType<SpeakerType>()
+                    .AddType<TrackType>()
+                    // .EnableRelaySupport()
+                .Services
+                .BuildServiceProvider();
             
             // act
-            IExecutionResult result = await executor.ExecuteAsync(@"
-                mutation RegisterAttendee {
-                    registerAttendee(
-                        input: {
-                            emailAddress: ""michael@chillicream.com""
-                                firstName: ""michael""
-                                lastName: ""staib""
-                                userName: ""michael3""
-                            }) 
-                    {
-                        attendee {
-                            id
-                        }
-                    }
-                }");
+            IExecutionResult result = await services.ExecuteRequestAsync(
+                QueryRequestBuilder.New()
+                    .SetQuery(@"
+                        mutation RegisterAttendee {
+                            registerAttendee(
+                                input: {
+                                    emailAddress: ""michael@chillicream.com""
+                                        firstName: ""michael""
+                                        lastName: ""staib""
+                                        userName: ""michael3""
+                                    }) 
+                            {
+                                attendee {
+                                    id
+                                }
+                            }
+                        }")
+                    .Create());
             
             // assert
             result.MatchSnapshot();
