@@ -68,7 +68,7 @@
 1. Add a reference to the NuGet package `Microsoft.EntityFrameworkCore.Tools` version `3.1.6`.
    1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Tools --version 3.1.6`
 
-### Visual Studio: Package Manager Console
+### Option 1 - Visual Studio: Package Manager Console
 
 1. In Visual Studio, select the Tools -> NuGet Package Manager -> Package Manager Console
 
@@ -79,7 +79,7 @@
    Update-Database
    ```
 
-### Command line
+### Option 2 - Command line
 
 1. Install the EntityFramework global tool `dotnet-ef` using the following command:
 
