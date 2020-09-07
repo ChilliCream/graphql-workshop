@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using ConferencePlanner.GraphQL.Data;
 using HotChocolate.DataLoader;
+using GreenDonut;
 
 namespace ConferencePlanner.GraphQL.DataLoader
 {
@@ -14,7 +15,10 @@ namespace ConferencePlanner.GraphQL.DataLoader
     {
         private readonly DbContextPool<ApplicationDbContext> _dbContextPool;
 
-        public AttendeeBySessionIdDataLoader(DbContextPool<ApplicationDbContext> dbContextPool)
+        public AttendeeBySessionIdDataLoader(
+            IBatchScheduler batchScheduler, 
+            DbContextPool<ApplicationDbContext> dbContextPool)
+            : base(batchScheduler)
         {
             _dbContextPool = dbContextPool ?? throw new ArgumentNullException(nameof(dbContextPool));
         }
