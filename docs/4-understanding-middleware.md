@@ -2,7 +2,7 @@
 
 The field middleware is one of the foundational components in Hot Chocolate. Many features that you use like, for instance, the `ID` transformation from internal IDs to global object identifiers, are a field middleware. Even resolvers are compiled into a field middleware.
 
-All the middleware that are applied to a field are compiled into one delegate that can be executed. Each middleware knows about the next middleware component in its chain and with this can choose to execute logic before it or after it or before and after it. Also, a middleware might skip the next middleware in line by not calling next.
+All the middlewares that are applied to a field are compiled into one delegate that can be executed. Each middleware knows about the next middleware component in its chain and with this can choose to execute logic before it or after it or before and after it. Also, a middleware might skip the next middleware in line by not calling next.
 
 ![Connect to GraphQL server with Banana Cake Pop](images/17-middleware-flow.png)
 
@@ -146,7 +146,7 @@ To use middleware on plain C# types, we can wrap them in so-called descriptor at
 
 ## Middleware order
 
-The following diagram shows the complete field request pipeline with filtering and pagination. You can see how, existing middleware are ordered. You have full control over how to order middleware or inject new custom middleware as necessary for your scenarios.
+The following diagram shows the complete field request pipeline with filtering and pagination. You can see how, existing middlewares are ordered. You have full control over how to order middleware or inject new custom middleware as necessary for your scenarios.
 
 ![Middleware Flow](images/20-middleware-flow.png)
 

@@ -55,6 +55,7 @@ namespace ConferencePlanner.GraphQL
                     .AddDataLoader<SpeakerByIdDataLoader>()
                     .AddDataLoader<SpeakerBySessionIdDataLoader>()
                     .AddDataLoader<TrackByIdDataLoader>()
+                    .AddFiltering()
                     .AddInMemorySubscriptions()
                     .UsePersistedQueryPipeline();
         }

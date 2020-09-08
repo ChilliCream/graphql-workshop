@@ -18,8 +18,8 @@ namespace ConferencePlanner.GraphQL.Sessions
     {
         [UseApplicationDbContext]
         [UsePaging(SchemaType = typeof(NonNullType<SessionType>))]
-        [UseFiltering(FilterType = typeof(SessionFilterInputType))]
-        [UseSorting]
+        [UseFiltering(Type = typeof(SessionFilterInputType))]
+        //[UseSorting] TODO: reactiveate when sorting is available
         public IQueryable<Session> GetSessions(
             [ScopedService] ApplicationDbContext context) =>
             context.Sessions;

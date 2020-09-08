@@ -216,12 +216,12 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 
    > We essentially have remove the ID fields and leave the rest in.
 
-1. Go back to the `SessionQueries.cs` which is located in the `Sessions` directory and replace the `[UseFiltering]` attribute on top of the `GetSessions` resolver with the following `[UseFiltering(FilterType = typeof(SessionFilterInputType))]`.
+1. Go back to the `SessionQueries.cs` which is located in the `Sessions` directory and replace the `[UseFiltering]` attribute on top of the `GetSessions` resolver with the following `[UseFiltering(Type = typeof(SessionFilterInputType))]`.
 
    ```csharp
    [UseApplicationDbContext]
    [UsePaging(SchemaType = typeof(NonNullType<SessionType>))]
-   [UseFiltering(FilterType = typeof(SessionFilterInputType))]
+   [UseFiltering(Type = typeof(SessionFilterInputType))]
    [UseSorting]
    public IQueryable<Session> GetSessions(
        [ScopedService] ApplicationDbContext context) =>
