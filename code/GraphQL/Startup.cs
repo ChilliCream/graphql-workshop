@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,8 @@ using ConferencePlanner.GraphQL.Speakers;
 using ConferencePlanner.GraphQL.Tracks;
 using ConferencePlanner.GraphQL.Types;
 using HotChocolate;
+using HotChocolate.Data.Sorting;
+using HotChocolate.Types;
 
 namespace ConferencePlanner.GraphQL
 {
@@ -24,39 +27,42 @@ namespace ConferencePlanner.GraphQL
             services.AddDbContextPool<ApplicationDbContext>(
                 options => options.UseSqlite("Data Source=conferences.db"));
 
-            services.AddReadOnlyFileSystemQueryStorage("./Queries"); // TODO : integrate with request executor builder
+            // services.AddReadOnlyFileSystemQueryStorage("./Queries"); // TODO : integrate with request executor builder
 
             services
                 .AddGraphQLServer()
-                    .AddQueryType(d => d.Name("Query"))
-                        .AddType<AttendeeQueries>()
-                        .AddType<SessionQueries>()
-                        .AddType<SpeakerQueries>()
-                        .AddType<TrackQueries>()
-                    .AddMutationType(d => d.Name("Mutation"))
-                        .AddType<AttendeeMutations>()
-                        .AddType<SessionMutations>()
-                        .AddType<SpeakerMutations>()
-                        .AddType<TrackMutations>()
-                    .AddSubscriptionType(d => d.Name("Subscription"))
-                        .AddType<AttendeeSubscriptions>()
-                        .AddType<SessionSubscriptions>()
-                    .AddType<AttendeeType>()
-                    .AddType<SessionType>()
-                    .AddType<SpeakerType>()
-                    .AddType<TrackType>()
-                    // .EnableRelaySupport()
-                    .AddDataLoader<AttendeeByIdDataLoader>()
-                    .AddDataLoader<AttendeeBySessionIdDataLoader>()
-                    .AddDataLoader<SessionByAttendeeIdDataLoader>()
-                    .AddDataLoader<SessionByIdDataLoader>()
-                    .AddDataLoader<SessionBySpeakerIdDataLoader>()
-                    .AddDataLoader<SessionByTrackIdDataLoader>()
-                    .AddDataLoader<SpeakerByIdDataLoader>()
-                    .AddDataLoader<SpeakerBySessionIdDataLoader>()
-                    .AddDataLoader<TrackByIdDataLoader>()
-                    .AddInMemorySubscriptions()
-                    .UsePersistedQueryPipeline();
+                .AddQueryType(d => d.Name("Query"))
+                .AddType<AttendeeQueries>()
+                .AddType<SessionQueries>()
+                .AddType<SpeakerQueries>()
+                .AddType<TrackQueries>()
+                .AddMutationType(d => d.Name("Mutation"))
+                .AddType<AttendeeMutations>()
+                .AddType<SessionMutations>()
+                .AddType<SpeakerMutations>()
+                .AddType<TrackMutations>()
+                .AddSubscriptionType(d => d.Name("Subscription"))
+                .AddType<AttendeeSubscriptions>()
+                .AddType<SessionSubscriptions>()
+                .AddType<AttendeeType>()
+                .AddType<SessionType>()
+                .AddType<SpeakerType>()
+                .AddType<TrackType>()
+                .EnableRelaySupport()
+                .AddFiltering()
+                .ConfigureSchema(t => t.AddSorting()) // this is not correct an needs to be fixed.
+                .BindRuntimeType<DateTimeOffset, DateTimeType>()
+                .AddDataLoader<AttendeeByIdDataLoader>()
+                .AddDataLoader<AttendeeBySessionIdDataLoader>()
+                .AddDataLoader<SessionByAttendeeIdDataLoader>()
+                .AddDataLoader<SessionByIdDataLoader>()
+                .AddDataLoader<SessionBySpeakerIdDataLoader>()
+                .AddDataLoader<SessionByTrackIdDataLoader>()
+                .AddDataLoader<SpeakerByIdDataLoader>()
+                .AddDataLoader<SpeakerBySessionIdDataLoader>()
+                .AddDataLoader<TrackByIdDataLoader>()
+                .AddInMemorySubscriptions();
+            // .UsePersistedQueryPipeline();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

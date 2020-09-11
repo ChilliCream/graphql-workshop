@@ -9,10 +9,14 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/GraphQL/bin/Debug/netcoreapp3.1/GraphQL.dll",
+            "program": "${workspaceFolder}/GraphQL/bin/Debug/netcoreapp5.0/GraphQL.dll",
             "args": [],
             "cwd": "${workspaceFolder}/GraphQL",
             "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },

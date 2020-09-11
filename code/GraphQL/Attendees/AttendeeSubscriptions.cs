@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
 using HotChocolate;
+using HotChocolate.Execution;
 using HotChocolate.Subscriptions;
 using HotChocolate.Types;
 using HotChocolate.Types.Relay;
@@ -21,7 +22,7 @@ namespace ConferencePlanner.GraphQL.Attendees
             CancellationToken cancellationToken) =>
             new SessionAttendeeCheckIn(attendeeId, sessionId);
 
-        public async ValueTask<IAsyncEnumerable<int>> SubscribeToOnAttendeeCheckedInAsync(
+        public async ValueTask<ISourceStream<int>> SubscribeToOnAttendeeCheckedInAsync(
             int sessionId,
             [Service] ITopicEventReceiver eventReceiver,
             CancellationToken cancellationToken) =>
