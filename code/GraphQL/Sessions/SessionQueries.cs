@@ -20,7 +20,7 @@ namespace ConferencePlanner.GraphQL.Sessions
         [UsePaging(SchemaType = typeof(NonNullType<SessionType>))]
         // [UseFiltering(Type = typeof(SessionFilterInputType))] // TODO : fix the filters
         [UseFiltering]
-        // [UseSorting] TODO : sorting has still issues
+        [UseSorting]
         public IQueryable<Session> GetSessions(
             [ScopedService] ApplicationDbContext context) =>
             context.Sessions;
