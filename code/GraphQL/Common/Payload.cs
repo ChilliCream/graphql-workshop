@@ -3,17 +3,16 @@ using System.Collections.Generic;
 
 namespace ConferencePlanner.GraphQL.Common
 {
-    public class PayloadBase
+    public abstract class Payload
     {
-        protected PayloadBase(string? clientMutationId)
+        protected Payload(string? clientMutationId) 
+            : this(null, clientMutationId)
         {
-            Errors = Array.Empty<UserError>();;
-            ClientMutationId = clientMutationId;
         }
 
-        protected PayloadBase(IReadOnlyList<UserError> errors, string? clientMutationId)
+        protected Payload(IReadOnlyList<UserError>? errors, string? clientMutationId)
         {
-            Errors = errors;
+            Errors = errors ?? Array.Empty<UserError>();
             ClientMutationId = clientMutationId;
         }
 

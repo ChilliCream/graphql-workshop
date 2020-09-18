@@ -4,19 +4,19 @@ using ConferencePlanner.GraphQL.Data;
 
 namespace ConferencePlanner.GraphQL.Speakers
 {
-    public class SpeakerPayloadBase : PayloadBase
+    public class SpeakerPayloadBase : Payload
     {
-        public SpeakerPayloadBase(Speaker speaker, string? clientMutationId)
+        protected SpeakerPayloadBase(Speaker speaker, string? clientMutationId)
             : base(clientMutationId)
         {
             Speaker = speaker;
         }
 
-        public SpeakerPayloadBase(IReadOnlyList<UserError> errors, string? clientMutationId)
+        protected SpeakerPayloadBase(IReadOnlyList<UserError> errors, string? clientMutationId)
             : base(errors, clientMutationId)
         {
         }
 
-        public Speaker? Speaker { get; }
+        public Speaker? Speaker { get; init; }
     }
 }

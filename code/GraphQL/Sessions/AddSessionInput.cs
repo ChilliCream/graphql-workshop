@@ -5,7 +5,7 @@ using HotChocolate.Types.Relay;
 
 namespace ConferencePlanner.GraphQL.Sessions
 {
-    public class AddSessionInput : InputBase
+    public record AddSessionInput : Input
     {
         public AddSessionInput(
             string title,
@@ -19,11 +19,11 @@ namespace ConferencePlanner.GraphQL.Sessions
             SpeakerIds = speakerIds;
         }
 
-        public string Title { get; }
+        public string Title { get; init; }
 
-        public string? Abstract { get; }
+        public string? Abstract { get; init; }
 
         [ID(nameof(Speaker))]
-        public IReadOnlyList<int> SpeakerIds { get; }
+        public IReadOnlyList<int> SpeakerIds { get; init; }
     }
 }

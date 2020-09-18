@@ -4,7 +4,7 @@ using ConferencePlanner.GraphQL.Data;
 
 namespace ConferencePlanner.GraphQL.Sessions
 {
-    public class AddSessionPayload : PayloadBase
+    public class AddSessionPayload : Payload
     {
         public AddSessionPayload(Session session, string? clientMutationId)
             : base(clientMutationId)
@@ -22,6 +22,6 @@ namespace ConferencePlanner.GraphQL.Sessions
         {
         }
 
-        public Session? Session { get; }
+        public Session? Session { get; init; }
     }
 }

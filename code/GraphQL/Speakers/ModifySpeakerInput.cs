@@ -5,29 +5,12 @@ using HotChocolate.Types.Relay;
 
 namespace ConferencePlanner.GraphQL.Speakers
 {
-    public class ModifySpeakerInput : InputBase
-    {
-        public ModifySpeakerInput(
-            int id,
-            Optional<string?> name,
-            Optional<string?> bio,
-            Optional<string?> webSite,
-            string? clientMutationId)
-            : base(clientMutationId)
-        {
-            Id = id;
-            Name = name;
-            Bio = bio;
-            WebSite = webSite;
-        }
-
+    public record ModifySpeakerInput(
         [ID(nameof(Speaker))] 
-        public int Id { get; }
-
-        public Optional<string?> Name { get; }
-
-        public Optional<string?> Bio { get; }
-
-        public Optional<string?> WebSite { get; }
-    }
+        int Id,
+        Optional<string?> Name,
+        Optional<string?> Bio,
+        Optional<string?> WebSite,
+        string? ClientMutationId)
+        : Input(ClientMutationId);
 }

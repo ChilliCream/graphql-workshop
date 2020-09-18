@@ -4,15 +4,15 @@ using ConferencePlanner.GraphQL.Data;
 
 namespace ConferencePlanner.GraphQL.Sessions
 {
-    public class SessionPayloadBase : PayloadBase
+    public class SessionPayloadBase : Payload
     {
-        public SessionPayloadBase(Session session, string? clientMutationId)
+        protected SessionPayloadBase(Session session, string? clientMutationId)
             : base(clientMutationId)
         {
             Session = session;
         }
 
-        public SessionPayloadBase(IReadOnlyList<UserError> errors, string? clientMutationId)
+        protected SessionPayloadBase(IReadOnlyList<UserError> errors, string? clientMutationId)
             : base(errors, clientMutationId)
         {
         }

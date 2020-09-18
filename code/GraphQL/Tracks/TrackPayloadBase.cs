@@ -4,7 +4,7 @@ using ConferencePlanner.GraphQL.Data;
 
 namespace ConferencePlanner.GraphQL.Tracks
 {
-    public class TrackPayloadBase : PayloadBase
+    public class TrackPayloadBase : Payload
     {
         public TrackPayloadBase(Track track, string? clientMutationId)
             : base(clientMutationId)
@@ -17,6 +17,6 @@ namespace ConferencePlanner.GraphQL.Tracks
         {
         }
 
-        public Track? Track { get; }
+        public Track? Track { get; init; }
     }
 }

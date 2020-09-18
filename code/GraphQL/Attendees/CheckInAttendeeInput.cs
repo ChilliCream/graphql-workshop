@@ -4,22 +4,11 @@ using HotChocolate.Types.Relay;
 
 namespace ConferencePlanner.GraphQL.Attendees
 {
-    public class CheckInAttendeeInput : InputBase
-    {
-        public CheckInAttendeeInput(
-            int sessionId,
-            int attendeeId,
-            string? clientMutationId)
-            : base(clientMutationId)
-        {
-            SessionId = sessionId;
-            AttendeeId = attendeeId;
-        }
-
+    public record CheckInAttendeeInput(
         [ID(nameof(Session))]
-        public int SessionId { get; }
-
+        int SessionId,
         [ID(nameof(Attendee))]
-        public int AttendeeId { get; }
-    }
+        int AttendeeId,
+        string? ClientMutationId) 
+        : Input(ClientMutationId);
 }

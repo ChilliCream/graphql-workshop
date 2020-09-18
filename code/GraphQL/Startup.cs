@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,7 +13,6 @@ using ConferencePlanner.GraphQL.Tracks;
 using ConferencePlanner.GraphQL.Types;
 using HotChocolate;
 using HotChocolate.Data.Sorting;
-using HotChocolate.Types;
 
 namespace ConferencePlanner.GraphQL
 {
@@ -24,13 +22,16 @@ namespace ConferencePlanner.GraphQL
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContextPool<ApplicationDbContext>(
-                options => options.UseSqlite("Data Source=conferences.db"));
-
-            // services.AddReadOnlyFileSystemQueryStorage("./Queries"); // TODO : integrate with request executor builder
-
             services
+                // First we add the DBContext which we will be using to interact with our
+                // Database.
+                .AddDbContextPool<ApplicationDbContext>(
+                    options => options.UseSqlite("Data Source=conferences.db"))
+
+                // This adds the GraphQL server core service and declares a schema.
                 .AddGraphQLServer()
+
+                    // Next we add the types to our schema.
                     .AddQueryType(d => d.Name("Query"))
                         .AddType<AttendeeQueries>()
                         .AddType<SessionQueries>()
@@ -48,11 +49,14 @@ namespace ConferencePlanner.GraphQL
                     .AddType<SessionType>()
                     .AddType<SpeakerType>()
                     .AddType<TrackType>()
-                    
-                    .AddFiltering() // should we rename it to enable filtering?
-                    .AddSorting()   // should we rename it to enable sorting?
+
+                    // In this section we are adding extensions like relay helpers,
+                    // filtering and sorting.
+                    .AddFiltering()
+                    .AddSorting()
                     .EnableRelaySupport()
-                    
+
+                    // Now we add some the DataLoader to our system. 
                     .AddDataLoader<AttendeeByIdDataLoader>()
                     .AddDataLoader<AttendeeBySessionIdDataLoader>()
                     .AddDataLoader<SessionByAttendeeIdDataLoader>()
@@ -63,7 +67,14 @@ namespace ConferencePlanner.GraphQL
                     .AddDataLoader<SpeakerBySessionIdDataLoader>()
                     .AddDataLoader<TrackByIdDataLoader>()
 
+                    // Since we are using subscriptions, we need to register a pub/sub system.
+                    // for our demo we are using a in-memory pub/sub system.
                     .AddInMemorySubscriptions()
+
+                    // Last we add support for persisted queries. 
+                    // The first line adds the persisted query storage, 
+                    // the second one the persisted query processing pipeline.
+                    .AddFileSystemQueryStorage("./persisted_queries")
                     .UsePersistedQueryPipeline();
         }
 
@@ -77,13 +88,12 @@ namespace ConferencePlanner.GraphQL
 
             app.UseWebSockets();
             app.UseRouting();
-            
-            // app.UsePlayground();
-            // app.UseVoyager();
 
             app.UseEndpoints(endpoints =>
             {
+                // We will be using the new routing API to host our GraphQL middleware.
                 endpoints.MapGraphQL();
+                // endpoints.MapBananaCakePop(); // this one is coming later.
 
                 endpoints.MapGet("/", context =>
                 {
