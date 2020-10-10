@@ -557,7 +557,6 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
                 descriptor
                     .Field(t => t.Sessions)
                     .ResolveWith<TrackResolvers>(t => t.GetSessionsAsync(default!, default!, default!, default))
-                    .UsePaging<NonNullType<SessionType>>()
                     .Name("sessions");
             }
 

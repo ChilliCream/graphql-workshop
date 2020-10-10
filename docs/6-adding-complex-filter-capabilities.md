@@ -22,7 +22,7 @@ Let us start by implementing the last Relay server specification we are still mi
 
    The resolver pipeline for our field now looks like the following:
 
-   ![Query speaker names](images/22-pagination.png)
+   ![Paging Middleware Flow](images/22-pagination.png)
 
 1. Start your GraphQL server.
 
@@ -32,11 +32,11 @@ Let us start by implementing the last Relay server specification we are still mi
 
 1. Open Banana Cake Pop and refresh the schema.
 
-   ![Query speaker names](images/23-bcp-schema.png)
+   ![Banana Cake Pop Root Fields](images/23-bcp-schema.png)
 
 1. Head into the schema browser, and let us have a look at how our API structure has changed.
 
-   ![Query speaker names](images/24-bcp-schema.png)
+   ![Banana Cake Pop Tracks Field](images/24-bcp-schema.png)
 
 1. Define a simple query to fetch the first track.
 
@@ -106,23 +106,13 @@ Let us start by implementing the last Relay server specification we are still mi
        context.Sessions;
    ```
 
-1. Last replace the `GetAttendeesAsync` resolver which is located in `Attendees/AttendeeQueries.cs` with the following code:
-
-   ```csharp
-   [UseApplicationDbContext]
-   [UsePaging]
-   public IQueryable<Attendee> GetAttendeesAsync(
-       [ScopedService] ApplicationDbContext context) =>
-       context.Attendees;
-   ```
-
    We have now replaced all the root level list fields and are now using our pagination middleware. There are still more lists left where we should apply pagination if we wanted to really have a refined schema. Let us change the API a bit more to incorporate this.
 
 1. First, go back to the `SessionQueries.cs` in the `Sessions` directory and replace the `[UsePaging]` with `[UsePaging(SchemaType = typeof(NonNullType<SessionType>))]`.
 
    ```csharp
    [UseApplicationDbContext]
-   [UsePaging(SchemaType = typeof(NonNullType<SessionType>))]
+   [UsePaging(typeof(NonNullType<SessionType>))]
    public IQueryable<Session> GetSessions(
        [ScopedService] ApplicationDbContext context) =>
        context.Sessions;
@@ -142,7 +132,7 @@ Let us start by implementing the last Relay server specification we are still mi
 
 1. Now go back to Banana Cake Pop and refresh the schema.
 
-   ![Query speaker names](images/27-bcp-schema.png)
+   ![Inspect Track Session](images/27-bcp-schema.png)
 
 1. Fetch a specific track and get the first session of this track:
 
@@ -161,7 +151,7 @@ Let us start by implementing the last Relay server specification we are still mi
 
    ![Query speaker names](images/28-bcp-GetTrackWithSessions.png)
 
-   > There is one caveat in our implementation. Since, we are using a group DataLoader we are essentially fetching the whole list from the database into memory and only then apply paging to the list. If we really wanted to have native paging like in the top-level fields we would need to rewrite the resolver to expose `IQueryable<Session>`. Since this is just a demo we will move on with the knowledge how to do it right in a real-world application.
+   > There is one caveat in our implementation with the `TrackType`. Since, we are using a DataLoader within our resolver and first fetch the list of IDs we essentially will always fetch everything and and chop in memory. In an actual project this can be split into two actions by moving the `DataLoader` part into a middleware and first page on the id queryable. Also one could implement a special `IPagingHandler` that uses the DataLoader and applies paging logic.
 
 ## Add filter capabilities to the top-level field `sessions`
 
@@ -171,13 +161,9 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 
 ![Filter Middleware Flow](images/20-middleware-flow.png)
 
-1. Add a reference to the NuGet package package `HotChocolate.Types.Filters` version `11.0.0-preview.148`.
+1. Add a reference to the NuGet package package `HotChocolate.Data` version `11.0.0-preview.148`.
 
-   1. `dotnet add GraphQL package HotChocolate.Types.Filters --version 11.0.0-preview.148`
-
-1. Add a reference to the NuGet package package `HotChocolate.Types.Sorting` version `11.0.0-preview.148`.
-
-   1. `dotnet add GraphQL package HotChocolate.Types.Sorting --version 11.0.0-preview.148`
+   1. `dotnet add GraphQL package HotChocolate.Data --version 11.0.0-preview.148`
 
 1. Head over to the `SessionQueries.cs` which is located in the `Sessions` directory.
 
@@ -185,7 +171,7 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 
    ```csharp
    [UseApplicationDbContext]
-   [UsePaging(SchemaType = typeof(NonNullType<SessionType>))]
+   [UsePaging(typeof(NonNullType<SessionType>))]
    [UseFiltering]
    [UseSorting]
    public IQueryable<Session> GetSessions(
@@ -199,29 +185,29 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 
    ```csharp
    using ConferencePlanner.GraphQL.Data;
-   using HotChocolate.Types.Filters;
+   using HotChocolate.Data.Filters;
 
    namespace ConferencePlanner.GraphQL.Types
    {
-       public class SessionFilterInputType : FilterInputType<Session>
-       {
-           protected override void Configure(IFilterInputTypeDescriptor<Session> descriptor)
-           {
+      public class SessionFilterInputType : FilterInputType<Session>
+      {
+         protected override void Configure(IFilterInputTypeDescriptor<Session> descriptor)
+         {
                descriptor.Ignore(t => t.Id);
                descriptor.Ignore(t => t.TrackId);
-           }
-       }
+         }
+      }
    }
    ```
 
    > We essentially have remove the ID fields and leave the rest in.
 
-1. Go back to the `SessionQueries.cs` which is located in the `Sessions` directory and replace the `[UseFiltering]` attribute on top of the `GetSessions` resolver with the following `[UseFiltering(FilterType = typeof(SessionFilterInputType))]`.
+1. Go back to the `SessionQueries.cs` which is located in the `Sessions` directory and replace the `[UseFiltering]` attribute on top of the `GetSessions` resolver with the following `[UseFiltering(typeof(SessionFilterInputType))]`.
 
    ```csharp
    [UseApplicationDbContext]
-   [UsePaging(SchemaType = typeof(NonNullType<SessionType>))]
-   [UseFiltering(FilterType = typeof(SessionFilterInputType))]
+   [UsePaging(typeof(NonNullType<SessionType>))]
+   [UseFiltering(typeof(SessionFilterInputType))]
    [UseSorting]
    public IQueryable<Session> GetSessions(
        [ScopedService] ApplicationDbContext context) =>
@@ -244,7 +230,7 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 
    ```graphql
    query GetSessionsContaining2InTitle {
-     sessions(where: { title_contains: "2" }) {
+     sessions(where: { title: { contains: "2" } }) {
        nodes {
          title
        }
