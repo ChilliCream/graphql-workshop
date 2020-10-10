@@ -22,7 +22,7 @@ The GraphQL type system distinguishes between nullable and non-nullable types. T
      </PropertyGroup>
 
      <ItemGroup>
-       <PackageReference Include="HotChocolate.AspNetCore" Version="10.5.2-rc.0" />
+       <PackageReference Include="HotChocolate.AspNetCore" Version="11.0.0-preview.148-rc.0" />
        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.6" />
        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.6">
          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -447,7 +447,7 @@ In order to expand our GraphQL server model further we've got several more data 
 
     The class should now look like the following:
 
-    ```csharp
+   ```csharp
    using System.Collections.Generic;
    using System.ComponentModel.DataAnnotations;
    using System.Linq;
@@ -473,7 +473,7 @@ In order to expand our GraphQL server model further we've got several more data 
                new List<SessionSpeaker>();
        }
    }
-    ```
+   ```
 
 1. Last but not least, update the `ApplicationDbContext` with the following code:
 
@@ -522,29 +522,29 @@ Now, that we have all of our models in we need to create another migration and u
 
 1. First, validate your project by building it.
 
-    ```console
+   ```console
     dotnet build GraphQL
-    ```
+   ```
 
 1. Next, generate a new migration for the database.
 
-    ```console
+   ```console
     dotnet ef migrations add Refactoring --project GraphQL
-    ```
+   ```
 
 1. Last, update the database with the new migration.
 
-    ```console
+   ```console
     dotnet ef database update --project GraphQL
-    ```
+   ```
 
 After having everything in let us have a look at our schema and see if something changed.
 
 1. Start, your server.
 
-    ```console
+   ```console
     dotnet run --project GraphQL
-    ```
+   ```
 
 1. Open Banana Cake Pop and refresh the schema.
 

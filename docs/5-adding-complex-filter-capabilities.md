@@ -171,13 +171,13 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 
 ![Filter Middleware Flow](images/20-middleware-flow.png)
 
-1. Add a reference to the NuGet package package `HotChocolate.Types.Filters` version `10.5.2`.
+1. Add a reference to the NuGet package package `HotChocolate.Types.Filters` version `11.0.0-preview.148`.
 
-   1. `dotnet add GraphQL package HotChocolate.Types.Filters --version 10.5.2`
+   1. `dotnet add GraphQL package HotChocolate.Types.Filters --version 11.0.0-preview.148`
 
-1. Add a reference to the NuGet package package `HotChocolate.Types.Sorting` version `10.5.2`.
+1. Add a reference to the NuGet package package `HotChocolate.Types.Sorting` version `11.0.0-preview.148`.
 
-   1. `dotnet add GraphQL package HotChocolate.Types.Sorting --version 10.5.2`
+   1. `dotnet add GraphQL package HotChocolate.Types.Sorting --version 11.0.0-preview.148`
 
 1. Head over to the `SessionQueries.cs` which is located in the `Sessions` directory.
 
