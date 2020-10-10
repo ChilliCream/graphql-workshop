@@ -68,6 +68,7 @@ Before we can start with introducing our new subscriptions, we need first to bri
         {
             protected AttendeePayloadBase(Attendee attendee)
             {
+                Attendee = attendee;
             }
 
             protected AttendeePayloadBase(IReadOnlyList<UserError> errors)
