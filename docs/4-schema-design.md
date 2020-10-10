@@ -10,7 +10,7 @@ Relay makes three core assumptions about a GraphQL server:
 
 ## Reorganize mutation types
 
-First, we will restructure our GraphQL server so that it will better scale once we add more types. With Hot Chocolate, we can split types into multiple classes, which is especially use-full with root types. This allows us to organize our queries, mutations, and subscriptions by topic rather than having all of them on one massive class. Moreover, in tests, we can only load the parts of a query, mutation, or subscription type that we need.
+First, we will restructure our GraphQL server so that it will better scale once we add more types. With Hot Chocolate, we can split types into multiple classes, which is especially useful with root types. Splitting our root types allows us to organize our queries, mutations, and subscriptions by topic rather then having all of them in one massive class. Moreover, in tests, we can only load the parts of a query-, mutation-, or subscription-type that we need.
 
 1. Create a new folder `Common`.
 
