@@ -4,7 +4,7 @@ The field middleware is one of the foundational components in Hot Chocolate. Man
 
 All the middleware that are applied to a field are compiled into one delegate that can be executed. Each middleware knows about the next middleware component in its chain and with this can choose to execute logic before it or after it or before and after it. Also, a middleware might skip the next middleware in line by not calling next.
 
-![Connect to GraphQL server with Banana Cake Pop](images/17-middleware-flow.png)
+![Abstract Middleware Flow](images/17-middleware-flow.png)
 
 A field middleware can be defined by binding it to a field with the descriptor API:
 
@@ -14,7 +14,7 @@ context.Use(next => async context =>
     // do some logic
 
     // invoke next middleware component in the chain.
-    next(context);
+    await next(context);
 
 
     // do some more logic
@@ -23,7 +23,7 @@ context.Use(next => async context =>
 
 A resolver pipeline is built by applying middleware in order, meaning that the first declared middleware on the field descriptor is the first one executed in the pipeline. The last middleware in the field resolver pipeline is always the field resolver itself.
 
-![Connect to GraphQL server with Banana Cake Pop](images/18-middleware-flow.png)
+![Middleware Flow with Resolver](images/18-middleware-flow.png)
 
 The field resolver middleware will only execute if no result has been produced so far. So, if any middleware has set the `Result` property on the context, the field resolver will be skipped.
 
@@ -45,7 +45,7 @@ The above middleware first invokes the `next` middleware, and by doing so, gives
 
 After `next` has finished executing, the middleware checks if the result is a `string`, and if so, it applies a `ToUpperInvariant` on that `string` and writes back the updated `string` to `context.Result``.
 
-![Connect to GraphQL server with Banana Cake Pop](images/19-middleware-flow.png)
+![Middleware Flow with ToUpper Middleware and Resolver](images/19-middleware-flow.png)
 
 ## Add UseUpper middleware
 
@@ -148,7 +148,7 @@ To use middleware on plain C# types, we can wrap them in so-called descriptor at
 
 The following diagram shows the complete field request pipeline with filtering and pagination. You can see how, existing middleware are ordered. You have full control over how to order middleware or inject new custom middleware as necessary for your scenarios.
 
-![Middleware Flow](images/20-middleware-flow.png)
+![Filter Middleware Flow](images/20-middleware-flow.png)
 
 The thing here is that if you take for instance UseFiltering and UsePaging, it would make no sense to first apply paging and basically trim the result in order to then apply filters onto that trimmed result set, the other way around however makes perfect sense.
 
