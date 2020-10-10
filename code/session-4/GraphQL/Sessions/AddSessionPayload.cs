@@ -15,6 +15,6 @@ namespace ConferencePlanner.GraphQL.Sessions
         {
         }
 
-        public Session? Session { get; }
+        public Session? Session { get; init; }
     }
 }

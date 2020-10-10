@@ -16,6 +16,6 @@ namespace ConferencePlanner.GraphQL.Speakers
         {
         }
 
-        public Speaker? Speaker { get; }
+        public Speaker? Speaker { get; init; }
     }
 }

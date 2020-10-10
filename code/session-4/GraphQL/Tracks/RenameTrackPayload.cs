@@ -4,18 +4,16 @@ using ConferencePlanner.GraphQL.Data;
 
 namespace ConferencePlanner.GraphQL.Tracks
 {
-    public class TrackPayloadBase : Payload
+    public class RenameTrackPayload : TrackPayloadBase
     {
-        public TrackPayloadBase(Track track)
+        public RenameTrackPayload(Track track) 
+            : base(track)
         {
-            Track = track;
         }
 
-        public TrackPayloadBase(IReadOnlyList<UserError> errors)
+        public RenameTrackPayload(IReadOnlyList<UserError> errors) 
             : base(errors)
         {
         }
-
-        public Track? Track { get; }
     }
 }
