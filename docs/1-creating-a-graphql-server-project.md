@@ -223,7 +223,7 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
 1. Add a class `AddSpeakerInput` to your project with the following code:
 
    ```csharp
-    namespace ConferencePlanner.GraphQL.Speakers
+    namespace ConferencePlanner.GraphQL
     {
         public record AddSpeakerInput(
             string Name,
@@ -258,7 +258,6 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
    ```csharp
     using System.Threading.Tasks;
     using ConferencePlanner.GraphQL.Data;
-    using ConferencePlanner.GraphQL.Speakers;
     using HotChocolate;
 
     namespace ConferencePlanner.GraphQL
@@ -327,7 +326,7 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
     }
    ```
 
-    ![Query speaker names](images/6-bcp-query-get-speakers.png)
+   ![Query speaker names](images/6-bcp-query-get-speakers.png)
 
 ## Summary
 
