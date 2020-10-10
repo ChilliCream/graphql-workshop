@@ -6,7 +6,7 @@ If you want to browse the GraphQL server head over [here](https://hc-conference-
 
 ## Prerequisites
 
-For this workshop we need a couple of prerequisites. First, we need the [.NET Core SDK 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1).
+For this workshop we need a couple of prerequisites. First, we need the [.NET SDK 5.0 RC1](https://dotnet.microsoft.com/download/dotnet/5.0).
 
 Then we need some IDE/Editor in order to do some proper C# coding, you can use [VSCode](https://code.visualstudio.com/) or if you have already on your system Visual Studio or JetBrains Rider.
 
@@ -31,9 +31,10 @@ The GraphQL schema can be found [here](code/schema.graphql).
 | Session | Topics |
 | ----- | ---- |
 | [Session #1](docs/1-creating-a-graphql-server-project.md) | Building a basic GraphQL server API. |
-| [Session #2](docs/2-building-out-the-graphql-server.md) | Controlling nullability and understanding DataLoader.  |  |
-| [Session #3](docs/3-schema-design.md) | GraphQL schema design approaches. |
-| [Session #4](docs/4-understanding-middleware.md) | Understanding middleware. |
-| [Session #5](docs/5-adding-complex-filter-capabilities.md) | Adding complex filter capabilities. |
-| [Session #6](docs/6-subscriptions.md) | Adding real-time functionality with subscriptions. |
-| [Session #7](docs/7-testing-the-graphql-server.md) | Testing the GraphQL server. |
+| [Session #2](docs/2-controlling-nullability.md) | Controlling nullability.  |
+| [Session #2](docs/3-understanding-dataLoader.md) | Understanding GraphQL query execution and DataLoader.  |
+| [Session #3](docs/4-schema-design.md) | GraphQL schema design approaches. |
+| [Session #4](docs/5-understanding-middleware.md) | Understanding middleware. |
+| [Session #5](docs/6-adding-complex-filter-capabilities.md) | Adding complex filter capabilities. |
+| [Session #6](docs/7-subscriptions.md) | Adding real-time functionality with subscriptions. |
+| [Session #7](docs/8-testing-the-graphql-server.md) | Testing the GraphQL server. |

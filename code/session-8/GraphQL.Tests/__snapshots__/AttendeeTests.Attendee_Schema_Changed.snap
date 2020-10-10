@@ -1,0 +1,151 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+}
+
+"The node interface is implemented by entities that have a global unique identifier."
+interface Node {
+  id: ID!
+}
+
+type Attendee implements Node {
+  id: ID!
+  sessions: [Session]
+  firstName: String!
+  lastName: String!
+  userName: String!
+  emailAddress: String
+}
+
+"A connection to a list of items."
+type AttendeeConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [AttendeeEdge!]
+  "A flattened list of the nodes."
+  nodes: [Attendee!]
+}
+
+"An edge in a connection."
+type AttendeeEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Attendee!
+}
+
+type CheckInAttendeePayload {
+  session: Session
+  attendee: Attendee
+  errors: [UserError!]
+}
+
+type Mutation {
+  registerAttendee(input: RegisterAttendeeInput!): RegisterAttendeePayload!
+  checkInAttendee(input: CheckInAttendeeInput!): CheckInAttendeePayload!
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+  "Indicates whether more edges exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more edges exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
+}
+
+type Query {
+  node(id: ID!): Node
+  attendees(first: Int after: String last: Int before: String): AttendeeConnection
+  attendeeById(id: ID!): Attendee!
+  attendeesById(ids: [ID!]!): [Attendee!]!
+}
+
+type RegisterAttendeePayload {
+  attendee: Attendee
+  errors: [UserError!]
+}
+
+type Session implements Node {
+  id: ID!
+  speakers: [Speaker]
+  attendees: [Attendee]
+  track: Track
+  trackId: ID
+  title: String!
+  abstract: String
+  startTime: DateTime
+  endTime: DateTime
+  duration: TimeSpan!
+}
+
+"A connection to a list of items."
+type SessionConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [SessionEdge!]
+  "A flattened list of the nodes."
+  nodes: [Session!]
+}
+
+"An edge in a connection."
+type SessionEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Session!
+}
+
+type Speaker implements Node {
+  id: ID!
+  sessions: [Session]
+  name: String!
+  bio: String
+  webSite: String
+}
+
+type Track implements Node {
+  id: ID!
+  sessions(first: Int after: String last: Int before: String): SessionConnection
+  name: String!
+}
+
+type UserError {
+  message: String!
+  code: String!
+}
+
+input CheckInAttendeeInput {
+  sessionId: ID!
+  attendeeId: ID!
+}
+
+input RegisterAttendeeInput {
+  firstName: String!
+  lastName: String!
+  userName: String!
+  emailAddress: String!
+}
+
+"The `Boolean` scalar type represents `true` or `false`."
+scalar Boolean
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
+"The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `\"4\"`) or integer (such as `4`) input value will be accepted as an ID."
+scalar ID
+
+"The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1."
+scalar Int
+
+"The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text."
+scalar String
+
+"The `TimeSpan` scalar represents an ISO-8601 compliant duration type."
+scalar TimeSpan
