@@ -86,7 +86,6 @@ namespace ConferencePlanner.GraphQL.Types
 
                 return await trackById.LoadAsync(session.TrackId.Value, cancellationToken);
             }
-
         }
     }
 }

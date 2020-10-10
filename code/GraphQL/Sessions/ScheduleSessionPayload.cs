@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Common;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
+using HotChocolate;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Sessions
 {
@@ -31,8 +34,10 @@ namespace ConferencePlanner.GraphQL.Sessions
             return await trackById.LoadAsync(Session.Id, cancellationToken);
         }
 
+        [UseApplicationDbContext]
         public async Task<IEnumerable<Speaker>?> GetSpeakersAsync(
-            SpeakerBySessionIdDataLoader speakerBySessionId,
+            [ScopedService] ApplicationDbContext dbContext,
+            SpeakerByIdDataLoader speakerById,
             CancellationToken cancellationToken)
         {
             if (Session is null)
@@ -40,7 +45,13 @@ namespace ConferencePlanner.GraphQL.Sessions
                 return null;
             }
 
-            return await speakerBySessionId.LoadAsync(Session.Id, cancellationToken);
+            int[] speakerIds = await dbContext.Sessions
+                .Where(s => s.Id == Session.Id)
+                .Include(s => s.SessionSpeakers)
+                .SelectMany(s => s.SessionSpeakers.Select(t => t.SpeakerId))
+                .ToArrayAsync();
+
+            return await speakerById.LoadAsync(speakerIds, cancellationToken);
         }
     }
 }

@@ -58,13 +58,8 @@ namespace ConferencePlanner.GraphQL
 
                     // Now we add some the DataLoader to our system. 
                     .AddDataLoader<AttendeeByIdDataLoader>()
-                    .AddDataLoader<AttendeeBySessionIdDataLoader>()
-                    .AddDataLoader<SessionByAttendeeIdDataLoader>()
                     .AddDataLoader<SessionByIdDataLoader>()
-                    .AddDataLoader<SessionBySpeakerIdDataLoader>()
-                    .AddDataLoader<SessionByTrackIdDataLoader>()
                     .AddDataLoader<SpeakerByIdDataLoader>()
-                    .AddDataLoader<SpeakerBySessionIdDataLoader>()
                     .AddDataLoader<TrackByIdDataLoader>()
 
                     // Since we are using subscriptions, we need to register a pub/sub system.

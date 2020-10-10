@@ -13,31 +13,27 @@ namespace ConferencePlanner.GraphQL.DataLoader
 {
     public class TrackByIdDataLoader : BatchDataLoader<int, Track>
     {
-        private readonly DbContextPool<ApplicationDbContext> _dbContextPool;
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
         public TrackByIdDataLoader(
             IBatchScheduler batchScheduler, 
-            DbContextPool<ApplicationDbContext> dbContextPool)
+            IDbContextFactory<ApplicationDbContext> dbContextFactory)
             : base(batchScheduler)
         {
-            _dbContextPool = dbContextPool ?? throw new ArgumentNullException(nameof(dbContextPool));
+            _dbContextFactory = dbContextFactory ?? 
+                throw new ArgumentNullException(nameof(dbContextFactory));
         }
 
         protected override async Task<IReadOnlyDictionary<int, Track>> LoadBatchAsync(
             IReadOnlyList<int> keys, 
             CancellationToken cancellationToken)
         {
-            ApplicationDbContext dbContext = _dbContextPool.Rent();
-            try
-            {
-                return await dbContext.Tracks
-                    .Where(s => keys.Contains(s.Id))
-                    .ToDictionaryAsync(t => t.Id, cancellationToken);
-            }
-            finally
-            {
-                _dbContextPool.Return(dbContext);
-            }
+            await using ApplicationDbContext dbContext = 
+                _dbContextFactory.CreateDbContext();
+
+            return await dbContext.Tracks
+                .Where(s => keys.Contains(s.Id))
+                .ToDictionaryAsync(t => t.Id, cancellationToken);
         }
     }
 }

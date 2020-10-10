@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Data;
@@ -7,6 +8,7 @@ using HotChocolate;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
 using HotChocolate.Types.Relay;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Types
 {
@@ -22,7 +24,7 @@ namespace ConferencePlanner.GraphQL.Types
                     
             descriptor
                 .Field(t => t.Sessions)
-                .ResolveWith<TrackResolvers>(t => t.GetSessionsAsync(default!, default!, default))
+                .ResolveWith<TrackResolvers>(t => t.GetSessionsAsync(default!, default!, default!, default))
                 .UsePaging<NonNullType<SessionType>>()
                 .Name("sessions");
 
@@ -35,9 +37,17 @@ namespace ConferencePlanner.GraphQL.Types
         {
             public async Task<IEnumerable<Session>> GetSessionsAsync(
                 Track track,
-                SessionByTrackIdDataLoader sessionByTrackId,
-                CancellationToken cancellationToken) =>
-                await sessionByTrackId.LoadAsync(track.Id, cancellationToken);
+                [ScopedService] ApplicationDbContext dbContext,
+                SessionByIdDataLoader sessionById,
+                CancellationToken cancellationToken)
+            {
+                int[] sessionIds = await dbContext.Sessions
+                    .Where(s => s.Id == track.Id)
+                    .Select(s => s.Id)
+                    .ToArrayAsync();
+
+                return await sessionById.LoadAsync(sessionIds, cancellationToken);
+            }
         }
     }
 }
