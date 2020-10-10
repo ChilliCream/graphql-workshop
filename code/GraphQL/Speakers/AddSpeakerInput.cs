@@ -1,5 +1,3 @@
-using ConferencePlanner.GraphQL.Common;
-
 namespace ConferencePlanner.GraphQL.Speakers
 {
     public record AddSpeakerInput(

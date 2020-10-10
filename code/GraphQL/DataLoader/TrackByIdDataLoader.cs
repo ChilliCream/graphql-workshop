@@ -4,10 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using ConferencePlanner.GraphQL.Data;
-using HotChocolate.DataLoader;
 using GreenDonut;
+using HotChocolate.DataLoader;
 
 namespace ConferencePlanner.GraphQL.DataLoader
 {

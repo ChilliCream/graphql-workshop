@@ -1,4 +1,3 @@
-using ConferencePlanner.GraphQL.Common;
 using ConferencePlanner.GraphQL.Data;
 using HotChocolate;
 using HotChocolate.Types.Relay;

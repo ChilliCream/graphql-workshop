@@ -1,6 +1,6 @@
+using System.Reflection;
 using HotChocolate.Types;
 using HotChocolate.Types.Descriptors;
-using System.Reflection;
 
 namespace ConferencePlanner.GraphQL
 {
