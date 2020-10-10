@@ -9,13 +9,13 @@ namespace ConferencePlanner.GraphQL.Sessions
 {
     public class ScheduleSessionPayload : SessionPayloadBase
     {
-        public ScheduleSessionPayload(Session session, string? clientMutationId)
-            : base(session, clientMutationId)
+        public ScheduleSessionPayload(Session session)
+            : base(session)
         {
         }
 
-        public ScheduleSessionPayload(UserError error, string? clientMutationId)
-            : base(new[] { error }, clientMutationId)
+        public ScheduleSessionPayload(UserError error)
+            : base(new[] { error })
         {
         }
 

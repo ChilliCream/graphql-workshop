@@ -1,11 +1,11 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using ConferencePlanner.GraphQL.Common;
 using ConferencePlanner.GraphQL.Data;
 using HotChocolate;
-using HotChocolate.Types;
 using HotChocolate.Subscriptions;
-using Microsoft.EntityFrameworkCore;
+using HotChocolate.Types;
 
 namespace ConferencePlanner.GraphQL.Attendees
 {
@@ -30,7 +30,7 @@ namespace ConferencePlanner.GraphQL.Attendees
 
             await context.SaveChangesAsync(cancellationToken);
 
-            return new RegisterAttendeePayload(attendee, input.ClientMutationId);
+            return new RegisterAttendeePayload(attendee);
         }
 
         [UseApplicationDbContext]
@@ -40,13 +40,13 @@ namespace ConferencePlanner.GraphQL.Attendees
             [Service] ITopicEventSender eventSender,
             CancellationToken cancellationToken)
         {
-            Attendee attendee = await context.Attendees.FirstOrDefaultAsync(t => t.Id == input.AttendeeId, cancellationToken);
+            Attendee attendee = await context.Attendees.FirstOrDefaultAsync(
+                t => t.Id == input.AttendeeId, cancellationToken);
 
             if (attendee is null)
             {
                 return new CheckInAttendeePayload(
-                    new UserError("Attendee not found.", "ATTENDEE_NOT_FOUND"),
-                    input.ClientMutationId);
+                    new UserError("Attendee not found.", "ATTENDEE_NOT_FOUND"));
             }
 
             attendee.SessionsAttendees.Add(
@@ -62,7 +62,7 @@ namespace ConferencePlanner.GraphQL.Attendees
                 input.AttendeeId,
                 cancellationToken);
 
-            return new CheckInAttendeePayload(attendee, input.SessionId, input.ClientMutationId);
+            return new CheckInAttendeePayload(attendee, input.SessionId);
         }
     }
 }

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
 using HotChocolate;
@@ -17,17 +19,16 @@ namespace ConferencePlanner.GraphQL.Types
             descriptor
                 .AsNode()
                 .IdField(t => t.Id)
-                .NodeResolver((ctx, id) =>
-                    ctx.DataLoader<SessionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                .NodeResolver((ctx, id) => ctx.DataLoader<SessionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
                 .Field(t => t.SessionSpeakers)
-                .ResolveWith<SessionResolvers>(t => t.GetSpeakersAsync(default!, default!, default))
+                .ResolveWith<SessionResolvers>(t => t.GetSpeakersAsync(default!, default!, default!, default))
                 .Name("speakers");
 
             descriptor
                 .Field(t => t.SessionAttendees)
-                .ResolveWith<SessionResolvers>(t => t.GetAttendeesAsync(default!, default!, default))
+                .ResolveWith<SessionResolvers>(t => t.GetAttendeesAsync(default!, default!, default!, default))
                 .Name("attendees");
 
             descriptor
@@ -41,17 +42,37 @@ namespace ConferencePlanner.GraphQL.Types
 
         private class SessionResolvers
         {
+            [UseApplicationDbContext]
             public async Task<IEnumerable<Speaker>> GetSpeakersAsync(
                 Session session,
-                SpeakerBySessionIdDataLoader speakerBySessionId,
-                CancellationToken cancellationToken) =>
-                await speakerBySessionId.LoadAsync(session.Id, cancellationToken);
+                [ScopedService] ApplicationDbContext dbContext,
+                SpeakerByIdDataLoader speakerById,
+                CancellationToken cancellationToken)
+            {
+                int[] speakerIds = await dbContext.Sessions
+                    .Where(s => s.Id == session.Id)
+                    .Include(s => s.SessionSpeakers)
+                    .SelectMany(s => s.SessionSpeakers.Select(t => t.SpeakerId))
+                    .ToArrayAsync();
 
+                return await speakerById.LoadAsync(speakerIds, cancellationToken);
+            }
+
+            [UseApplicationDbContext]
             public async Task<IEnumerable<Attendee>> GetAttendeesAsync(
                 Session session,
-                AttendeeBySessionIdDataLoader attendeeBySessionId,
-                CancellationToken cancellationToken) =>
-                await attendeeBySessionId.LoadAsync(session.Id, cancellationToken);
+                [ScopedService] ApplicationDbContext dbContext,
+                AttendeeByIdDataLoader attendeeById,
+                CancellationToken cancellationToken)
+            {
+                int[] attendeeIds = await dbContext.Sessions
+                    .Where(s => s.Id == session.Id)
+                    .Include(session => session.SessionAttendees)
+                    .SelectMany(session => session.SessionAttendees.Select(t => t.AttendeeId))
+                    .ToArrayAsync();
+
+                return await attendeeById.LoadAsync(attendeeIds, cancellationToken);
+            }
 
             public async Task<Track?> GetTrackAsync(
                 Session session,

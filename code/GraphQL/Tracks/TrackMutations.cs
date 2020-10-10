@@ -20,7 +20,7 @@ namespace ConferencePlanner.GraphQL.Tracks
 
             await context.SaveChangesAsync(cancellationToken);
 
-            return new AddTrackPayload(track, input.ClientMutationId);
+            return new AddTrackPayload(track);
         }
 
         [UseApplicationDbContext]
@@ -34,7 +34,7 @@ namespace ConferencePlanner.GraphQL.Tracks
 
             await context.SaveChangesAsync(cancellationToken);
 
-            return new RenameTrackPayload(track, input.ClientMutationId);
+            return new RenameTrackPayload(track);
         }
     }
 }

@@ -11,7 +11,5 @@ namespace ConferencePlanner.GraphQL.Sessions
         [ID(nameof(Track))]
         int TrackId,
         DateTimeOffset StartTime,
-        DateTimeOffset EndTime,
-        string? ClientMutationId)
-        : Input(ClientMutationId);
+        DateTimeOffset EndTime);
 }

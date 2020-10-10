@@ -6,19 +6,13 @@ namespace ConferencePlanner.GraphQL.Sessions
 {
     public class AddSessionPayload : Payload
     {
-        public AddSessionPayload(Session session, string? clientMutationId)
-            : base(clientMutationId)
+        public AddSessionPayload(Session session)
         {
             Session = session;
         }
 
-        public AddSessionPayload(UserError error, string? clientMutationId)
-            : base(new[] { error }, clientMutationId)
-        {
-        }
-
-        public AddSessionPayload(IReadOnlyList<UserError> errors, string? clientMutationId)
-            : base(errors, clientMutationId)
+        public AddSessionPayload(UserError error)
+            : base(new[] { error })
         {
         }
 

@@ -6,13 +6,13 @@ namespace ConferencePlanner.GraphQL.Tracks
 {
     public class RenameTrackPayload : TrackPayloadBase
     {
-        public RenameTrackPayload(Track track, string? clientMutationId) 
-            : base(track, clientMutationId)
+        public RenameTrackPayload(Track track) 
+            : base(track)
         {
         }
 
-        public RenameTrackPayload(IReadOnlyList<UserError> errors, string? clientMutationId) 
-            : base(errors, clientMutationId)
+        public RenameTrackPayload(IReadOnlyList<UserError> errors) 
+            : base(errors)
         {
         }
     }

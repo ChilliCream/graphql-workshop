@@ -25,7 +25,7 @@ namespace ConferencePlanner.GraphQL
             services
                 // First we add the DBContext which we will be using to interact with our
                 // Database.
-                .AddDbContextPool<ApplicationDbContext>(
+                .AddPooledDbContextFactory<ApplicationDbContext>(
                     options => options.UseSqlite("Data Source=conferences.db"))
 
                 // This adds the GraphQL server core service and declares a schema.

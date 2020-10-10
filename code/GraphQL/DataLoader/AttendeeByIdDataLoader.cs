@@ -4,40 +4,35 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using ConferencePlanner.GraphQL.Data;
-using HotChocolate.DataLoader;
 using GreenDonut;
+using HotChocolate.DataLoader;
 
 namespace ConferencePlanner.GraphQL.DataLoader
 {
     public class AttendeeByIdDataLoader : BatchDataLoader<int, Attendee>
     {
-        private readonly DbContextPool<ApplicationDbContext> _dbContextPool;
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
         public AttendeeByIdDataLoader(
-            IBatchScheduler batchScheduler, 
-            DbContextPool<ApplicationDbContext> dbContextPool)
+            IBatchScheduler batchScheduler,
+            IDbContextFactory<ApplicationDbContext> dbContextFactory)
             : base(batchScheduler)
         {
-            _dbContextPool = dbContextPool ?? throw new ArgumentNullException(nameof(dbContextPool));
+            _dbContextFactory = dbContextFactory ?? 
+                throw new ArgumentNullException(nameof(dbContextFactory));
         }
 
         protected override async Task<IReadOnlyDictionary<int, Attendee>> LoadBatchAsync(
-            IReadOnlyList<int> keys, 
+            IReadOnlyList<int> keys,
             CancellationToken cancellationToken)
         {
-            ApplicationDbContext dbContext = _dbContextPool.Rent();
-            try
-            {
-                return await dbContext.Attendees
-                    .Where(s => keys.Contains(s.Id))
-                    .ToDictionaryAsync(t => t.Id, cancellationToken);
-            }
-            finally
-            {
-                _dbContextPool.Return(dbContext);
-            }
+            await using ApplicationDbContext dbContext = 
+                _dbContextFactory.CreateDbContext();
+
+            return await dbContext.Attendees
+                .Where(s => keys.Contains(s.Id))
+                .ToDictionaryAsync(t => t.Id, cancellationToken);
         }
     }
 }

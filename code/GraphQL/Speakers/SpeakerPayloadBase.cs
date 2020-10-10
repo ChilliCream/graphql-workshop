@@ -6,14 +6,13 @@ namespace ConferencePlanner.GraphQL.Speakers
 {
     public class SpeakerPayloadBase : Payload
     {
-        protected SpeakerPayloadBase(Speaker speaker, string? clientMutationId)
-            : base(clientMutationId)
+        protected SpeakerPayloadBase(Speaker speaker)
         {
             Speaker = speaker;
         }
 
-        protected SpeakerPayloadBase(IReadOnlyList<UserError> errors, string? clientMutationId)
-            : base(errors, clientMutationId)
+        protected SpeakerPayloadBase(IReadOnlyList<UserError> errors)
+            : base(errors)
         {
         }
 

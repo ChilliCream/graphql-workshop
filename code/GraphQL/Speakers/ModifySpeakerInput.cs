@@ -10,7 +10,5 @@ namespace ConferencePlanner.GraphQL.Speakers
         int Id,
         Optional<string?> Name,
         Optional<string?> Bio,
-        Optional<string?> WebSite,
-        string? ClientMutationId)
-        : Input(ClientMutationId);
+        Optional<string?> WebSite);
 }

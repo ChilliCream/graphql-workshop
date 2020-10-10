@@ -26,7 +26,7 @@ namespace ConferencePlanner.GraphQL.Speakers
             context.Speakers.Add(speaker);
             await context.SaveChangesAsync(cancellationToken);
 
-            return new AddSpeakerPayload(speaker, input.ClientMutationId);
+            return new AddSpeakerPayload(speaker);
         }
 
         [UseApplicationDbContext]
@@ -38,8 +38,7 @@ namespace ConferencePlanner.GraphQL.Speakers
             if (input.Name.HasValue && input.Name.Value is null)
             {
                 return new ModifySpeakerPayload(
-                    new UserError("Name cannot be null", "NAME_NULL"),
-                    input.ClientMutationId);
+                    new UserError("Name cannot be null", "NAME_NULL"));
             }
 
             Speaker? speaker = await context.Speakers.FindAsync(input.Id);
@@ -47,8 +46,7 @@ namespace ConferencePlanner.GraphQL.Speakers
             if (speaker is null)
             {
                 return new ModifySpeakerPayload(
-                    new UserError("Speaker with id not found.", "SPEAKER_NOT_FOUND"),
-                    input.ClientMutationId);
+                    new UserError("Speaker with id not found.", "SPEAKER_NOT_FOUND"));
             }
 
             if (input.Name.HasValue)
@@ -68,7 +66,7 @@ namespace ConferencePlanner.GraphQL.Speakers
 
             await context.SaveChangesAsync(cancellationToken);
 
-            return new ModifySpeakerPayload(speaker, input.ClientMutationId);
+            return new ModifySpeakerPayload(speaker);
         }
     }
 }

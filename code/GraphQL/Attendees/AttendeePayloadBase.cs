@@ -6,13 +6,12 @@ namespace ConferencePlanner.GraphQL.Attendees
 {
     public class AttendeePayloadBase : Payload
     {
-        protected AttendeePayloadBase(Attendee attendee, string? clientMutationId)
-            : base(clientMutationId)
+        protected AttendeePayloadBase(Attendee attendee)
         {
         }
 
-        protected AttendeePayloadBase(IReadOnlyList<UserError> errors, string? clientMutationId)
-            : base(errors, clientMutationId)
+        protected AttendeePayloadBase(IReadOnlyList<UserError> errors)
+            : base(errors)
         {
         }
 

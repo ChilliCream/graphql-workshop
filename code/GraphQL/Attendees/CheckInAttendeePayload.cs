@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Common;
@@ -11,14 +10,14 @@ namespace ConferencePlanner.GraphQL.Attendees
     {
         private int? _sessionId;
 
-        public CheckInAttendeePayload(Attendee attendee, int sessionId, string? clientMutationId)
-            : base(attendee, clientMutationId)
+        public CheckInAttendeePayload(Attendee attendee, int sessionId)
+            : base(attendee)
         {
             _sessionId = sessionId;
         }
 
-        public CheckInAttendeePayload(UserError error, string? clientMutationId)
-            : base(new[] { error }, clientMutationId)
+        public CheckInAttendeePayload(UserError error)
+            : base(new[] { error })
         {
         }
 

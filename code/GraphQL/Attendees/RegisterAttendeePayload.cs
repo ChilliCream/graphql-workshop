@@ -5,13 +5,13 @@ namespace ConferencePlanner.GraphQL.Attendees
 {
     public class RegisterAttendeePayload : AttendeePayloadBase
     {
-        public RegisterAttendeePayload(Attendee attendee, string? clientMutationId)
-            : base(attendee, clientMutationId)
+        public RegisterAttendeePayload(Attendee attendee)
+            : base(attendee)
         {
         }
 
-        public RegisterAttendeePayload(UserError error, string? clientMutationId)
-            : base(new[] { error }, clientMutationId)
+        public RegisterAttendeePayload(UserError error)
+            : base(new[] { error })
         {
         }
     }

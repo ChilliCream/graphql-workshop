@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using HotChocolate.Types;
 
@@ -12,8 +11,8 @@ namespace ConferencePlanner.GraphQL
             where TDbContext : DbContext
         {
             return descriptor.UseScopedService<TDbContext>(
-                create: s => s.GetRequiredService<DbContextPool<TDbContext>>().Rent(),
-                dispose: (s, c) => s.GetRequiredService<DbContextPool<TDbContext>>().Return(c));
+                create: s => s.GetRequiredService<IDbContextFactory<TDbContext>>().CreateDbContext(),
+                disposeAsync: (s, c) => c.DisposeAsync());
         }
 
         public static IObjectFieldDescriptor UseUpperCase(

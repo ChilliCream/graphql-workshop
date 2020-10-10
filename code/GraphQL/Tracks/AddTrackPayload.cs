@@ -6,13 +6,13 @@ namespace ConferencePlanner.GraphQL.Tracks
 {
     public class AddTrackPayload : TrackPayloadBase
     {
-        public AddTrackPayload(Track track, string? clientMutationId) 
-            : base(track, clientMutationId)
+        public AddTrackPayload(Track track) 
+            : base(track)
         {
         }
 
-        public AddTrackPayload(IReadOnlyList<UserError> errors, string? clientMutationId) 
-            : base(errors, clientMutationId)
+        public AddTrackPayload(IReadOnlyList<UserError> errors) 
+            : base(errors)
         {
         }
     }
