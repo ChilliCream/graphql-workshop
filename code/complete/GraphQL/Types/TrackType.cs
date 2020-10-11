@@ -18,12 +18,12 @@ namespace ConferencePlanner.GraphQL.Types
             descriptor
                 .AsNode()
                 .IdField(t => t.Id)
-                .NodeResolver((ctx, id) =>
-                    ctx.DataLoader<TrackByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                .NodeResolver((ctx, id) => ctx.DataLoader<TrackByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
                     
             descriptor
                 .Field(t => t.Sessions)
                 .ResolveWith<TrackResolvers>(t => t.GetSessionsAsync(default!, default!, default!, default))
+                .UseDbContext<ApplicationDbContext>()
                 .UsePaging<NonNullType<SessionType>>()
                 .Name("sessions");
 
