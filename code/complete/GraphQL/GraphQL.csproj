@@ -18,9 +18,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <!--ProjectReference Include="..\..\..\hc\src\HotChocolate\AspNetCore\src\AspNetCore\HotChocolate.AspNetCore.csproj" /-->
-    <!--ProjectReference Include="..\..\..\hc\src\HotChocolate\Data\src\Data\HotChocolate.Data.csproj" /-->
-  </ItemGroup>
-
 </Project>

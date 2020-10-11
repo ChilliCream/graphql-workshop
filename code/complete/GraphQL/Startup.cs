@@ -7,12 +7,14 @@ using Microsoft.Extensions.Hosting;
 using ConferencePlanner.GraphQL.Attendees;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
+using ConferencePlanner.GraphQL.Imports;
 using ConferencePlanner.GraphQL.Sessions;
 using ConferencePlanner.GraphQL.Speakers;
 using ConferencePlanner.GraphQL.Tracks;
 using ConferencePlanner.GraphQL.Types;
 using HotChocolate;
 using HotChocolate.Data.Sorting;
+
 
 namespace ConferencePlanner.GraphQL
 {
@@ -61,6 +63,9 @@ namespace ConferencePlanner.GraphQL
                     .AddDataLoader<SessionByIdDataLoader>()
                     .AddDataLoader<SpeakerByIdDataLoader>()
                     .AddDataLoader<TrackByIdDataLoader>()
+
+                    // we make sure that the db exists and prefill it with conference data.
+                    .EnsureDatabaseIsCreated()
 
                     // Since we are using subscriptions, we need to register a pub/sub system.
                     // for our demo we are using a in-memory pub/sub system.
