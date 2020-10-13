@@ -625,7 +625,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
    mkdir GraphQL/Types
    ```
 
-1. Create a new class `SessionType` in the directory types with the following code:
+1. Create a new class `SpeakerType` in the directory types with the following code:
 
    ```csharp
     using System.Collections.Generic;
