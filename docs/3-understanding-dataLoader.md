@@ -710,7 +710,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
 
    ```graphql
     query GetSpeakerWithSessions {
-       speaker {
+       speakers {
            name
            sessions {
                title
