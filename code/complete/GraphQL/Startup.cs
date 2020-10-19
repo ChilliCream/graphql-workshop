@@ -93,7 +93,6 @@ namespace ConferencePlanner.GraphQL
             {
                 // We will be using the new routing API to host our GraphQL middleware.
                 endpoints.MapGraphQL();
-                // endpoints.MapBananaCakePop(); // this one is coming later.
 
                 endpoints.MapGet("/", context =>
                 {
