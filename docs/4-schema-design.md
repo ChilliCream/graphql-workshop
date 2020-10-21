@@ -18,11 +18,11 @@ First, we will restructure our GraphQL server so that it will better scale once 
    mkdir GraphQL/Common
    ```
 
-1. Create a field `PayloadBase.cs` in the `Common` directory with the following code:
+2. Create a field `PayloadBase.cs` in the `Common` directory with the following code:
 
    ```csharp
     using System.Collections.Generic;
-
+   
     namespace ConferencePlanner.GraphQL.Common
     {
         public abstract class Payload
@@ -31,13 +31,13 @@ First, we will restructure our GraphQL server so that it will better scale once 
             {
                 Errors = errors;
             }
-
+   
             public IReadOnlyList<UserError>? Errors { get; }
         }
     }
    ```
 
-1. Next, we create a new class `UserError` that is also located in the `Common` directory with the following code:
+3. Next, we create a new class `UserError` that is also located in the `Common` directory with the following code:
 
    ```csharp
    namespace ConferencePlanner.GraphQL.Common
@@ -49,9 +49,9 @@ First, we will restructure our GraphQL server so that it will better scale once 
                Message = message;
                Code = code;
         }
-
+   
         public string Message { get; }
-
+   
         public string Code { get; }
        }
    }
@@ -65,9 +65,9 @@ Now, that we have some base classes for our mutation let us start to reorganize 
    mkdir GraphQL/Speakers
    ```
 
-1. Move the `Mutation.cs` to the `Speakers` folder and rename it to `SpeakerMutations`.
+2. Move the `Mutation.cs` to the `Speakers` folder and rename it to `SpeakerMutations`.
 
-1. Now, annotate the renamed class with the `ExtendObjectTypeAttribute.` The class should look like this now:
+3. Now, annotate the renamed class with the `ExtendObjectTypeAttribute.` The class should look like this now:
 
    ```csharp
     using System.Threading;
@@ -76,7 +76,7 @@ Now, that we have some base classes for our mutation let us start to reorganize 
     using ConferencePlanner.GraphQL.Data;
     using HotChocolate;
     using HotChocolate.Types;
-
+   
     namespace ConferencePlanner.GraphQL.Speakers
     {
         [ExtendObjectType(Name = "Mutation")]
@@ -93,17 +93,17 @@ Now, that we have some base classes for our mutation let us start to reorganize 
                     Bio = input.Bio,
                     WebSite = input.WebSite
                 };
-
+   
                 context.Speakers.Add(speaker);
                 await context.SaveChangesAsync();
-
+   
                 return new AddSpeakerPayload(speaker);
             }
         }
     }
    ```
 
-1. Move the `AddSpeakerInput.cs` into the `Speakers` directory.
+4. Move the `AddSpeakerInput.cs` into the `Speakers` directory.
 
    ```csharp
     namespace ConferencePlanner.GraphQL.Speakers
@@ -115,13 +115,13 @@ Now, that we have some base classes for our mutation let us start to reorganize 
     }
    ```
 
-1. Next, create a new class `SpeakerPayloadBase` with the following code:
+5. Next, create a new class `SpeakerPayloadBase` with the following code:
 
    ```csharp
     using System.Collections.Generic;
     using ConferencePlanner.GraphQL.Common;
     using ConferencePlanner.GraphQL.Data;
-
+   
     namespace ConferencePlanner.GraphQL.Speakers
     {
         public class SpeakerPayloadBase : Payload
@@ -130,24 +130,24 @@ Now, that we have some base classes for our mutation let us start to reorganize 
             {
                 Speaker = speaker;
             }
-
+   
             protected SpeakerPayloadBase(IReadOnlyList<UserError> errors)
                 : base(errors)
             {
             }
-
+   
             public Speaker? Speaker { get; }
         }
     }
    ```
 
-1. Now, move the `AddSpeakerPayload` and base it on the new `SpeakerPayloadBase`. The code should now look like the following:
+6. Now, move the `AddSpeakerPayload` and base it on the new `SpeakerPayloadBase`. The code should now look like the following:
 
    ```csharp
     using System.Collections.Generic;
     using ConferencePlanner.GraphQL.Common;
     using ConferencePlanner.GraphQL.Data;
-
+   
     namespace ConferencePlanner.GraphQL.Speakers
     {
         public class AddSpeakerPayload : SpeakerPayloadBase
@@ -156,7 +156,7 @@ Now, that we have some base classes for our mutation let us start to reorganize 
                 : base(speaker)
             {
             }
-
+   
             public AddSpeakerPayload(IReadOnlyList<UserError> errors)
                 : base(errors)
             {
@@ -165,7 +165,7 @@ Now, that we have some base classes for our mutation let us start to reorganize 
     }
    ```
 
-1. Change the schema builder configurations so that we can merge the various `Mutation` class that we will have into one. For that replace the schema builder configuration with the following code in the `Startup.cs`:
+7. Change the schema builder configurations so that we can merge the various `Mutation` class that we will have into one. For that replace the schema builder configuration with the following code in the `Startup.cs`:
 
    ```csharp
     services
@@ -196,7 +196,7 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
         .AddDataLoader<SessionByIdDataLoader>();
    ```
 
-1. Configure the speaker entity to implement the `Node` interface by adding the node configuration to the `SpeakerType`.
+2. Configure the speaker entity to implement the `Node` interface by adding the node configuration to the `SpeakerType`.
 
    ```csharp
     using System.Collections.Generic;
@@ -209,7 +209,7 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
     using HotChocolate;
     using HotChocolate.Resolvers;
     using HotChocolate.Types;
-
+   
     namespace ConferencePlanner.GraphQL.Types
     {
         public class SpeakerType : ObjectType<Speaker>
@@ -217,9 +217,9 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
             protected override void Configure(IObjectTypeDescriptor<Speaker> descriptor)
             {
                 descriptor
-                    .AsNode()
+                    .ImplementsNode()
                     .IdField(t => t.Id)
-                    .NodeResolver((ctx, id) => ctx.DataLoader<SpeakerByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                    .ResolveNode((ctx, id) => ctx.DataLoader<SpeakerByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
                         
                 descriptor
                     .Field(t => t.SessionSpeakers)
@@ -227,7 +227,7 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
                     .UseDbContext<ApplicationDbContext>()
                     .Name("sessions");
             }
-
+   
             private class SpeakerResolvers
             {
                 public async Task<IEnumerable<Session>> GetSessionsAsync(
@@ -241,7 +241,7 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
                         .Include(s => s.SessionSpeakers)
                         .SelectMany(s => s.SessionSpeakers.Select(t => t.SessionId))
                         .ToArrayAsync();
-
+   
                     return await sessionById.LoadAsync(speakerIds, cancellationToken);
                 }
             }
@@ -249,16 +249,16 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
     }
    ```
 
-   > The following piece of code marked our `SpeakerType` as implementing the `Node` interface. It also defined that the `id` field that the node interface specifies is implement by the `Id` on our entity. The internal `Id` is consequently rewritten to a global object identifier that contains the internal id plus the type name. Last but not least we defined a `NodeResolver` that is able to load the entity by `id`.
+   > The following piece of code marked our `SpeakerType` as implementing the `Node` interface. It also defined that the `id` field that the node interface specifies is implement by the `Id` on our entity. The internal `Id` is consequently rewritten to a global object identifier that contains the internal id plus the type name. Last but not least we defined a `ResolveNode` that is able to load the entity by `id`.
 
    > ```csharp
    > descriptor
-   >     .AsNode()
-   >     .IdField(t => t.Id)
-   >    .NodeResolver((ctx, id) => ctx.DataLoader<SpeakerByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+   >  .ImplementsNode()
+   >  .IdField(t => t.Id)
+   > .ResolveNode((ctx, id) => ctx.DataLoader<SpeakerByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
    > ```
 
-1. Head over to the `Query.cs` and annotate the `id` argument of `GetSpeaker` with the `ID` attribute.
+3. Head over to the `Query.cs` and annotate the `id` argument of `GetSpeaker` with the `ID` attribute.
 
    ```csharp
    public Task<Speaker> GetSpeakerAsync(
@@ -274,13 +274,13 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
    > descriptor.Field(t => t.FooId).ID("FOO");
    > ```
 
-1. Start the GraphQL server.
+4. Start the GraphQL server.
 
    ```console
    dotnet run --project GraphQL
    ```
 
-1. Head to Banana Cake Pop and refresh the schema.
+5. Head to Banana Cake Pop and refresh the schema.
 
    ![Explore Relay Node Field](images/13-bcp-node-field.png)
 
@@ -304,13 +304,13 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
     using ConferencePlanner.GraphQL.Data;
     using GreenDonut;
     using HotChocolate.DataLoader;
-
+   
     namespace ConferencePlanner.GraphQL.DataLoader
     {
         public class AttendeeByIdDataLoader : BatchDataLoader<int, Attendee>
         {
             private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
-
+   
             public AttendeeByIdDataLoader(
                 IBatchScheduler batchScheduler,
                 IDbContextFactory<ApplicationDbContext> dbContextFactory)
@@ -319,14 +319,14 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
                 _dbContextFactory = dbContextFactory ?? 
                     throw new ArgumentNullException(nameof(dbContextFactory));
             }
-
+   
             protected override async Task<IReadOnlyDictionary<int, Attendee>> LoadBatchAsync(
                 IReadOnlyList<int> keys,
                 CancellationToken cancellationToken)
             {
                 await using ApplicationDbContext dbContext = 
                     _dbContextFactory.CreateDbContext();
-
+   
                 return await dbContext.Attendees
                     .Where(s => keys.Contains(s.Id))
                     .ToDictionaryAsync(t => t.Id, cancellationToken);
@@ -347,13 +347,13 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
     using ConferencePlanner.GraphQL.Data;
     using GreenDonut;
     using HotChocolate.DataLoader;
-
+   
     namespace ConferencePlanner.GraphQL.DataLoader
     {
         public class TrackByIdDataLoader : BatchDataLoader<int, Track>
         {
             private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
-
+   
             public TrackByIdDataLoader(
                 IBatchScheduler batchScheduler, 
                 IDbContextFactory<ApplicationDbContext> dbContextFactory)
@@ -362,14 +362,14 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
                 _dbContextFactory = dbContextFactory ?? 
                     throw new ArgumentNullException(nameof(dbContextFactory));
             }
-
+   
             protected override async Task<IReadOnlyDictionary<int, Track>> LoadBatchAsync(
                 IReadOnlyList<int> keys, 
                 CancellationToken cancellationToken)
             {
                 await using ApplicationDbContext dbContext = 
                     _dbContextFactory.CreateDbContext();
-
+   
                 return await dbContext.Tracks
                     .Where(s => keys.Contains(s.Id))
                     .ToDictionaryAsync(t => t.Id, cancellationToken);
@@ -378,9 +378,9 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
     }
    ```
 
-1. Now, add the missing type classes, `AttendeeType`, `TrackType`, and `SessionType` to the `Types` directory.
+2. Now, add the missing type classes, `AttendeeType`, `TrackType`, and `SessionType` to the `Types` directory.
 
-   `AttendeeType`
+   `AttendeeTyp.cs`
 
    ```csharp
     using System.Collections.Generic;
@@ -393,7 +393,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
     using HotChocolate;
     using HotChocolate.Resolvers;
     using HotChocolate.Types;
-
+   
     namespace ConferencePlanner.GraphQL.Types
     {
         public class AttendeeType : ObjectType<Attendee>
@@ -401,16 +401,16 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
             protected override void Configure(IObjectTypeDescriptor<Attendee> descriptor)
             {
                 descriptor
-                    .AsNode()
+                    .ImplementsNode()
                     .IdField(t => t.Id)
-                    .NodeResolver((ctx, id) => ctx.DataLoader<AttendeeByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
-
+                    .ResolveNode((ctx, id) => ctx.DataLoader<AttendeeByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+   
                 descriptor
                     .Field(t => t.SessionsAttendees)
                     .ResolveWith<AttendeeResolvers>(t => t.GetSessionsAsync(default!, default!, default!, default))
                     .Name("sessions");
             }
-
+   
             private class AttendeeResolvers
             {
                 public async Task<IEnumerable<Session>> GetSessionsAsync(
@@ -424,7 +424,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
                         .Include(a => a.SessionsAttendees)
                         .SelectMany(a => a.SessionsAttendees.Select(t => t.SessionId))
                         .ToArrayAsync();
-
+   
                     return await sessionById.LoadAsync(speakerIds, cancellationToken);
                 }
             }
@@ -446,7 +446,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
     using HotChocolate.Resolvers;
     using HotChocolate.Types;
     using HotChocolate.Types.Relay;
-
+   
     namespace ConferencePlanner.GraphQL.Types
     {
         public class SessionType : ObjectType<Session>
@@ -454,29 +454,29 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
             protected override void Configure(IObjectTypeDescriptor<Session> descriptor)
             {
                 descriptor
-                    .AsNode()
+                    .ImplementsNode()
                     .IdField(t => t.Id)
-                    .NodeResolver((ctx, id) => ctx.DataLoader<SessionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
-
+                    .ResolveNode((ctx, id) => ctx.DataLoader<SessionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+   
                 descriptor
                     .Field(t => t.SessionSpeakers)
                     .ResolveWith<SessionResolvers>(t => t.GetSpeakersAsync(default!, default!, default!, default))
                     .Name("speakers");
-
+   
                 descriptor
                     .Field(t => t.SessionAttendees)
                     .ResolveWith<SessionResolvers>(t => t.GetAttendeesAsync(default!, default!, default!, default))
                     .Name("attendees");
-
+   
                 descriptor
                     .Field(t => t.Track)
                     .ResolveWith<SessionResolvers>(t => t.GetTrackAsync(default!, default!, default));
-
+   
                 descriptor
                     .Field(t => t.TrackId)
                     .ID(nameof(Track));
             }
-
+   
             private class SessionResolvers
             {
                 [UseApplicationDbContext]
@@ -491,10 +491,10 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
                         .Include(s => s.SessionSpeakers)
                         .SelectMany(s => s.SessionSpeakers.Select(t => t.SpeakerId))
                         .ToArrayAsync();
-
+   
                     return await speakerById.LoadAsync(speakerIds, cancellationToken);
                 }
-
+   
                 [UseApplicationDbContext]
                 public async Task<IEnumerable<Attendee>> GetAttendeesAsync(
                     Session session,
@@ -507,10 +507,10 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
                         .Include(session => session.SessionAttendees)
                         .SelectMany(session => session.SessionAttendees.Select(t => t.AttendeeId))
                         .ToArrayAsync();
-
+   
                     return await attendeeById.LoadAsync(attendeeIds, cancellationToken);
                 }
-
+   
                 public async Task<Track?> GetTrackAsync(
                     Session session,
                     TrackByIdDataLoader trackById,
@@ -520,7 +520,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
                     {
                         return null;
                     }
-
+   
                     return await trackById.LoadAsync(session.TrackId.Value, cancellationToken);
                 }
             }
@@ -541,7 +541,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
     using HotChocolate;
     using HotChocolate.Resolvers;
     using HotChocolate.Types;
-
+   
     namespace ConferencePlanner.GraphQL.Types
     {
         public class TrackType : ObjectType<Track>
@@ -549,9 +549,9 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
             protected override void Configure(IObjectTypeDescriptor<Track> descriptor)
             {
                 descriptor
-                    .AsNode()
+                    .ImplementsNode()
                     .IdField(t => t.Id)
-                    .NodeResolver((ctx, id) =>
+                    .ResolveNode((ctx, id) =>
                         ctx.DataLoader<TrackByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
                         
                 descriptor
@@ -559,7 +559,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
                     .ResolveWith<TrackResolvers>(t => t.GetSessionsAsync(default!, default!, default!, default))
                     .Name("sessions");
             }
-
+   
             private class TrackResolvers
             {
                 public async Task<IEnumerable<Session>> GetSessionsAsync(
@@ -572,7 +572,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
                         .Where(s => s.Id == track.Id)
                         .Select(s => s.Id)
                         .ToArrayAsync();
-
+   
                     return await sessionById.LoadAsync(sessionIds, cancellationToken);
                 }
             }
@@ -580,9 +580,9 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
     }
    ```
 
-1. Move the `Query.cs` to the `Speakers` directory and rename it to `SpeakerQueries.cs`.
+3. Move the `Query.cs` to the `Speakers` directory and rename it to `SpeakerQueries.cs`.
 
-1. Next, add the `[ExtendObjectType(Name = "Query")]` on top of our `SpeakerQueries` class. The code should no look like the following.
+4. Next, add the `[ExtendObjectType(Name = "Query")]` on top of our `SpeakerQueries` class. The code should no look like the following.
 
    ```csharp
     using System.Collections.Generic;
@@ -594,7 +594,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
     using HotChocolate;
     using HotChocolate.Types;
     using HotChocolate.Types.Relay;
-
+   
     namespace ConferencePlanner.GraphQL.Speakers
     {
         [ExtendObjectType(Name = "Query")]
@@ -603,7 +603,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
             [UseApplicationDbContext]
             public Task<List<Speaker>> GetSpeakers([ScopedService] ApplicationDbContext context) =>
                 context.Speakers.ToListAsync();
-
+   
             public Task<Speaker> GetSpeakerAsync(
                 [ID(nameof(Speaker))]int id,
                 SpeakerByIdDataLoader dataLoader,
@@ -613,33 +613,39 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
     }
    ```
 
-1. Head over to the `Startup.cs` and lets reconfigure the schema builder like we did with the `Mutation` type. The new schema configuration should look like the following:
+5. Head over to the `Startup.cs` and lets reconfigure the schema builder like we did with the `Mutation` type. The new schema configuration should look like the following:
 
    ```csharp
-   services.AddGraphQL(
-       SchemaBuilder.New()
-           .AddQueryType(d => d.Name("Mutation"))
-               .AddType<SpeakerQueries>()
-           .AddMutationType(d => d.Name("Mutation"))
-               .AddType<SpeakerMutations>()
-           .AddType<SpeakerType>()
-           .EnableRelaySupport());
+               services
+                   .AddGraphQLServer()
+                   .AddQueryType(d => d.Name("Query"))
+                       .AddTypeExtension<SpeakerQueries>()
+                   .AddQueryType<SpeakerQueries>()
+                   .AddMutationType(d => d.Name("Mutation"))
+                       .AddTypeExtension<SpeakerMutations>()
+                   .AddType<SpeakerType>()
+                   .EnableRelaySupport()
+                   .AddDataLoader<SpeakerByIdDataLoader>()
+                   .AddDataLoader<SessionByIdDataLoader>();
    ```
 
-1. Register the `AttendeeType`, `TrackType`, and `SessionType` with the schema builder.
+6. Register the `AttendeeType`, `TrackType`, and `SessionType` with the schema builder.
 
    ```csharp
-   services.AddGraphQL(
-       SchemaBuilder.New()
-           .AddQueryType(d => d.Name("Mutation"))
-               .AddType<SpeakerQueries>()
-           .AddMutationType(d => d.Name("Mutation"))
-               .AddType<SpeakerMutations>()
-           .AddType<AttendeeType>()
-           .AddType<SessionType>()
-           .AddType<SpeakerType>()
-           .AddType<TrackType>()
-           .EnableRelaySupport());
+               services
+                   .AddGraphQLServer()
+                   .AddQueryType(d => d.Name("Query"))
+                       .AddTypeExtension<SpeakerQueries>()
+                   .AddQueryType<SpeakerQueries>()
+                   .AddMutationType(d => d.Name("Mutation"))
+                       .AddTypeExtension<SpeakerMutations>()
+                   .AddType<SpeakerType>()
+                   .AddType<AttendeeType>()
+                   .AddType<SessionType>()
+                   .AddType<TrackType>()
+                   .EnableRelaySupport()
+                   .AddDataLoader<SpeakerByIdDataLoader>()
+                   .AddDataLoader<SessionByIdDataLoader>();
    ```
 
 Great, we now have our base schema and are ready to dive into some schema design topics. Although GraphQL has a single root query type, a single root mutation type, and a single root subscription type, Hot Chocolate allows splitting the root types into multiple classes, which will enable us to organize our schema around topics rather than divide it along its root types.
@@ -670,7 +676,7 @@ mkdir GraphQL/Sessions
     using System.Collections.Generic;
     using ConferencePlanner.GraphQL.Common;
     using ConferencePlanner.GraphQL.Data;
-
+   
     namespace ConferencePlanner.GraphQL.Sessions
     {
         public class SessionPayloadBase : Payload
@@ -679,24 +685,24 @@ mkdir GraphQL/Sessions
             {
                 Session = session;
             }
-
+   
             protected SessionPayloadBase(IReadOnlyList<UserError> errors)
                 : base(errors)
             {
             }
-
+   
             public Session? Session { get; }
         }
     }
    ```
 
-1. Next add a new record `AddSessionInput` in the `Sessions` directory with the following code:
+2. Next add a new record `AddSessionInput` in the `Sessions` directory with the following code:
 
    ```csharp
     using System.Collections.Generic;
     using ConferencePlanner.GraphQL.Data;
     using HotChocolate.Types.Relay;
-
+   
     namespace ConferencePlanner.GraphQL.Sessions
     {
         public record AddSessionInput(
@@ -707,12 +713,12 @@ mkdir GraphQL/Sessions
     }
    ```
 
-1. Add a new class `AddSessionPayload` in the `Sessions` directory with the following code:
+3. Add a new class `AddSessionPayload` in the `Sessions` directory with the following code:
 
    ```csharp
     using ConferencePlanner.GraphQL.Common;
     using ConferencePlanner.GraphQL.Data;
-
+   
     namespace ConferencePlanner.GraphQL.Sessions
     {
         public class AddSessionPayload : Payload
@@ -721,18 +727,18 @@ mkdir GraphQL/Sessions
             {
                 Session = session;
             }
-
+   
             public AddSessionPayload(UserError error)
                 : base(new[] { error })
             {
             }
-
+   
             public Session? Session { get; }
         }
     }
    ```
 
-1. Now, add a new class `SessionMutations` into the `Sessions` directory with the following code:
+4. Now, add a new class `SessionMutations` into the `Sessions` directory with the following code:
 
    ```csharp
     using System.Threading;
@@ -741,7 +747,7 @@ mkdir GraphQL/Sessions
     using ConferencePlanner.GraphQL.Data;
     using HotChocolate;
     using HotChocolate.Types;
-
+   
     namespace ConferencePlanner.GraphQL.Sessions
     {
         [ExtendObjectType(Name = "Mutation")]
@@ -758,19 +764,19 @@ mkdir GraphQL/Sessions
                     return new AddSessionPayload(
                         new UserError("The title cannot be empty.", "TITLE_EMPTY"));
                 }
-
+   
                 if (input.SpeakerIds.Count == 0)
                 {
                     return new AddSessionPayload(
                         new UserError("No speaker assigned.", "NO_SPEAKER"));
                 }
-
+   
                 var session = new Session
                 {
                     Title = input.Title,
                     Abstract = input.Abstract,
                 };
-
+   
                 foreach (int speakerId in input.SpeakerIds)
                 {
                     session.SessionSpeakers.Add(new SessionSpeaker
@@ -778,10 +784,10 @@ mkdir GraphQL/Sessions
                         SpeakerId = speakerId
                     });
                 }
-
+   
                 context.Sessions.Add(session);
                 await context.SaveChangesAsync(cancellationToken);
-
+   
                 return new AddSessionPayload(session);
             }
         }
@@ -790,7 +796,7 @@ mkdir GraphQL/Sessions
 
    > Our `addSession` mutation will only let you specify the title, the abstract and the speakers.
 
-1. Head back to the `Startup.cs` and add the `SessionMutations` to the schema builder.
+5. Head back to the `Startup.cs` and add the `SessionMutations` to the schema builder.
 
    ```csharp
    services.AddGraphQL(
@@ -807,13 +813,13 @@ mkdir GraphQL/Sessions
            .EnableRelaySupport());
    ```
 
-1. Next, add the `ScheduleSessionInput` to our `Sessions` directory with the following code:
+6. Next, add the `ScheduleSessionInput` to our `Sessions` directory with the following code:
 
    ```csharp
     using System;
     using ConferencePlanner.GraphQL.Data;
     using HotChocolate.Types.Relay;
-
+   
     namespace ConferencePlanner.GraphQL.Sessions
     {
         public record ScheduleSessionInput(
@@ -826,7 +832,7 @@ mkdir GraphQL/Sessions
     }
    ```
 
-1. Add the `ScheduleSessionPayload` class to with the following code:
+7. Add the `ScheduleSessionPayload` class to with the following code:
 
    ```csharp
     using System.Collections.Generic;
@@ -838,7 +844,7 @@ mkdir GraphQL/Sessions
     using ConferencePlanner.GraphQL.Data;
     using ConferencePlanner.GraphQL.DataLoader;
     using HotChocolate;
-
+   
     namespace ConferencePlanner.GraphQL.Sessions
     {
         public class ScheduleSessionPayload : SessionPayloadBase
@@ -847,12 +853,12 @@ mkdir GraphQL/Sessions
                 : base(session)
             {
             }
-
+   
             public ScheduleSessionPayload(UserError error)
                 : base(new[] { error })
             {
             }
-
+   
             public async Task<Track?> GetTrackAsync(
                 TrackByIdDataLoader trackById,
                 CancellationToken cancellationToken)
@@ -861,10 +867,10 @@ mkdir GraphQL/Sessions
                 {
                     return null;
                 }
-
+   
                 return await trackById.LoadAsync(Session.Id, cancellationToken);
             }
-
+   
             [UseApplicationDbContext]
             public async Task<IEnumerable<Speaker>?> GetSpeakersAsync(
                 [ScopedService] ApplicationDbContext dbContext,
@@ -875,20 +881,20 @@ mkdir GraphQL/Sessions
                 {
                     return null;
                 }
-
+   
                 int[] speakerIds = await dbContext.Sessions
                     .Where(s => s.Id == Session.Id)
                     .Include(s => s.SessionSpeakers)
                     .SelectMany(s => s.SessionSpeakers.Select(t => t.SpeakerId))
                     .ToArrayAsync();
-
+   
                 return await speakerById.LoadAsync(speakerIds, cancellationToken);
             }
         }
     }
    ```
 
-1. Now, insert the following `scheduleSession` mutation to the `SessionMutations` class:
+8. Now, insert the following `scheduleSession` mutation to the `SessionMutations` class:
 
    ```csharp
     [UseApplicationDbContext]
@@ -901,203 +907,203 @@ mkdir GraphQL/Sessions
             return new ScheduleSessionPayload(
                 new UserError("endTime has to be larger than startTime.", "END_TIME_INVALID"));
         }
-
+   
         Session session = await context.Sessions.FindAsync(input.SessionId);
         int? initialTrackId = session.TrackId;
-
+   
         if (session is null)
         {
             return new ScheduleSessionPayload(
                 new UserError("Session not found.", "SESSION_NOT_FOUND"));
         }
-
+   
         session.TrackId = input.TrackId;
         session.StartTime = input.StartTime;
         session.EndTime = input.EndTime;
-
+   
         await context.SaveChangesAsync();
-
+   
         return new ScheduleSessionPayload(session);
     }
    ```
 
    While we now are able to add sessions and then schedule them, we still need some mutations to create a track or rename a track.
 
-1. Create a new directory called `Tracks`
+9. Create a new directory called `Tracks`
 
    ```console
    mkdir GraphQL/Tracks
    ```
 
-1. Add a class `TrackPayloadBase` to the `Tracks` directory with the following code:
+10. Add a class `TrackPayloadBase` to the `Tracks` directory with the following code:
 
-   ```csharp
-    using System.Collections.Generic;
-    using ConferencePlanner.GraphQL.Common;
-    using ConferencePlanner.GraphQL.Data;
+    ```csharp
+     using System.Collections.Generic;
+     using ConferencePlanner.GraphQL.Common;
+     using ConferencePlanner.GraphQL.Data;
+    
+     namespace ConferencePlanner.GraphQL.Tracks
+     {
+         public class TrackPayloadBase : Payload
+         {
+             public TrackPayloadBase(Track track)
+             {
+                 Track = track;
+             }
+    
+             public TrackPayloadBase(IReadOnlyList<UserError> errors)
+                 : base(errors)
+             {
+             }
+    
+             public Track? Track { get; }
+         }
+     }
+    ```
 
-    namespace ConferencePlanner.GraphQL.Tracks
-    {
-        public class TrackPayloadBase : Payload
-        {
-            public TrackPayloadBase(Track track)
-            {
-                Track = track;
-            }
+11. Add a class `AddTrackInput` to the `Tracks` directory with the following code:
 
-            public TrackPayloadBase(IReadOnlyList<UserError> errors)
-                : base(errors)
-            {
-            }
+    ```csharp
+     namespace ConferencePlanner.GraphQL.Tracks
+     {
+         public record AddTrackInput(string Name);
+     }
+    ```
 
-            public Track? Track { get; }
-        }
-    }
-   ```
+12. Next, add the `AddTrackPayload` payload class with the following code:
 
-1. Add a class `AddTrackInput` to the `Tracks` directory with the following code:
+    ```csharp
+     using System.Collections.Generic;
+     using ConferencePlanner.GraphQL.Common;
+     using ConferencePlanner.GraphQL.Data;
+    
+     namespace ConferencePlanner.GraphQL.Tracks
+     {
+         public class AddTrackPayload : TrackPayloadBase
+         {
+             public AddTrackPayload(Track track) 
+                 : base(track)
+             {
+             }
+    
+             public AddTrackPayload(IReadOnlyList<UserError> errors) 
+                 : base(errors)
+             {
+             }
+         }
+     }
+    ```
 
-   ```csharp
-    namespace ConferencePlanner.GraphQL.Tracks
-    {
-        public record AddTrackInput(string Name);
-    }
-   ```
+13. Now that you have the payload and input files in create a new class `TracksMutations` with the following code:
 
-1. Next, add the `AddTrackPayload` payload class with the following code:
+    ```csharp
+     using System.Threading;
+     using System.Threading.Tasks;
+     using ConferencePlanner.GraphQL.Data;
+     using HotChocolate;
+     using HotChocolate.Types;
+    
+     namespace ConferencePlanner.GraphQL.Tracks
+     {
+         [ExtendObjectType(Name = "Mutation")]
+         public class TrackMutations
+         {
+             [UseApplicationDbContext]
+             public async Task<AddTrackPayload> AddTrackAsync(
+                 AddTrackInput input,
+                 [ScopedService] ApplicationDbContext context,
+                 CancellationToken cancellationToken)
+             {
+                 var track = new Track { Name = input.Name };
+                 context.Tracks.Add(track);
+    
+                 await context.SaveChangesAsync(cancellationToken);
+    
+                 return new AddTrackPayload(track);
+             }
+         }
+     }
+    ```
 
-   ```csharp
-    using System.Collections.Generic;
-    using ConferencePlanner.GraphQL.Common;
-    using ConferencePlanner.GraphQL.Data;
+14. Head back to the `Startup.cs` and add the `TrackMutations` to the schema builder.
 
-    namespace ConferencePlanner.GraphQL.Tracks
-    {
-        public class AddTrackPayload : TrackPayloadBase
-        {
-            public AddTrackPayload(Track track) 
-                : base(track)
-            {
-            }
+    ```csharp
+     services
+         .AddGraphQLServer()
+         .AddQueryType(d => d.Name("Query"))
+             .AddTypeExtension<SpeakerQueries>()
+         .AddMutationType(d => d.Name("Mutation"))
+             .AddTypeExtension<SessionMutations>()
+             .AddTypeExtension<SpeakerMutations>()
+             .AddTypeExtension<TrackMutations>()
+         .AddType<AttendeeType>()
+         .AddType<SessionType>()
+         .AddType<SpeakerType>()
+         .AddType<TrackType>()
+         .EnableRelaySupport()
+         .AddDataLoader<SpeakerByIdDataLoader>()
+         .AddDataLoader<SessionByIdDataLoader>();
+    ```
 
-            public AddTrackPayload(IReadOnlyList<UserError> errors) 
-                : base(errors)
-            {
-            }
-        }
-    }
-   ```
+15. Next, we need to get our `renameTrack` mutation in. For this create a new class `RenameTrackInput` and place it in the `Tracks` directory.
 
-1. Now that you have the payload and input files in create a new class `TracksMutations` with the following code:
+    ```csharp
+     using ConferencePlanner.GraphQL.Data;
+     using HotChocolate.Types.Relay;
+    
+     namespace ConferencePlanner.GraphQL.Tracks
+     {
+         public record RenameTrackInput([ID(nameof(Track))] int Id, string Name);
+     }
+    ```
 
-   ```csharp
-    using System.Threading;
-    using System.Threading.Tasks;
-    using ConferencePlanner.GraphQL.Data;
-    using HotChocolate;
-    using HotChocolate.Types;
+16. Add a class `RenameTrackPayload` and put it into the `Tracks` directory.
 
-    namespace ConferencePlanner.GraphQL.Tracks
-    {
-        [ExtendObjectType(Name = "Mutation")]
-        public class TrackMutations
-        {
-            [UseApplicationDbContext]
-            public async Task<AddTrackPayload> AddTrackAsync(
-                AddTrackInput input,
-                [ScopedService] ApplicationDbContext context,
-                CancellationToken cancellationToken)
-            {
-                var track = new Track { Name = input.Name };
-                context.Tracks.Add(track);
+    ```csharp
+     using System.Collections.Generic;
+     using ConferencePlanner.GraphQL.Common;
+     using ConferencePlanner.GraphQL.Data;
+    
+     namespace ConferencePlanner.GraphQL.Tracks
+     {
+         public class RenameTrackPayload : TrackPayloadBase
+         {
+             public RenameTrackPayload(Track track) 
+                 : base(track)
+             {
+             }
+    
+             public RenameTrackPayload(IReadOnlyList<UserError> errors) 
+                 : base(errors)
+             {
+             }
+         }
+     }
+    ```
 
-                await context.SaveChangesAsync(cancellationToken);
+17. Last, we will add the `renameTrack` mutation to our `TrackMutations` class.
 
-                return new AddTrackPayload(track);
-            }
-        }
-    }
-   ```
+    ```csharp
+     [UseApplicationDbContext]
+     public async Task<RenameTrackPayload> RenameTrackAsync(
+         RenameTrackInput input,
+         [ScopedService] ApplicationDbContext context,
+         CancellationToken cancellationToken)
+     {
+         Track track = await context.Tracks.FindAsync(input.Id);
+         track.Name = input.Name;
+    
+         await context.SaveChangesAsync(cancellationToken);
+    
+         return new RenameTrackPayload(track);
+     }
+    ```
 
-1. Head back to the `Startup.cs` and add the `TrackMutations` to the schema builder.
+18. Start your GraphQL server and verify that your `Mutations` work by adding some sessions, creating tracks and scheduling the sessions to the tracks.
 
-   ```csharp
-    services
-        .AddGraphQLServer()
-        .AddQueryType(d => d.Name("Query"))
-            .AddTypeExtension<SpeakerQueries>()
-        .AddMutationType(d => d.Name("Mutation"))
-            .AddTypeExtension<SessionMutations>()
-            .AddTypeExtension<SpeakerMutations>()
-            .AddTypeExtension<TrackMutations>()
-        .AddType<AttendeeType>()
-        .AddType<SessionType>()
-        .AddType<SpeakerType>()
-        .AddType<TrackType>()
-        .EnableRelaySupport()
-        .AddDataLoader<SpeakerByIdDataLoader>()
-        .AddDataLoader<SessionByIdDataLoader>();
-   ```
-
-1. Next, we need to get our `renameTrack` mutation in. For this create a new class `RenameTrackInput` and place it in the `Tracks` directory.
-
-   ```csharp
-    using ConferencePlanner.GraphQL.Data;
-    using HotChocolate.Types.Relay;
-
-    namespace ConferencePlanner.GraphQL.Tracks
-    {
-        public record RenameTrackInput([ID(nameof(Track))] int Id, string Name);
-    }
-   ```
-
-1. Add a class `RenameTrackPayload` and put it into the `Tracks` directory.
-
-   ```csharp
-    using System.Collections.Generic;
-    using ConferencePlanner.GraphQL.Common;
-    using ConferencePlanner.GraphQL.Data;
-
-    namespace ConferencePlanner.GraphQL.Tracks
-    {
-        public class RenameTrackPayload : TrackPayloadBase
-        {
-            public RenameTrackPayload(Track track) 
-                : base(track)
-            {
-            }
-
-            public RenameTrackPayload(IReadOnlyList<UserError> errors) 
-                : base(errors)
-            {
-            }
-        }
-    }
-   ```
-
-1. Last, we will add the `renameTrack` mutation to our `TrackMutations` class.
-
-   ```csharp
-    [UseApplicationDbContext]
-    public async Task<RenameTrackPayload> RenameTrackAsync(
-        RenameTrackInput input,
-        [ScopedService] ApplicationDbContext context,
-        CancellationToken cancellationToken)
-    {
-        Track track = await context.Tracks.FindAsync(input.Id);
-        track.Name = input.Name;
-
-        await context.SaveChangesAsync(cancellationToken);
-
-        return new RenameTrackPayload(track);
-    }
-   ```
-
-1. Start your GraphQL server and verify that your `Mutations` work by adding some sessions, creating tracks and scheduling the sessions to the tracks.
-
-   ```console
-   dotnet run --project GraphQL
-   ```
+    ```console
+    dotnet run --project GraphQL
+    ```
 
 > The DateTime format in GraphQL is specified by RFC3399 and looks like the following: `2020-05-24T15:00:00`. More about the GraphQL `DateTime` scalar can be found here: https://www.graphql-scalars.com/date-time/
 
@@ -1136,7 +1142,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    using HotChocolate;
    using HotChocolate.Types;
    using HotChocolate.Types.Relay;
-
+   
    namespace ConferencePlanner.GraphQL
    {
        [ExtendObjectType(Name = "Query")]
@@ -1146,7 +1152,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
            public Task<List<Speaker>> GetSpeakersAsync(
                [ScopedService] ApplicationDbContext context) =>
                context.Speakers.ToListAsync();
-
+   
            public Task<Speaker> GetSpeakerByIdAsync(
                [ID(nameof(Speaker))]int id,
                SpeakerByIdDataLoader dataLoader,
@@ -1156,7 +1162,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    }
    ```
 
-1. Next, introduce a new `GetSpeakersByIdAsync` method as our plural version.
+2. Next, introduce a new `GetSpeakersByIdAsync` method as our plural version.
 
    > Note that the `DataLoader` can also fetch multiples for us.
 
@@ -1170,7 +1176,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    using HotChocolate;
    using HotChocolate.Types;
    using HotChocolate.Types.Relay;
-
+   
    namespace ConferencePlanner.GraphQL
    {
        [ExtendObjectType(Name = "Query")]
@@ -1180,13 +1186,13 @@ In this section, we will optimize our `Query` type by bringing in more fields to
            public Task<List<Speaker>> GetSpeakersAsync(
                [ScopedService] ApplicationDbContext context) =>
                context.Speakers.ToListAsync();
-
+   
            public Task<Speaker> GetSpeakerByIdAsync(
                [ID(nameof(Speaker))]int id,
                SpeakerByIdDataLoader dataLoader,
                CancellationToken cancellationToken) =>
                dataLoader.LoadAsync(id, cancellationToken);
-
+   
            public async Task<IEnumerable<Speaker>> GetSpeakersByIdAsync(
                [ID(nameof(Speaker))]int[] ids,
                SpeakerByIdDataLoader dataLoader,
@@ -1196,7 +1202,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    }
    ```
 
-1. Add a new class `SessionQueries` to the `Sessions` directory with the following code:
+3. Add a new class `SessionQueries` to the `Sessions` directory with the following code:
 
    ```csharp
    using System.Collections.Generic;
@@ -1208,7 +1214,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    using HotChocolate.Types;
    using HotChocolate.Types.Relay;
    using ConferencePlanner.GraphQL.DataLoader;
-
+   
    namespace ConferencePlanner.GraphQL.Sessions
    {
        [ExtendObjectType(Name = "Query")]
@@ -1219,13 +1225,13 @@ In this section, we will optimize our `Query` type by bringing in more fields to
                [ScopedService] ApplicationDbContext context,
                CancellationToken cancellationToken) =>
                await context.Sessions.ToListAsync(cancellationToken);
-
+   
            public Task<Session> GetSessionByIdAsync(
                [ID(nameof(Session))] int id,
                SessionByIdDataLoader sessionById,
                CancellationToken cancellationToken) =>
                sessionById.LoadAsync(id, cancellationToken);
-
+   
            public async Task<IEnumerable<Session>> GetSessionsByIdAsync(
                [ID(nameof(Session))] int[] ids,
                SessionByIdDataLoader sessionById,
@@ -1235,7 +1241,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    }
    ```
 
-1. Register the `SessionQueries` with the schema builder which is located in the `Startup.cs`
+4. Register the `SessionQueries` with the schema builder which is located in the `Startup.cs`
 
    ```csharp
    services.AddGraphQL(
@@ -1254,7 +1260,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
            .EnableRelaySupport());
    ```
 
-1. Next add a class `TrackQueries` to the `Tracks` directory with the following code:
+5. Next add a class `TrackQueries` to the `Tracks` directory with the following code:
 
    ```csharp
    using System.Collections.Generic;
@@ -1267,7 +1273,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    using HotChocolate;
    using HotChocolate.Types;
    using HotChocolate.Types.Relay;
-
+   
    namespace ConferencePlanner.GraphQL.Tracks
    {
        [ExtendObjectType(Name = "Query")]
@@ -1278,27 +1284,27 @@ In this section, we will optimize our `Query` type by bringing in more fields to
                [ScopedService] ApplicationDbContext context,
                CancellationToken cancellationToken) =>
                await context.Tracks.ToListAsync(cancellationToken);
-
+   
            [UseApplicationDbContext]
            public Task<Track> GetTrackByNameAsync(
                string name,
                [ScopedService] ApplicationDbContext context,
                CancellationToken cancellationToken) =>
                context.Tracks.FirstAsync(t => t.Name == name);
-
+   
            [UseApplicationDbContext]
            public async Task<IEnumerable<Track>> GetTrackByNamesAsync(
                string[] names,
                [ScopedService] ApplicationDbContext context,
                CancellationToken cancellationToken) =>
                await context.Tracks.Where(t => names.Contains(t.Name)).ToListAsync();
-
+   
            public Task<Track> GetTrackByIdAsync(
                [ID(nameof(Track))] int id,
                TrackByIdDataLoader trackById,
                CancellationToken cancellationToken) =>
                trackById.LoadAsync(id, cancellationToken);
-
+   
            public async Task<IEnumerable<Track>> GetSessionsByIdAsync(
                [ID(nameof(Track))] int[] ids,
                TrackByIdDataLoader trackById,
@@ -1308,7 +1314,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    }
    ```
 
-1. Again, head over to the `Startup.cs` and register the `SessionQueries` with the schema builder.
+6. Again, head over to the `Startup.cs` and register the `SessionQueries` with the schema builder.
 
    ```csharp
    services.AddGraphQL(
@@ -1328,7 +1334,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
            .EnableRelaySupport());
    ```
 
-1. Start you GraphQL server and verify with Banana Cake Pop that you can use the new queries.
+7. Start you GraphQL server and verify with Banana Cake Pop that you can use the new queries.
 
    ```console
    dotnet run --project GraphQL
