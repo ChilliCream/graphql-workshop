@@ -18,7 +18,7 @@ First, we will restructure our GraphQL server so that it will better scale once 
    mkdir GraphQL/Common
    ```
 
-2. Create a class `PayloadBase.cs` in the `Common` directory with the following code:
+1. Create a class `PayloadBase.cs` in the `Common` directory with the following code:
 
    ```csharp
     using System.Collections.Generic;
@@ -37,7 +37,7 @@ First, we will restructure our GraphQL server so that it will better scale once 
     }
    ```
 
-3. Next, we create a new class `UserError` that is also located in the `Common` directory with the following code:
+1. Next, we create a new class `UserError` that is also located in the `Common` directory with the following code:
 
    ```csharp
    namespace ConferencePlanner.GraphQL.Common
@@ -65,9 +65,9 @@ Now, that we have some base classes for our mutation let us start to reorganize 
    mkdir GraphQL/Speakers
    ```
 
-2. Move the `Mutation.cs` to the `Speakers` folder and rename it to `SpeakerMutations`.
+1. Move the `Mutation.cs` to the `Speakers` folder and rename it to `SpeakerMutations`.
 
-3. Now, annotate the renamed class with the `ExtendObjectTypeAttribute.` The class should look like this now:
+1. Now, annotate the renamed class with the `ExtendObjectTypeAttribute.` The class should look like this now:
 
    ```csharp
     using System.Threading;
@@ -103,7 +103,7 @@ Now, that we have some base classes for our mutation let us start to reorganize 
     }
    ```
 
-4. Move the `AddSpeakerInput.cs` into the `Speakers` directory.
+1. Move the `AddSpeakerInput.cs` into the `Speakers` directory.
 
    ```csharp
     namespace ConferencePlanner.GraphQL.Speakers
@@ -115,7 +115,7 @@ Now, that we have some base classes for our mutation let us start to reorganize 
     }
    ```
 
-5. Next, create a new class `SpeakerPayloadBase` with the following code:
+1. Next, create a new class `SpeakerPayloadBase` with the following code:
 
    ```csharp
     using System.Collections.Generic;
@@ -141,7 +141,7 @@ Now, that we have some base classes for our mutation let us start to reorganize 
     }
    ```
 
-6. Now, move the `AddSpeakerPayload` and base it on the new `SpeakerPayloadBase`. The code should now look like the following:
+1. Now, move the `AddSpeakerPayload` and base it on the new `SpeakerPayloadBase`. The code should now look like the following:
 
    ```csharp
     using System.Collections.Generic;
@@ -165,7 +165,7 @@ Now, that we have some base classes for our mutation let us start to reorganize 
     }
    ```
 
-7. Change the schema builder configurations so that we can merge the various `Mutation` class that we will have into one. For that replace the schema builder configuration with the following code in the `Startup.cs`:
+1. Change the schema builder configurations so that we can merge the various `Mutation` class that we will have into one. For that replace the schema builder configuration with the following code in the `Startup.cs`:
 
    ```csharp
     services
@@ -196,7 +196,7 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
         .AddDataLoader<SessionByIdDataLoader>();
    ```
 
-2. Configure the speaker entity to implement the `Node` interface by adding the node configuration to the `SpeakerType`.
+1. Configure the speaker entity to implement the `Node` interface by adding the node configuration to the `SpeakerType`.
 
    ```csharp
     using System.Collections.Generic;
@@ -258,7 +258,7 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
    > .ResolveNode((ctx, id) => ctx.DataLoader<SpeakerByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
    > ```
 
-3. Head over to the `Query.cs` and annotate the `id` argument of `GetSpeaker` with the `ID` attribute.
+1. Head over to the `Query.cs` and annotate the `id` argument of `GetSpeaker` with the `ID` attribute.
 
    ```csharp
    public Task<Speaker> GetSpeakerAsync(
@@ -274,13 +274,13 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
    > descriptor.Field(t => t.FooId).ID("FOO");
    > ```
 
-4. Start the GraphQL server.
+1. Start the GraphQL server.
 
    ```console
    dotnet run --project GraphQL
    ```
 
-5. Head to Banana Cake Pop and refresh the schema.
+1. Head to Banana Cake Pop and refresh the schema.
 
    ![Explore Relay Node Field](images/13-bcp-node-field.png)
 
@@ -378,7 +378,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
     }
    ```
 
-2. Now, add the missing type classes, `AttendeeType`, `TrackType`, and `SessionType` to the `Types` directory.
+1. Now, add the missing type classes, `AttendeeType`, `TrackType`, and `SessionType` to the `Types` directory.
 
    `AttendeeType.cs`
 
@@ -580,9 +580,9 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
     }
    ```
 
-3. Move the `Query.cs` to the `Speakers` directory and rename it to `SpeakerQueries.cs`.
+1. Move the `Query.cs` to the `Speakers` directory and rename it to `SpeakerQueries.cs`.
 
-4. Next, add the `[ExtendObjectType(Name = "Query")]` on top of our `SpeakerQueries` class. The code should no look like the following.
+1. Next, add the `[ExtendObjectType(Name = "Query")]` on top of our `SpeakerQueries` class. The code should no look like the following.
 
    ```csharp
     using System.Collections.Generic;
@@ -613,7 +613,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
     }
    ```
 
-5. Head over to the `Startup.cs` and lets reconfigure the schema builder like we did with the `Mutation` type. The new schema configuration should look like the following:
+1. Head over to the `Startup.cs` and lets reconfigure the schema builder like we did with the `Mutation` type. The new schema configuration should look like the following:
 
    ```csharp
    services
@@ -628,7 +628,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
        .AddDataLoader<SessionByIdDataLoader>();
    ```
 
-6. Register the `AttendeeType`, `TrackType`, and `SessionType` with the schema builder.
+1. Register the `AttendeeType`, `TrackType`, and `SessionType` with the schema builder.
 
    ```csharp
    services
@@ -696,7 +696,7 @@ mkdir GraphQL/Sessions
     }
    ```
 
-2. Next add a new record `AddSessionInput` in the `Sessions` directory with the following code:
+1. Next add a new record `AddSessionInput` in the `Sessions` directory with the following code:
 
    ```csharp
     using System.Collections.Generic;
@@ -713,7 +713,7 @@ mkdir GraphQL/Sessions
     }
    ```
 
-3. Add a new class `AddSessionPayload` in the `Sessions` directory with the following code:
+1. Add a new class `AddSessionPayload` in the `Sessions` directory with the following code:
 
    ```csharp
     using ConferencePlanner.GraphQL.Common;
@@ -738,7 +738,7 @@ mkdir GraphQL/Sessions
     }
    ```
 
-4. Now, add a new class `SessionMutations` into the `Sessions` directory with the following code:
+1. Now, add a new class `SessionMutations` into the `Sessions` directory with the following code:
 
    ```csharp
     using System.Threading;
@@ -796,7 +796,7 @@ mkdir GraphQL/Sessions
 
    > Our `addSession` mutation will only let you specify the title, the abstract and the speakers.
 
-5. Head back to the `Startup.cs` and add the `SessionMutations` to the schema builder.
+1. Head back to the `Startup.cs` and add the `SessionMutations` to the schema builder.
 
    ```csharp
    services
@@ -817,7 +817,7 @@ mkdir GraphQL/Sessions
        .AddDataLoader<TrackByIdDataLoader>();
    ```
 
-6. Next, add the `ScheduleSessionInput` to our `Sessions` directory with the following code:
+1. Next, add the `ScheduleSessionInput` to our `Sessions` directory with the following code:
 
    ```csharp
     using System;
@@ -836,7 +836,7 @@ mkdir GraphQL/Sessions
     }
    ```
 
-7. Add the `ScheduleSessionPayload` class to with the following code:
+1. Add the `ScheduleSessionPayload` class to with the following code:
 
    ```csharp
     using System.Collections.Generic;
@@ -898,7 +898,7 @@ mkdir GraphQL/Sessions
     }
    ```
 
-8. Now, insert the following `scheduleSession` mutation to the `SessionMutations` class:
+1. Now, insert the following `scheduleSession` mutation to the `SessionMutations` class:
 
    ```csharp
     [UseApplicationDbContext]
@@ -933,13 +933,13 @@ mkdir GraphQL/Sessions
 
    While we now are able to add sessions and then schedule them, we still need some mutations to create a track or rename a track.
 
-9. Create a new directory called `Tracks`
+1. Create a new directory called `Tracks`
 
    ```console
    mkdir GraphQL/Tracks
    ```
 
-10. Add a class `TrackPayloadBase` to the `Tracks` directory with the following code:
+1. Add a class `TrackPayloadBase` to the `Tracks` directory with the following code:
 
     ```csharp
      using System.Collections.Generic;
@@ -965,7 +965,7 @@ mkdir GraphQL/Sessions
      }
     ```
 
-11. Add a class `AddTrackInput` to the `Tracks` directory with the following code:
+1. Add a class `AddTrackInput` to the `Tracks` directory with the following code:
 
     ```csharp
      namespace ConferencePlanner.GraphQL.Tracks
@@ -974,7 +974,7 @@ mkdir GraphQL/Sessions
      }
     ```
 
-12. Next, add the `AddTrackPayload` payload class with the following code:
+1. Next, add the `AddTrackPayload` payload class with the following code:
 
     ```csharp
      using System.Collections.Generic;
@@ -998,7 +998,7 @@ mkdir GraphQL/Sessions
      }
     ```
 
-13. Now that you have the payload and input files in create a new class `TracksMutations` with the following code:
+1. Now that you have the payload and input files in create a new class `TracksMutations` with the following code:
 
     ```csharp
      using System.Threading;
@@ -1029,7 +1029,7 @@ mkdir GraphQL/Sessions
      }
     ```
 
-14. Head back to the `Startup.cs` and add the `TrackMutations` to the schema builder.
+1. Head back to the `Startup.cs` and add the `TrackMutations` to the schema builder.
 
     ```csharp
      services
@@ -1051,7 +1051,7 @@ mkdir GraphQL/Sessions
         .AddDataLoader<TrackByIdDataLoader>();
     ```
 
-15. Next, we need to get our `renameTrack` mutation in. For this create a new class `RenameTrackInput` and place it in the `Tracks` directory.
+1. Next, we need to get our `renameTrack` mutation in. For this create a new class `RenameTrackInput` and place it in the `Tracks` directory.
 
     ```csharp
      using ConferencePlanner.GraphQL.Data;
@@ -1063,7 +1063,7 @@ mkdir GraphQL/Sessions
      }
     ```
 
-16. Add a class `RenameTrackPayload` and put it into the `Tracks` directory.
+1. Add a class `RenameTrackPayload` and put it into the `Tracks` directory.
 
     ```csharp
      using System.Collections.Generic;
@@ -1087,7 +1087,7 @@ mkdir GraphQL/Sessions
      }
     ```
 
-17. Last, we will add the `renameTrack` mutation to our `TrackMutations` class.
+1. Last, we will add the `renameTrack` mutation to our `TrackMutations` class.
 
     ```csharp
      [UseApplicationDbContext]
@@ -1105,7 +1105,7 @@ mkdir GraphQL/Sessions
      }
     ```
 
-18. Start your GraphQL server and verify that your `Mutations` work by adding some sessions, creating tracks and scheduling the sessions to the tracks.
+1. Start your GraphQL server and verify that your `Mutations` work by adding some sessions, creating tracks and scheduling the sessions to the tracks.
 
     ```console
     dotnet run --project GraphQL
@@ -1168,7 +1168,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    }
    ```
 
-2. Next, introduce a new `GetSpeakersByIdAsync` method as our plural version.
+1. Next, introduce a new `GetSpeakersByIdAsync` method as our plural version.
 
    > Note that the `DataLoader` can also fetch multiples for us.
 
@@ -1208,7 +1208,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    }
    ```
 
-3. Add a new class `SessionQueries` to the `Sessions` directory with the following code:
+1. Add a new class `SessionQueries` to the `Sessions` directory with the following code:
 
    ```csharp
    using System.Collections.Generic;
@@ -1247,7 +1247,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    }
    ```
 
-4. Register the `SessionQueries` with the schema builder which is located in the `Startup.cs`
+1. Register the `SessionQueries` with the schema builder which is located in the `Startup.cs`
 
    ```csharp
    services
@@ -1269,7 +1269,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
        .AddDataLoader<TrackByIdDataLoader>();
    ```
 
-5. Next add a class `TrackQueries` to the `Tracks` directory with the following code:
+1. Next add a class `TrackQueries` to the `Tracks` directory with the following code:
 
    ```csharp
    using System.Collections.Generic;
@@ -1323,7 +1323,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    }
    ```
 
-6. Again, head over to the `Startup.cs` and register the `SessionQueries` with the schema builder.
+1. Again, head over to the `Startup.cs` and register the `SessionQueries` with the schema builder.
 
    ```csharp
    services
@@ -1346,7 +1346,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
        .AddDataLoader<TrackByIdDataLoader>();
    ```
 
-7. Start you GraphQL server and verify with Banana Cake Pop that you can use the new queries.
+1. Start you GraphQL server and verify with Banana Cake Pop that you can use the new queries.
 
    ```console
    dotnet run --project GraphQL
