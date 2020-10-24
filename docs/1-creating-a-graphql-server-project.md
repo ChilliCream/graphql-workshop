@@ -92,9 +92,9 @@
 3. Run the following commands in the command prompt:
 
    ```console
-    dotnet build GraphQL
-    dotnet ef migrations add Initial --project GraphQL
-    dotnet ef database update --project GraphQL
+    dotnet build GraphQL.csproj
+    dotnet ef migrations add Initial --project GraphQL.csproj
+    dotnet ef database update --project GraphQL.csproj
    ```
 
 Commands Explained
