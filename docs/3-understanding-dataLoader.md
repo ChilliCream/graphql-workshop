@@ -696,7 +696,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
        name: String!
        sessions: [Sessions!]!
        bio: String
-       bio: String
+       webSite: String
    }
    ```
 
