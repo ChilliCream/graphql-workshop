@@ -165,7 +165,7 @@ Now, that we have some base classes for our mutation let us start to reorganize 
     }
    ```
 
-1. Change the schema builder configurations so that we can merge the various `Mutation` class that we will have into one. For that replace the schema builder configuration with the following code in the `Startup.cs`:
+1. Change the schema configurations so that we can merge the various `Mutation` class that we will have into one. For that replace the schema builder configuration with the following code in the `Startup.cs`:
 
    ```csharp
     services
@@ -616,30 +616,30 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
 1. Head over to the `Startup.cs` and lets reconfigure the schema builder like we did with the `Mutation` type. The new schema configuration should look like the following:
 
    ```csharp
-   services.AddGraphQL(
-       SchemaBuilder.New()
-           .AddQueryType(d => d.Name("Mutation"))
-               .AddType<SpeakerQueries>()
-           .AddMutationType(d => d.Name("Mutation"))
-               .AddType<SpeakerMutations>()
-           .AddType<SpeakerType>()
-           .EnableRelaySupport());
+    services
+        .AddGraphQLServer()
+        .AddQueryType(d => d.Name("Query"))
+            .AddType<SpeakerQueries>()
+        .AddMutationType(d => d.Name("Mutation"))
+            .AddType<SpeakerMutations>()
+        .AddType<SpeakerType>()
+        .EnableRelaySupport();
    ```
 
 1. Register the `AttendeeType`, `TrackType`, and `SessionType` with the schema builder.
 
    ```csharp
-   services.AddGraphQL(
-       SchemaBuilder.New()
-           .AddQueryType(d => d.Name("Mutation"))
-               .AddType<SpeakerQueries>()
-           .AddMutationType(d => d.Name("Mutation"))
-               .AddType<SpeakerMutations>()
-           .AddType<AttendeeType>()
-           .AddType<SessionType>()
-           .AddType<SpeakerType>()
-           .AddType<TrackType>()
-           .EnableRelaySupport());
+    services
+        .AddGraphQLServer()
+        .AddQueryType(d => d.Name("Query"))
+            .AddType<SpeakerQueries>()
+        .AddMutationType(d => d.Name("Mutation"))
+            .AddType<SpeakerMutations>()
+        .AddType<AttendeeType>()
+        .AddType<SessionType>()
+        .AddType<SpeakerType>()
+        .AddType<TrackType>()
+        .EnableRelaySupport());
    ```
 
 Great, we now have our base schema and are ready to dive into some schema design topics. Although GraphQL has a single root query type, a single root mutation type, and a single root subscription type, Hot Chocolate allows splitting the root types into multiple classes, which will enable us to organize our schema around topics rather than divide it along its root types.

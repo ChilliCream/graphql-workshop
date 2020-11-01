@@ -165,6 +165,30 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 
    1. `dotnet add GraphQL package HotChocolate.Data --version 11.0.0-preview.148`
 
+1. Add filter and sorting conventions to the schema configuration.
+
+   ```csharp
+   services
+      .AddGraphQLServer()
+      .AddQueryType(d => d.Name("Query"))
+         .AddTypeExtension<SpeakerQueries>()
+         .AddTypeExtension<SessionQueries>()
+         .AddTypeExtension<TrackQueries>()
+      .AddMutationType(d => d.Name("Mutation"))
+         .AddTypeExtension<SessionMutations>()
+         .AddTypeExtension<SpeakerMutations>()
+         .AddTypeExtension<TrackMutations>()
+      .AddType<AttendeeType>()
+      .AddType<SessionType>()
+      .AddType<SpeakerType>()
+      .AddType<TrackType>()
+      .EnableRelaySupport()
+      .AddFiltering()
+      .AddSorting()
+      .AddDataLoader<SpeakerByIdDataLoader>()
+      .AddDataLoader<SessionByIdDataLoader>();
+   ```
+
 1. Head over to the `SessionQueries.cs` which is located in the `Sessions` directory.
 
 1. Replace the `GetSessions` resolver with the following code:
