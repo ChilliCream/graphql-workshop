@@ -8,9 +8,9 @@
 
   <ItemGroup>
     
-    <PackageReference Include="HotChocolate.AspNetCore" Version="11.0.0-dev.16" />
-    <PackageReference Include="HotChocolate.Data" Version="11.0.0-dev.16" />
-    <PackageReference Include="HotChocolate.PersistedQueries.FileSystem" Version="11.0.0-dev.16" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="11.0.0-preview.176" />
+    <PackageReference Include="HotChocolate.Data" Version="11.0.0-preview.176" />
+    <PackageReference Include="HotChocolate.PersistedQueries.FileSystem" Version="11.0.0-preview.176" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.0-rc.1.20451.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0-rc.1.20451.13">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
