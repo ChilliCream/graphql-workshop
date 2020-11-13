@@ -31,8 +31,8 @@
     }
    ```
 
-1. Add a reference to the NuGet package package `Microsoft.EntityFrameworkCore.Sqlite` version `5.0.0-rc.1.20451.13`.
-   1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Sqlite --version 5.0.0-rc.1.20451.13`
+1. Add a reference to the NuGet package package `Microsoft.EntityFrameworkCore.Sqlite` version `5.0.0`.
+   1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Sqlite --version 5.0.0`
 1. Next we'll create a new Entity Framework DbContext. Create a new `ApplicationDbContext` class in the `Data` folder using the following code:
 
    ```csharp
@@ -64,8 +64,8 @@
 
 ## Configuring EF Migrations
 
-1. Add a reference to the NuGet package `Microsoft.EntityFrameworkCore.Tools` version `5.0.0-rc.1.20451.13`.
-   1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Tools --version 5.0.0-rc.1.20451.13`
+1. Add a reference to the NuGet package `Microsoft.EntityFrameworkCore.Tools` version `5.0.0`.
+   1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Tools --version 5.0.0`
 
 ### Option 1 - Visual Studio: Package Manager Console
 
@@ -84,7 +84,7 @@
 
    ```console
    dotnet new tool-manifest
-   dotnet tool install dotnet-ef --version 5.0.0-rc.1.20451.13 --local
+   dotnet tool install dotnet-ef --version 5.0.0 --local
    ```
 
 2. Open a command prompt and navigate to the project directory. (The directory containing the `Startup.cs` file).
