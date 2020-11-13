@@ -2,11 +2,11 @@
 
 # Getting started with GraphQL on ASP.NET Core and Hot Chocolate - Workshop
 
-If you want to browse the GraphQL server head over [here](https://hc-conference-app.azurewebsites.net/playground/).
+If you want to browse the GraphQL server head over [here](https://hc-conference-app.azurewebsites.net/).
 
 ## Prerequisites
 
-For this workshop we need a couple of prerequisites. First, we need the [.NET SDK 5.0 RC1](https://dotnet.microsoft.com/download/dotnet/5.0).
+For this workshop we need a couple of prerequisites. First, we need the [.NET SDK 5.0](https://dotnet.microsoft.com/download/dotnet/5.0).
 
 Then we need some IDE/Editor in order to do some proper C# coding, you can use [VSCode](https://code.visualstudio.com/) or if you have already on your system Visual Studio or JetBrains Rider.
 
