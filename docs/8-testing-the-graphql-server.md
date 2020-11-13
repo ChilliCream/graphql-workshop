@@ -137,3 +137,5 @@ A schema change test will simply create a snapshot of your schema and always fai
    In the above test, we again only take the parts of the schema builder that we are concerned about within our test. Also, we have replaced the services that we do not need at this point.
 
    To execute against a schema we can call `BuildRequestExecutorAsync` on the service collection and get an `IRequestExecutor` to execute queries against our schema. Finally, we snapshot on the result object, and like in the above test, consecutive tests will be validated against our snapshot file.
+
+[**<< Session #7 - Adding real-time functionality with subscriptions**](7-subscriptions.md)

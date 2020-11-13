@@ -94,3 +94,5 @@ The GraphQL type system distinguishes between nullable and non-nullable types. T
 ## Summary
 
 In this session, we have further discovered the GraphQL type system, by understanding how nullability works in GraphQL and how Hot Chocolate infers nullability from .NET types.
+
+[**<< Session #1 - Building a basic GraphQL server API**](1-creating-a-graphql-server-project.md) | [**Session #3 - Understanding GraphQL query execution and DataLoader >>**](3-understanding-dataLoader.md) 
