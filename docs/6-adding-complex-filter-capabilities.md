@@ -270,4 +270,4 @@ With cursor base pagination, we have introduced a strong pagination concept and 
 
 Further, we have looked at filtering where we can apply a simple middleware that infers from our data model a powerful filter structure. Filters are rewritten into native database queries on top of `IQueryable` but can also be applied to in-memory lists. Use filters where they make sense and control them by providing filter types that limit what a user can do to keep performance predictable.
 
-[**<< Session #5 - Understanding middleware.**](5-understanding-middleware.md) | [**Session #7 - Adding real-time functionality with subscriptions. >>**](7-subscriptions.md) 
+[**<< Session #5 - Understanding middleware**](5-understanding-middleware.md) | [**Session #7 - Adding real-time functionality with subscriptions >>**](7-subscriptions.md) 
