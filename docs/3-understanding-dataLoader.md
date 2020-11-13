@@ -692,11 +692,11 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
 
    ```GraphQL
    type Speaker {
+       sessions: [Sessions]
        id: Int!
        name: String!
-       sessions: [Sessions!]!
        bio: String
-       bio: String
+       website: String
    }
    ```
 
