@@ -1,5 +1,5 @@
 
-# Understanding DataLoader
+# Understanding GraphQL query execution and DataLoader
 
 ## Configure field scoped services
 
