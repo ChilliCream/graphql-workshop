@@ -793,18 +793,18 @@ mkdir GraphQL/Sessions
 1. Head back to the `Startup.cs` and add the `SessionMutations` to the schema builder.
 
    ```csharp
-   services.AddGraphQL(
-       SchemaBuilder.New()
-           .AddQueryType(d => d.Name("Mutation"))
-               .AddType<SpeakerQueries>()
-           .AddMutationType(d => d.Name("Mutation"))
-               .AddTypeExtension<SessionMutations>()
-               .AddType<SpeakerMutations>()
-           .AddType<AttendeeType>()
-           .AddType<SessionType>()
-           .AddType<SpeakerType>()
-           .AddType<TrackType>()
-           .EnableRelaySupport());
+    services
+        .AddGraphQLServer()
+        .AddQueryType(d => d.Name("Mutation"))
+            .AddType<SpeakerQueries>()
+        .AddMutationType(d => d.Name("Mutation"))
+            .AddTypeExtension<SessionMutations>()
+            .AddType<SpeakerMutations>()
+        .AddType<AttendeeType>()
+        .AddType<SessionType>()
+        .AddType<SpeakerType>()
+        .AddType<TrackType>()
+        .EnableRelaySupport();
    ```
 
 1. Next, add the `ScheduleSessionInput` to our `Sessions` directory with the following code:
@@ -1238,20 +1238,20 @@ In this section, we will optimize our `Query` type by bringing in more fields to
 1. Register the `SessionQueries` with the schema builder which is located in the `Startup.cs`
 
    ```csharp
-   services.AddGraphQL(
-       SchemaBuilder.New()
-           .AddQueryType(d => d.Name("Mutation"))
-               .AddType<SessionQueries>()
-               .AddType<SpeakerQueries>()
-           .AddMutationType(d => d.Name("Mutation"))
-               .AddType<SessionMutations>()
-               .AddType<SpeakerMutations>()
-               .AddType<TrackMutations>()
-           .AddType<AttendeeType>()
-           .AddType<SessionType>()
-           .AddType<SpeakerType>()
-           .AddType<TrackType>()
-           .EnableRelaySupport());
+   services
+        .AddGraphQLServer()
+        .AddQueryType(d => d.Name("Mutation"))
+            .AddType<SessionQueries>()
+            .AddType<SpeakerQueries>()
+        .AddMutationType(d => d.Name("Mutation"))
+            .AddType<SessionMutations>()
+            .AddType<SpeakerMutations>()
+            .AddType<TrackMutations>()
+        .AddType<AttendeeType>()
+        .AddType<SessionType>()
+        .AddType<SpeakerType>()
+        .AddType<TrackType>()
+        .EnableRelaySupport();
    ```
 
 1. Next add a class `TrackQueries` to the `Tracks` directory with the following code:
@@ -1311,21 +1311,21 @@ In this section, we will optimize our `Query` type by bringing in more fields to
 1. Again, head over to the `Startup.cs` and register the `SessionQueries` with the schema builder.
 
    ```csharp
-   services.AddGraphQL(
-       SchemaBuilder.New()
-           .AddQueryType(d => d.Name("Mutation"))
-               .AddType<SessionQueries>()
-               .AddType<SpeakerQueries>()
-               .AddType<TrackQueries>()
-           .AddMutationType(d => d.Name("Mutation"))
-               .AddType<SessionMutations>()
-               .AddType<SpeakerMutations>()
-               .AddType<TrackMutations>()
-           .AddType<AttendeeType>()
-           .AddType<SessionType>()
-           .AddType<SpeakerType>()
-           .AddType<TrackType>()
-           .EnableRelaySupport());
+   services
+        .AddGraphQLServer()
+        .AddQueryType(d => d.Name("Mutation"))
+            .AddType<SessionQueries>()
+            .AddType<SpeakerQueries>()
+            .AddType<TrackQueries>()
+        .AddMutationType(d => d.Name("Mutation"))
+            .AddType<SessionMutations>()
+            .AddType<SpeakerMutations>()
+            .AddType<TrackMutations>()
+        .AddType<AttendeeType>()
+        .AddType<SessionType>()
+        .AddType<SpeakerType>()
+        .AddType<TrackType>()
+        .EnableRelaySupport();
    ```
 
 1. Start you GraphQL server and verify with Banana Cake Pop that you can use the new queries.
