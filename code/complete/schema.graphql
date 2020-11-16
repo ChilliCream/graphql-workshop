@@ -4,47 +4,43 @@ schema {
   subscription: Subscription
 }
 
-"The node interface is implemented by entities that have a gloabl unique identifier."
+"The node interface is implemented by entities that have a global unique identifier."
 interface Node {
   id: ID!
 }
 
 type AddSessionPayload {
-  clientMutationId: String
-  errors: [UserError!]!
   session: Session
+  errors: [UserError!]
 }
 
 type AddSpeakerPayload {
-  clientMutationId: String
-  errors: [UserError!]!
   speaker: Speaker
+  errors: [UserError!]
 }
 
 type AddTrackPayload {
-  clientMutationId: String
-  errors: [UserError!]!
   track: Track
+  errors: [UserError!]
 }
 
 type Attendee implements Node {
-  emailAddress: String
-  firstName: String!
   id: ID!
+  sessions: [Session]
+  firstName: String!
   lastName: String!
-  sessions: [Session!]!
   userName: String!
+  emailAddress: String
 }
 
 "A connection to a list of items."
 type AttendeeConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
   "A list of edges."
   edges: [AttendeeEdge!]
   "A flattened list of the nodes."
-  nodes: [Attendee]
-  "Information to aid in pagination."
-  pageInfo: PageInfo!
-  totalCount: Int!
+  nodes: [Attendee!]
 }
 
 "An edge in a connection."
@@ -52,110 +48,105 @@ type AttendeeEdge {
   "A cursor for use in pagination."
   cursor: String!
   "The item at the end of the edge."
-  node: Attendee
+  node: Attendee!
 }
 
 type CheckInAttendeePayload {
-  attendee: Session
-  clientMutationId: String
-  errors: [UserError!]!
+  session: Session
+  attendee: Attendee
+  errors: [UserError!]
 }
 
 type ModifySpeakerPayload {
-  clientMutationId: String
-  errors: [UserError!]!
   speaker: Speaker
+  errors: [UserError!]
 }
 
 type Mutation {
-  addSession(input: AddSessionInput!): AddSessionPayload!
-  addSpeaker(input: AddSpeakerInput!): AddSpeakerPayload!
-  addTrack(input: AddTrackInput!): AddTrackPayload!
-  checkInAttendee(input: CheckInAttendeeInput!): CheckInAttendeePayload!
-  modifySpeaker(input: ModifySpeakerInput!): ModifySpeakerPayload!
   registerAttendee(input: RegisterAttendeeInput!): RegisterAttendeePayload!
-  renameTrack(input: RenameTrackInput!): RenameTrackPayload!
+  checkInAttendee(input: CheckInAttendeeInput!): CheckInAttendeePayload!
+  addSession(input: AddSessionInput!): AddSessionPayload!
   scheduleSession(input: ScheduleSessionInput!): ScheduleSessionPayload!
+  addSpeaker(input: AddSpeakerInput!): AddSpeakerPayload!
+  modifySpeaker(input: ModifySpeakerInput!): ModifySpeakerPayload!
+  addTrack(input: AddTrackInput!): AddTrackPayload!
+  renameTrack(input: RenameTrackInput!): RenameTrackPayload!
 }
 
 "Information about pagination in a connection."
 type PageInfo {
-  "When paginating forwards, the cursor to continue."
-  endCursor: String
   "Indicates whether more edges exist following the set defined by the clients arguments."
   hasNextPage: Boolean!
   "Indicates whether more edges exist prior the set defined by the clients arguments."
   hasPreviousPage: Boolean!
   "When paginating backwards, the cursor to continue."
   startCursor: String
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
 }
 
 type Query {
-  attendeeById(id: ID!): Attendee!
-  attendeesAsync(after: String before: String first: PaginationAmount last: PaginationAmount): AttendeeConnection
-  attendeesById(ids: [ID]): [Attendee!]!
   node(id: ID!): Node
+  attendees(first: Int after: String last: Int before: String): AttendeeConnection
+  attendeeById(id: ID!): Attendee!
+  attendeesById(ids: [ID!]!): [Attendee!]!
+  sessions(first: Int after: String last: Int before: String where: SessionFilterInput order: [SessionSortInput]): SessionConnection
   sessionById(id: ID!): Session!
-  sessions(after: String before: String first: PaginationAmount last: PaginationAmount order_by: SessionSort where: SessionFilter): SessionConnection
-  sessionsById(ids: [ID]): [Session!]!
+  sessionsById(ids: [ID!]!): [Session!]!
+  speakers(first: Int after: String last: Int before: String): SpeakerConnection
   speakerById(id: ID!): Speaker!
-  speakers(after: String before: String first: PaginationAmount last: PaginationAmount): SpeakerConnection
-  speakersById(ids: [ID]): [Speaker!]!
-  trackById(id: ID!): Track!
+  speakersById(ids: [ID!]!): [Speaker!]!
+  tracks(first: Int after: String last: Int before: String): TrackConnection
   trackByName(name: String!): Track!
   trackByNames(names: [String!]!): [Track!]!
-  tracks(after: String before: String first: PaginationAmount last: PaginationAmount): TrackConnection
+  trackById(id: ID!): Track!
 }
 
 type RegisterAttendeePayload {
   attendee: Attendee
-  clientMutationId: String
-  errors: [UserError!]!
+  errors: [UserError!]
 }
 
 type RenameTrackPayload {
-  clientMutationId: String
-  errors: [UserError!]!
   track: Track
+  errors: [UserError!]
 }
 
 type ScheduleSessionPayload {
-  clientMutationId: String
-  errors: [UserError!]!
-  session: Session
-  speakers: [Speaker!]
   track: Track
+  speakers: [Speaker!]
+  session: Session
+  errors: [UserError!]
 }
 
 type Session implements Node {
-  abstract: String
-  attendees: [Attendee!]!
-  duration: TimeSpan!
-  endTime: DateTime
   id: ID!
-  speakers: [Speaker!]!
-  startTime: DateTime
-  title: String!
+  speakers: [Speaker]
+  attendees: [Attendee]
   track: Track
   trackId: ID
+  title: String!
+  abstract: String
+  startTime: DateTime
+  endTime: DateTime
+  duration: TimeSpan!
 }
 
 type SessionAttendeeCheckIn {
+  checkInCount: Int!
   attendee: Attendee!
   attendeeId: ID!
-  checkInCount: Int!
   sessionId: ID!
 }
 
 "A connection to a list of items."
 type SessionConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
   "A list of edges."
   edges: [SessionEdge!]
   "A flattened list of the nodes."
-  nodes: [Session]
-  "Information to aid in pagination."
-  pageInfo: PageInfo!
-  totalCount: Int!
+  nodes: [Session!]
 }
 
 "An edge in a connection."
@@ -163,26 +154,25 @@ type SessionEdge {
   "A cursor for use in pagination."
   cursor: String!
   "The item at the end of the edge."
-  node: Session
+  node: Session!
 }
 
 type Speaker implements Node {
-  bio: String
   id: ID!
+  sessions: [Session]
   name: String!
-  sessions: [Session!]!
+  bio: String
   webSite: String
 }
 
 "A connection to a list of items."
 type SpeakerConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
   "A list of edges."
   edges: [SpeakerEdge!]
   "A flattened list of the nodes."
-  nodes: [Speaker]
-  "Information to aid in pagination."
-  pageInfo: PageInfo!
-  totalCount: Int!
+  nodes: [Speaker!]
 }
 
 "An edge in a connection."
@@ -190,29 +180,28 @@ type SpeakerEdge {
   "A cursor for use in pagination."
   cursor: String!
   "The item at the end of the edge."
-  node: Speaker
+  node: Speaker!
 }
 
 type Subscription {
-  onAttendeeCheckedInAsync(sessionId: ID!): SessionAttendeeCheckIn!
+  onAttendeeCheckedIn(sessionId: ID!): SessionAttendeeCheckIn!
   onSessionScheduled: Session!
 }
 
 type Track implements Node {
   id: ID!
+  sessions(first: Int after: String last: Int before: String): SessionConnection
   name: String!
-  sessions: [Session!]!
 }
 
 "A connection to a list of items."
 type TrackConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
   "A list of edges."
   edges: [TrackEdge!]
   "A flattened list of the nodes."
-  nodes: [Track]
-  "Information to aid in pagination."
-  pageInfo: PageInfo!
-  totalCount: Int!
+  nodes: [Track!]
 }
 
 "An edge in a connection."
@@ -220,160 +209,257 @@ type TrackEdge {
   "A cursor for use in pagination."
   cursor: String!
   "The item at the end of the edge."
-  node: Track
+  node: Track!
 }
 
 type UserError {
-  code: String!
   message: String!
+  code: String!
 }
 
 input AddSessionInput {
-  abstract: String
-  clientMutationId: String
-  speakerIds: [ID]
   title: String!
+  abstract: String
+  speakerIds: [ID!]!
 }
 
 input AddSpeakerInput {
-  bio: String
-  clientMutationId: String
   name: String!
+  bio: String
   webSite: String
 }
 
 input AddTrackInput {
-  clientMutationId: String
   name: String!
 }
 
+input AttendeeFilterInput {
+  and: [AttendeeFilterInput!]
+  or: [AttendeeFilterInput!]
+  id: ComparableOperationFilterInputOfInt32FilterInput
+  firstName: StringOperationFilterInput
+  lastName: StringOperationFilterInput
+  userName: StringOperationFilterInput
+  emailAddress: StringOperationFilterInput
+  sessionsAttendees: ListFilterInputOfFilterInputTypeOfSessionAttendeeFilterInput
+}
+
 input CheckInAttendeeInput {
-  attendeeId: ID!
-  clientMutationId: String
   sessionId: ID!
+  attendeeId: ID!
+}
+
+input ComparableOperationFilterInputOfInt32FilterInput {
+  eq: Int
+  neq: Int
+  in: [Int!]
+  nin: [Int!]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input ComparableOperationFilterInputOfNullableOfDateTimeOffsetFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input ComparableOperationFilterInputOfNullableOfInt32FilterInput {
+  eq: Int
+  neq: Int
+  in: [Int]
+  nin: [Int]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input ComparableOperationFilterInputOfTimeSpanFilterInput {
+  eq: TimeSpan
+  neq: TimeSpan
+  in: [TimeSpan!]
+  nin: [TimeSpan!]
+  gt: TimeSpan
+  ngt: TimeSpan
+  gte: TimeSpan
+  ngte: TimeSpan
+  lt: TimeSpan
+  nlt: TimeSpan
+  lte: TimeSpan
+  nlte: TimeSpan
+}
+
+input ListFilterInputOfFilterInputTypeOfSessionAttendeeFilterInput {
+  all: SessionAttendeeFilterInput
+  none: SessionAttendeeFilterInput
+  some: SessionAttendeeFilterInput
+  any: Boolean
+}
+
+input ListFilterInputOfFilterInputTypeOfSessionFilterInput {
+  all: SessionFilterInput
+  none: SessionFilterInput
+  some: SessionFilterInput
+  any: Boolean
+}
+
+input ListFilterInputOfFilterInputTypeOfSessionSpeakerFilterInput {
+  all: SessionSpeakerFilterInput
+  none: SessionSpeakerFilterInput
+  some: SessionSpeakerFilterInput
+  any: Boolean
 }
 
 input ModifySpeakerInput {
-  bio: String
-  clientMutationId: String
   id: ID!
   name: String
+  bio: String
   webSite: String
 }
 
 input RegisterAttendeeInput {
-  clientMutationId: String
-  emailAddress: String!
   firstName: String!
   lastName: String!
   userName: String!
+  emailAddress: String!
 }
 
 input RenameTrackInput {
-  clientMutationId: String
   id: ID!
   name: String!
 }
 
 input ScheduleSessionInput {
-  clientMutationId: String
-  endTime: DateTime!
   sessionId: ID!
-  startTime: DateTime!
   trackId: ID!
+  startTime: DateTime!
+  endTime: DateTime!
 }
 
-input SessionFilter {
-  abstract: String
-  abstract_contains: String
-  abstract_ends_with: String
-  abstract_in: [String]
-  abstract_not: String
-  abstract_not_contains: String
-  abstract_not_ends_with: String
-  abstract_not_in: [String]
-  abstract_not_starts_with: String
-  abstract_starts_with: String
-  AND: [SessionFilter!]
-  duration: TimeSpan
-  duration_gt: TimeSpan
-  duration_gte: TimeSpan
-  duration_in: [TimeSpan!]
-  duration_lt: TimeSpan
-  duration_lte: TimeSpan
-  duration_not: TimeSpan
-  duration_not_gt: TimeSpan
-  duration_not_gte: TimeSpan
-  duration_not_in: [TimeSpan!]
-  duration_not_lt: TimeSpan
-  duration_not_lte: TimeSpan
-  endTime: DateTime
-  endTime_gt: DateTime
-  endTime_gte: DateTime
-  endTime_in: [DateTime]
-  endTime_lt: DateTime
-  endTime_lte: DateTime
-  endTime_not: DateTime
-  endTime_not_gt: DateTime
-  endTime_not_gte: DateTime
-  endTime_not_in: [DateTime]
-  endTime_not_lt: DateTime
-  endTime_not_lte: DateTime
-  OR: [SessionFilter!]
-  startTime: DateTime
-  startTime_gt: DateTime
-  startTime_gte: DateTime
-  startTime_in: [DateTime]
-  startTime_lt: DateTime
-  startTime_lte: DateTime
-  startTime_not: DateTime
-  startTime_not_gt: DateTime
-  startTime_not_gte: DateTime
-  startTime_not_in: [DateTime]
-  startTime_not_lt: DateTime
-  startTime_not_lte: DateTime
-  title: String
-  title_contains: String
-  title_ends_with: String
-  title_in: [String!]
-  title_not: String
-  title_not_contains: String
-  title_not_ends_with: String
-  title_not_in: [String!]
-  title_not_starts_with: String
-  title_starts_with: String
+input SessionAttendeeFilterInput {
+  and: [SessionAttendeeFilterInput!]
+  or: [SessionAttendeeFilterInput!]
+  sessionId: ComparableOperationFilterInputOfInt32FilterInput
+  session: SessionFilterInput
+  attendeeId: ComparableOperationFilterInputOfInt32FilterInput
+  attendee: AttendeeFilterInput
 }
 
-input SessionSort {
-  abstract: SortOperationKind
-  duration: SortOperationKind
-  endTime: SortOperationKind
-  id: SortOperationKind
-  startTime: SortOperationKind
-  title: SortOperationKind
-  trackId: SortOperationKind
+input SessionFilterInput {
+  and: [SessionFilterInput!]
+  or: [SessionFilterInput!]
+  id: ComparableOperationFilterInputOfInt32FilterInput
+  title: StringOperationFilterInput
+  abstract: StringOperationFilterInput
+  startTime: ComparableOperationFilterInputOfNullableOfDateTimeOffsetFilterInput
+  endTime: ComparableOperationFilterInputOfNullableOfDateTimeOffsetFilterInput
+  duration: ComparableOperationFilterInputOfTimeSpanFilterInput
+  trackId: ComparableOperationFilterInputOfNullableOfInt32FilterInput
+  sessionSpeakers: ListFilterInputOfFilterInputTypeOfSessionSpeakerFilterInput
+  sessionAttendees: ListFilterInputOfFilterInputTypeOfSessionAttendeeFilterInput
+  track: TrackFilterInput
 }
 
-enum SortOperationKind {
+input SessionSortInput {
+  id: DefaultSortEnumType
+  title: DefaultSortEnumType
+  abstract: DefaultSortEnumType
+  startTime: DefaultSortEnumType
+  endTime: DefaultSortEnumType
+  duration: DefaultSortEnumType
+  trackId: DefaultSortEnumType
+  track: TrackSortInput
+}
+
+input SessionSpeakerFilterInput {
+  and: [SessionSpeakerFilterInput!]
+  or: [SessionSpeakerFilterInput!]
+  sessionId: ComparableOperationFilterInputOfInt32FilterInput
+  session: SessionFilterInput
+  speakerId: ComparableOperationFilterInputOfInt32FilterInput
+  speaker: SpeakerFilterInput
+}
+
+input SpeakerFilterInput {
+  and: [SpeakerFilterInput!]
+  or: [SpeakerFilterInput!]
+  id: ComparableOperationFilterInputOfInt32FilterInput
+  name: StringOperationFilterInput
+  bio: StringOperationFilterInput
+  webSite: StringOperationFilterInput
+  sessionSpeakers: ListFilterInputOfFilterInputTypeOfSessionSpeakerFilterInput
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input TrackFilterInput {
+  and: [TrackFilterInput!]
+  or: [TrackFilterInput!]
+  id: ComparableOperationFilterInputOfInt32FilterInput
+  name: StringOperationFilterInput
+  sessions: ListFilterInputOfFilterInputTypeOfSessionFilterInput
+}
+
+input TrackSortInput {
+  id: DefaultSortEnumType
+  name: DefaultSortEnumType
+}
+
+enum DefaultSortEnumType {
   ASC
   DESC
 }
 
-"The `Boolean` scalar type represents `true` or `false`."
-scalar Boolean
+"The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`."
+directive @defer("If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to." label: String "Deferred when true." if: Boolean) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"The @deprecated directive is used within the type system definition language to indicate deprecated portions of a GraphQL service’s schema,such as deprecated fields on a type or deprecated enum values."
+directive @deprecated("Deprecations include a reason for why it is deprecated, which is formatted using Markdown syntax (as specified by CommonMark)." reason: String = "No longer supported") on FIELD_DEFINITION | ENUM_VALUE
+
+"Directs the executor to include this field or fragment only when the `if` argument is true."
+directive @include("Included when true." if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"Directs the executor to skip this field or fragment when the `if` argument is true."
+directive @skip("Skipped when true." if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`."
+directive @stream("If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String "The initial elements that shall be send down to the consumer." initialCount: Int! "Streamed when true." if: Boolean!) on FIELD
 
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."
 scalar DateTime
 
-"The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `\"4\"`) or integer (such as `4`) input value will be accepted as an ID."
-scalar ID
-
-"The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1."
-scalar Int
-
-scalar PaginationAmount
-
-"The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text."
-scalar String
-
+"The `TimeSpan` scalar represents an ISO-8601 compliant duration type."
 scalar TimeSpan
