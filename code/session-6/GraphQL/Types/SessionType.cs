@@ -17,9 +17,9 @@ namespace ConferencePlanner.GraphQL.Types
         protected override void Configure(IObjectTypeDescriptor<Session> descriptor)
         {
             descriptor
-                .AsNode()
+                .ImplementsNode()
                 .IdField(t => t.Id)
-                .NodeResolver((ctx, id) => ctx.DataLoader<SessionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                .ResolveNode((ctx, id) => ctx.DataLoader<SessionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
             descriptor
                 .Field(t => t.SessionSpeakers)

@@ -217,9 +217,9 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
             protected override void Configure(IObjectTypeDescriptor<Speaker> descriptor)
             {
                 descriptor
-                    .AsNode()
+                    .ImplementsNode()
                     .IdField(t => t.Id)
-                    .NodeResolver((ctx, id) => ctx.DataLoader<SpeakerByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                    .ResolveNode((ctx, id) => ctx.DataLoader<SpeakerByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
                         
                 descriptor
                     .Field(t => t.SessionSpeakers)
@@ -249,13 +249,13 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
     }
    ```
 
-   > The following piece of code marked our `SpeakerType` as implementing the `Node` interface. It also defined that the `id` field that the node interface specifies is implement by the `Id` on our entity. The internal `Id` is consequently rewritten to a global object identifier that contains the internal id plus the type name. Last but not least we defined a `NodeResolver` that is able to load the entity by `id`.
+   > The following piece of code marked our `SpeakerType` as implementing the `Node` interface. It also defined that the `id` field that the node interface specifies is implement by the `Id` on our entity. The internal `Id` is consequently rewritten to a global object identifier that contains the internal id plus the type name. Last but not least we defined a `ResolveNode` that is able to load the entity by `id`.
 
    > ```csharp
    > descriptor
-   >     .AsNode()
+   >     .ImplementsNode()
    >     .IdField(t => t.Id)
-   >    .NodeResolver((ctx, id) => ctx.DataLoader<SpeakerByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+   >    .ResolveNode((ctx, id) => ctx.DataLoader<SpeakerByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
    > ```
 
 1. Head over to the `Query.cs` and annotate the `id` argument of `GetSpeaker` with the `ID` attribute.
@@ -401,9 +401,9 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
             protected override void Configure(IObjectTypeDescriptor<Attendee> descriptor)
             {
                 descriptor
-                    .AsNode()
+                    .ImplementsNode()
                     .IdField(t => t.Id)
-                    .NodeResolver((ctx, id) => ctx.DataLoader<AttendeeByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                    .ResolveNode((ctx, id) => ctx.DataLoader<AttendeeByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
                 descriptor
                     .Field(t => t.SessionsAttendees)
@@ -454,9 +454,9 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
             protected override void Configure(IObjectTypeDescriptor<Session> descriptor)
             {
                 descriptor
-                    .AsNode()
+                    .ImplementsNode()
                     .IdField(t => t.Id)
-                    .NodeResolver((ctx, id) => ctx.DataLoader<SessionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+                    .ResolveNode((ctx, id) => ctx.DataLoader<SessionByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
 
                 descriptor
                     .Field(t => t.SessionSpeakers)
@@ -549,9 +549,9 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
             protected override void Configure(IObjectTypeDescriptor<Track> descriptor)
             {
                 descriptor
-                    .AsNode()
+                    .ImplementsNode()
                     .IdField(t => t.Id)
-                    .NodeResolver((ctx, id) =>
+                    .ResolveNode((ctx, id) =>
                         ctx.DataLoader<TrackByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
                         
                 descriptor
