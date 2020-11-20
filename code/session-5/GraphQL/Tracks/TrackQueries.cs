@@ -40,7 +40,7 @@ namespace ConferencePlanner.GraphQL.Tracks
             CancellationToken cancellationToken) =>
             trackById.LoadAsync(id, cancellationToken);
 
-        public async Task<IEnumerable<Track>> GetSessionsByIdAsync(
+        public async Task<IEnumerable<Track>> GetTracksByIdAsync(
             [ID(nameof(Track))] int[] ids,
             TrackByIdDataLoader trackById,
             CancellationToken cancellationToken) =>
