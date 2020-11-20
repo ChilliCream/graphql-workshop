@@ -16,10 +16,10 @@ namespace ConferencePlanner.GraphQL.Types
         protected override void Configure(IObjectTypeDescriptor<Track> descriptor)
         {
             descriptor
-                .AsNode()
+                .ImplementsNode()
                 .IdField(t => t.Id)
-                .NodeResolver((ctx, id) => ctx.DataLoader<TrackByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
-                    
+                .ResolveNode((ctx, id) => ctx.DataLoader<TrackByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
+
             descriptor
                 .Field(t => t.Sessions)
                 .ResolveWith<TrackResolvers>(t => t.GetSessionsAsync(default!, default!, default!, default))
