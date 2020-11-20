@@ -1308,7 +1308,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    }
    ```
 
-1. Again, head over to the `Startup.cs` and register the `SessionQueries` with the schema builder.
+1. Again, head over to the `Startup.cs` and register the `TrackQueries` with the schema builder.
 
    ```csharp
    services
