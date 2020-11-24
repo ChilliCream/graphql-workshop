@@ -96,7 +96,7 @@ namespace ConferencePlanner.GraphQL
 
                 endpoints.MapGet("/", context =>
                 {
-                    // context.Response.Redirect("/playground");
+                    context.Response.Redirect("/graphql");
                     return Task.CompletedTask;
                 });
             });
