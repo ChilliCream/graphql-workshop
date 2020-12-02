@@ -10,7 +10,7 @@ For this workshop we need a couple of prerequisites. First, we need the [.NET SD
 
 Then we need some IDE/Editor in order to do some proper C# coding, you can use [VSCode](https://code.visualstudio.com/) or if you have already on your system Visual Studio or JetBrains Rider.
 
-Last but not least we will use our GraphQL IDE [Banana Cake Pop](https://hotchocolate.io/docs/banana-cakepop).
+Last but not least we will use our GraphQL IDE [Banana Cake Pop](https://chillicream.com/docs/bananacakepop).
 
 > Note: When installing Visual Studio you only need to install the `ASP.NET and web development` workload.
 
