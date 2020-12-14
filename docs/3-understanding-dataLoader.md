@@ -659,13 +659,13 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
                     SessionByIdDataLoader sessionById,
                     CancellationToken cancellationToken)
                 {
-                    int[] speakerIds = await dbContext.Speakers
+                    int[] sessionIds = await dbContext.Speakers
                         .Where(s => s.Id == speaker.Id)
                         .Include(s => s.SessionSpeakers)
                         .SelectMany(s => s.SessionSpeakers.Select(t => t.SessionId))
                         .ToArrayAsync();
 
-                    return await sessionById.LoadAsync(speakerIds, cancellationToken);
+                    return await sessionById.LoadAsync(sessionIds, cancellationToken);
                 }
             }
         }
