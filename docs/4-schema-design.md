@@ -795,7 +795,7 @@ mkdir GraphQL/Sessions
    ```csharp
     services
         .AddGraphQLServer()
-        .AddQueryType(d => d.Name("Mutation"))
+        .AddQueryType(d => d.Name("Query"))
             .AddType<SpeakerQueries>()
         .AddMutationType(d => d.Name("Mutation"))
             .AddTypeExtension<SessionMutations>()
@@ -1240,7 +1240,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    ```csharp
    services
         .AddGraphQLServer()
-        .AddQueryType(d => d.Name("Mutation"))
+        .AddQueryType(d => d.Name("Query"))
             .AddType<SessionQueries>()
             .AddType<SpeakerQueries>()
         .AddMutationType(d => d.Name("Mutation"))
@@ -1313,7 +1313,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    ```csharp
    services
         .AddGraphQLServer()
-        .AddQueryType(d => d.Name("Mutation"))
+        .AddQueryType(d => d.Name("Query"))
             .AddType<SessionQueries>()
             .AddType<SpeakerQueries>()
             .AddType<TrackQueries>()
