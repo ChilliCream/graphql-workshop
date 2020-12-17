@@ -27,7 +27,7 @@ A resolver pipeline is built by applying middleware in order, meaning that the f
 
 The field resolver middleware will only execute if no result has been produced so far. So, if any middleware has set the `Result` property on the context, the field resolver will be skipped.
 
-Let us write a little middleware that makes a sting into an all upper case string to understand better how field middleware works.
+Let us write a little middleware that makes a string into an all upper case string to understand better how field middleware works.
 
 ```csharp
 descriptor.Use(next => async context =>
