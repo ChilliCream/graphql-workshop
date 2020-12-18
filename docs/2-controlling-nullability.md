@@ -60,7 +60,7 @@ The GraphQL type system distinguishes between nullable and non-nullable types. T
 
             [Required]
             [StringLength(200)]
-            public string? Name { get; set; }
+            public string Name { get; set; }
 
             [StringLength(4000)]
             public string? Bio { get; set; }
