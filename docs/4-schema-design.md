@@ -582,7 +582,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
 
 1. Move the `Query.cs` to the `Speakers` directory and rename it to `SpeakerQueries.cs`.
 
-1. Next, add the `[ExtendObjectType(Name = "Query")]` on top of our `SpeakerQueries` class. The code should no look like the following.
+1. Next, add the `[ExtendObjectType(Name = "Query")]` on top of our `SpeakerQueries` class. The code should now look like the following.
 
    ```csharp
     using System.Collections.Generic;
