@@ -43,7 +43,7 @@ descriptor.Use(next => async context =>
 
 The above middleware first invokes the `next` middleware, and by doing so, gives up control and lets the rest of the pipeline do its job.
 
-After `next` has finished executing, the middleware checks if the result is a `string`, and if so, it applies a `ToUpperInvariant` on that `string` and writes back the updated `string` to `context.Result``.
+After `next` has finished executing, the middleware checks if the result is a `string`, and if so, it applies a `ToUpperInvariant` on that `string` and writes back the updated `string` to `context.Result`.
 
 ![Middleware Flow with ToUpper Middleware and Resolver](images/19-middleware-flow.png)
 
