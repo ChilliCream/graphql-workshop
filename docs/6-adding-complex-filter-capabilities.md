@@ -18,7 +18,7 @@ Let us start by implementing the last Relay server specification we are still mi
        context.Tracks.OrderBy(t => t.Name);
    ```
 
-   > The new resolver will instead of executing the database query return an ` IQueryable``. The `IQueryable`is like a query builder. By applying the`UsePaging` middleware, we are rewriting the database query to only fetch the items that we need for our data-set.
+   > The new resolver will instead of executing the database query return an `IQueryable`. The `IQueryable` is like a query builder. By applying the `UsePaging` middleware, we are rewriting the database query to only fetch the items that we need for our data-set.
 
    The resolver pipeline for our field now looks like the following:
 
