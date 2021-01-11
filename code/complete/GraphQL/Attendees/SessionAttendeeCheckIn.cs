@@ -37,7 +37,7 @@ namespace ConferencePlanner.GraphQL.Attendees
             CancellationToken cancellationToken) =>
             attendeeById.LoadAsync(AttendeeId, cancellationToken);
 
-        public Task<Session> GetAttendeeAsync(
+        public Task<Session> GetSessionAsync(
             SessionByIdDataLoader sessionById,
             CancellationToken cancellationToken) =>
             sessionById.LoadAsync(AttendeeId, cancellationToken);
