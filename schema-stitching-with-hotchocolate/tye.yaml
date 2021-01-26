@@ -1,3 +1,5 @@
+name: stitching
+services:
 - name: accounts
   project: accounts/Accounts.csproj
   bindings:
