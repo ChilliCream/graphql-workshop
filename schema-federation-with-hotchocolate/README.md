@@ -12,7 +12,7 @@
    1. `dotnet add gateway package HotChocolate.AspNetCore --version 11.0.8`
 1. Add a reference to the NuGet package package `HotChocolate.Stitching.Redis` version `11.0.8`.
    1. `dotnet add gateway package HotChocolate.Stitching.Redis --version
-1. Add a reference to the NuGet package package `HotChocolate.Stitching.Redis` version `11.0.8` to all downstream services.
+1. Add a reference to the NuGet package `HotChocolate.Stitching.Redis` version `11.0.8` to all downstream services.
    1. `dotnet add accounts package HotChocolate.Stitching.Redis --version 11.0.8`
    1. `dotnet add inventory package HotChocolate.Stitching.Redis --version 11.0.8`
    1. `dotnet add products package HotChocolate.Stitching.Redis --version 11.0.8`
@@ -20,7 +20,7 @@
 
 ## Configure basic gateway.
 
-1. Head over to the `Startup.cs` and add the following constants that shall represent our downstream services.
+1. Head over to the `Startup.cs` and add the following constants to represent our downstream services.
 
    ```csharp
    public const string Accounts = "accounts";
@@ -41,7 +41,7 @@
    }
    ```
 
-1. Since, we are using a federated approach and want a reliable gateway we will use Redis to hold the schema configurations. For this we need to add a Redis `ConnectionMultiplexer`.
+1. Since we are using a federated approach and want a reliable gateway, we will use Redis to hold the schema configurations. For this, we need to add a Redis `ConnectionMultiplexer`.
 
    ```csharp
    services.AddSingleton(ConnectionMultiplexer.Connect("localhost:7000"));
@@ -65,11 +65,11 @@
    }
    ```
 
-   > In our GraphQL server configuration we only add a `Query` stub type that our downstream services can extend. Also we have added `AddRemoteSchemasFromRedis` which will pull in schema configurations from `Redis` whenever they change.
+   > In our GraphQL server configuration, we only add a `Query` stub type that our downstream services can extend. We have also added `AddRemoteSchemasFromRedis`, which will pull in schema configurations from `Redis` whenever they change.
 
 ## Add routing for the GraphQL gateway
 
-In order to run queries against our very basic GraphQL gateway we need to add some routing configuration. For this we stay in the `Startup.cs` and will need rewrite the `Configure` method a bit.
+To run queries against our very basic GraphQL gateway, we need to add some routing configuration. For this, we stay in the `Startup.cs` and will need to rewrite the `Configure` method a bit.
 
 1. Replace `app.UseEndpoints(endpoints => ...` with the following configuration:
 
@@ -100,7 +100,7 @@ In order to run queries against our very basic GraphQL gateway we need to add so
        containerPort: 6379
    ```
 
-   > Our gateway will not run at this point since there at this moment is no configuration on the gateway available.
+   > Our gateway will not run at this point since there is no configuration on the gateway available.
 
 ## Publish schema configurations from downstream services
 
@@ -154,7 +154,7 @@ In order to run queries against our very basic GraphQL gateway we need to add so
    }
    ```
 
-1. Now our configuration actually publishes nothing since we opted to `IgnoreRootTypes`. So, we need to provide some extra information that explains how we want to integrate parts of this downstream service to the gateway. For this let us add a `Stitching.graphql` to our project.
+1. Now, our configuration publishes nothing since we opted to `IgnoreRootTypes`. We need to provide some extra information that explains how we want to integrate parts of this downstream service to the gateway. For this, let us add a `Stitching.graphql` to our project.
 
 1. Add the following snippet to your `Stitching.graphql`.
 
@@ -172,7 +172,7 @@ In order to run queries against our very basic GraphQL gateway we need to add so
    </ItemGroup>
    ```
 
-1. Last, lets add the `Stitching.graphql` to our schema configuration.
+1. Last, let us add the `Stitching.graphql` to our schema configuration.
 
 ```csharp
    public void ConfigureServices(IServiceCollection services)
@@ -197,13 +197,13 @@ In order to run queries against our very basic GraphQL gateway we need to add so
    1. dotnet tool restore
 1. Run tye to start the gateway and its downstream services.
    1. dotnet tye run --watch
-1. Open a browser and and go to `http://localhost:5050/graphql`
+1. Open a browser and go to `http://localhost:5050/graphql`
 
    ![Test Gateway](images/test-gateway-1.png)
 
 # Integrate more downstream services
 
-In a federated approach each downstream service provides configuration. This means we now need to add configuration pieces to every downstream service that we have and integrate them with each other.
+In a federated approach, each downstream service provides configuration. This means we now need to add configuration pieces to every downstream service that we have and integrate them with each other.
 
 ## Integrate reviews
 
@@ -270,7 +270,7 @@ In a federated approach each downstream service provides configuration. This mea
 
    ![Test Gateway](images/test-gateway-2.png)
 
-1. Next, we will integrate the products. For this lets head over to the products project and open the `Startup.cs`.
+1. Next, we will integrate the products. For this, let's head over to the products project and open the `Startup.cs`.
 
 1. Add the Redis `ConnectionMultiplexer` as a service.
 
@@ -397,7 +397,7 @@ In a federated approach each downstream service provides configuration. This mea
 
 # Introducing new changes to downstream services
 
-Now that our gateway and downstream services are configured and run it is time to introduce changes to one of our downstream services. For this we will introduce a new field `Address` to our user.
+Now that our gateway and downstream services are configured and run, it is time to introduce changes to one of our downstream services. For this, we will introduce a new field, `Address`, to our user.
 
 1. Head over to the accounts service.
 1. Open the file `User.cs` and add the field `string Address` to the record.
@@ -408,7 +408,7 @@ Now that our gateway and downstream services are configured and run it is time t
 
 1. We will get a compile error since we did not integrate the new field into our repository.
 
-1. Head over to your browser and reload your schema to review the changes. Also fire up the query that you have build so far.
+1. Head over to your browser and reload your schema to review the changes. Also, fire up the query that you have built so far.
 
    ![Test Gateway](images/test-gateway-4.png)
 
@@ -416,9 +416,9 @@ Now that our gateway and downstream services are configured and run it is time t
 
    ![Test Gateway](images/test-gateway-5.png)
 
-   > So although our downstream service has an error we still can use most of our schema. Since we always have a working schema configuration on redis the gateway will always have a correct schema. Only the parts that are affected by the error can no longer be queried.
+   > So, although our downstream service has an error, we still can use most of our schema. Since we always have a working schema configuration on Redis, the gateway will always have a correct schema. Only the parts that are affected by the error can no longer be queried.
 
-1. Head over to the `UserRepository` in the accounts project and fix the compile errors by providing data for the address.
+1. Head over to the `UserRepository` in the account's project and fix the compile errors by providing data for the address.
 
    ```csharp
    public UserRepository()
@@ -431,8 +431,8 @@ Now that our gateway and downstream services are configured and run it is time t
    }
    ```
 
-1. Head over to your browser and reload your schema to review the changes. Also fire up the original query with the me field and also add the `address` field.
+1. Head over to your browser and reload your schema to review the changes. Also, fire up the original query with the `me` field and add the `address` field.
 
    ![Test Gateway](images/test-gateway-6.png)
 
-   > The field is now integrated and the whole setup works again. Changes in this setup are pushed and will have an immediate affect. Errors not take down the whole system.
+   > The field is now integrated, and the whole setup works again. Changes in this setup are pushed and will have an immediate effect. Errors do not take down the whole system. So, federated stitching in combination with Redis will provide a very robust setup. 
