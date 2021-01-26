@@ -1,11 +1,3 @@
-name: stitching
-services:
-- name: redis-stitching
-  image: redis
-  bindings:
-  - name: redis-stitching
-    port: 7000
-    containerPort: 6379
 - name: accounts
   project: accounts/Accounts.csproj
   bindings:
