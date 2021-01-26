@@ -15,7 +15,7 @@
 
 ## Configure basic gateway.
 
-1. Head over to the `Startup.cs` and add the following constants that shall represent our downstream services.
+1. Head over to the `Startup.cs` and add the following constants to represent our downstream services.
 
    ```csharp
    public const string Accounts = "accounts";
@@ -57,7 +57,7 @@
 
 ## Add routing for the GraphQL gateway
 
-In order to run queries against our very basic GraphQL gateway we need to add some routing configuration. For this we stay in the `Startup.cs` and will need rewrite the `Configure` method a bit.
+To run queries against our very basic GraphQL gateway, we need to add some routing configuration. For this, we stay in the `Startup.cs` and will need to rewrite the `Configure` method a bit.
 
 1. Replace `app.UseEndpoints(endpoints => ...` with the following configuration:
 
@@ -83,17 +83,17 @@ In order to run queries against our very basic GraphQL gateway we need to add so
    1. dotnet tool restore
 1. Run tye to start the gateway and its downstream services.
    1. dotnet tye run --watch
-1. Open a browser and and go to `http://localhost:5050/graphql`
+1. Open a browser and go to `http://localhost:5050/graphql`
 
    ![Test Gateway](images/test-gateway-1.png)
 
 # Rewrite Schemas
 
-In order to create a schema that really reflects our business model we need to rewrite the downstream services into a new schema that really integrates the types from the services with each other.
+To create a schema that reflects our business model, we need to rewrite the downstream services into a new schema that integrates the services' types with each other.
 
 ## Add schema configuration
 
-1. Create a new file called `Stitching.graphql` which shall be located in the root of the gateway project.
+1. Create a new file called `Stitching.graphql` which shall be located at the root of the gateway project.
 
 1. Add the following GraphQL SDL snippet into the `Stitching.graphql` file.
 
@@ -103,7 +103,7 @@ In order to create a schema that really reflects our business model we need to r
    }
    ```
 
-   > This piece of GraphQL will extend the current root type and delegate calls to it to the `Query` type of the schema `accounts` and more specifically to the field `user`.
+   > This piece of GraphQL will extend the current root type and delegate calls it to the `Query` type of the schema `accounts` and, more specifically, to the field `user`.
 
 1. Go to your `gateway.csproj` and add the following to an `ItemGroup` so that changes to the `Stitching.graphql` file are tracked.
 
@@ -129,9 +129,9 @@ In order to create a schema that really reflects our business model we need to r
 
    ![Test Gateway](images/test-gateway-2.png)
 
-## Build out schema
+## Build out the schema
 
-We now have an idea how we really can rewrite our schemas to a completely new schema. In this section we will fully transform our schema.
+We now have an idea of how we really can rewrite our schemas to an entirely new schema. In this section, we will fully transform our schemas to reflect our business needs.
 
 1. Remove the noise by removing the auto-stitched root fields.
 
@@ -164,7 +164,7 @@ We now have an idea how we really can rewrite our schemas to a completely new sc
 
    ![Test Gateway](images/test-gateway-3.png)
 
-1. Integrate the reviews with the user by by extending the `User` type. For this place the following piece of GraphQL SDL into your `Stitching.graphql`.
+1. Integrate the reviews with the user by extending the `User` type. For this, place the following piece of GraphQL SDL into your `Stitching.graphql`.
 
    ```graphql
    extend type User {
@@ -173,7 +173,7 @@ We now have an idea how we really can rewrite our schemas to a completely new sc
    }
    ```
 
-1. Next, lets do this from the other side by integrating the user with the reviews.
+1. Next, let us do this from the other side by integrating the user with the reviews.
 
    ```graphql
    extend type Review {
@@ -185,7 +185,7 @@ We now have an idea how we really can rewrite our schemas to a completely new sc
 
    ![Test Gateway](images/test-gateway-4.png)
 
-1. Now, lets introduce a top-level access to our products by adding the following snippet to the `Query` type in `Stitching.graphql`.
+1. Now, let us introduce top-level access to our products by adding the following snippet to the `Query` type in `Stitching.graphql`.
 
    ```graphql
    extend type Query {
@@ -194,7 +194,7 @@ We now have an idea how we really can rewrite our schemas to a completely new sc
    }
    ```
 
-1. Again, we want to fully integrate those entities with the entities that we already have. For this we now integrate the product with the review by adding the following snippet to our `Review` type in `Stitching.graphql`.
+1. Again, we want to fully integrate those entities with the entities that we already have. We now integrate the product with the review by adding the following snippet to our `Review` type in `Stitching.graphql`.
 
    ```graphql
    extend type Review {
@@ -204,7 +204,7 @@ We now have an idea how we really can rewrite our schemas to a completely new sc
    }
    ```
 
-1. The, same we want to do from the other side by adding a field to products that returns all the review that we have for a give product.
+1. The same we want to do from the other side by adding a field to products that return all the reviews we have for a given product.
 
    ```graphql
    extend type Product {
@@ -217,7 +217,7 @@ We now have an idea how we really can rewrite our schemas to a completely new sc
 
    ![Test Gateway](images/test-gateway-5.png)
 
-1. We also want to integrate the stock and shipping information to our product. The inventory info is not an object that we want to integrate into our schema. We only want to grab one specific field from it. For this we will do a deep stitch. Add the following snippet to your `Product` type in the `Stitching.graphql`
+1. We also want to integrate the stock and shipping information into our product. The inventory info is not an object that we want to integrate into our schema. We only want to grab one specific field from it. For this, we will do a deep stitch. Add the following snippet to your `Product` type in the `Stitching.graphql`
 
    ```graphql
    extend type Product {
@@ -231,7 +231,7 @@ We now have an idea how we really can rewrite our schemas to a completely new sc
    }
    ```
 
-1. Last let us integrate the shipping estimates by adding the following snippet to your `Product` type in the `Stitching.graphql`.
+1. Last, let us integrate the shipping estimates by adding the following snippet to your `Product` type in the `Stitching.graphql`.
 
    ```graphql
    extend type Product {
