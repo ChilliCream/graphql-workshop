@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "microsoft.tye": {
+      "version": "0.5.0-alpha.20555.1",
+      "commands": [
+        "tye"
+      ]
+    }
+  }
+}
