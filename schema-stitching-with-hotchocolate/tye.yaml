@@ -1,0 +1,24 @@
+name: stitching
+services:
+- name: redis-stitching
+  image: redis
+  bindings:
+  - name: redis-stitching
+    port: 7000
+    containerPort: 6379
+- name: accounts
+  project: accounts/Accounts.csproj
+  bindings:
+  - port: 5051
+- name: inventory
+  project: inventory/Inventory.csproj
+  bindings:
+  - port: 5052
+- name: products
+  project: products/Products.csproj
+  bindings:
+  - port: 5053
+- name: reviews
+  project: reviews/Reviews.csproj
+  bindings:
+  - port: 5054

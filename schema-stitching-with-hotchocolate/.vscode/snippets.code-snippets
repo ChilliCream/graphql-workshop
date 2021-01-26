@@ -1,0 +1,114 @@
+{
+    "me": {
+        "prefix": "me",
+        "body": [
+            "extend type Query {",
+            "  me: User! @delegate(schema: \"accounts\", path: \"user(id: 1)\")",
+            "}"
+        ],
+        "description": "me"
+    },
+    "review_author": {
+        "prefix": "review_author",
+        "body": [
+            "extend type Review {",
+            "  author: User @delegate(schema: \"accounts\", path: \"user(id: $fields:authorId)\")",
+            "}"
+        ],
+        "description": "review_author"
+    },
+    "inStock": {
+        "prefix": "inStock",
+        "body": [
+            "extend type Product {",
+            "  inStock: Boolean",
+            "    @delegate(",
+            "      schema: \"inventory\",",
+            "      path: \"inventoryInfo(upc: $fields:upc).isInStock\")",
+            "  shippingEstimate: Int",
+            "    @delegate(",
+            "      schema: \"inventory\"",
+            "      path: \"shippingEstimate(price: $fields:price weight: $fields:weight)\")",
+            "}",
+            ""
+        ],
+        "description": "inStock"
+    },
+    "topProducts": {
+        "prefix": "topProducts",
+        "body": [
+            "extend type Query {",
+            "  topProducts(first: Int = 5): [Product] @delegate(schema: \"products\")",
+            "}"
+        ],
+        "description": "topProducts"
+    },
+    "review_product": {
+        "prefix": "review_product",
+        "body": [
+            "extend type Review {",
+            "  product: Product @delegate(schema: \"products\", path: \"product(upc: $fields:upc)\")",
+            "}"
+        ],
+        "description": "review_product"
+    },
+    "user_reviews": {
+        "prefix": "user_reviews",
+        "body": [
+            "extend type User {",
+            "  reviews: [Review] @delegate(schema: \"reviews\" path:\"reviewsByAuthor(authorId: $fields:id)\")",
+            "}"
+        ],
+        "description": "user_reviews"
+    },
+    "product_reviews": {
+        "prefix": "product_reviews",
+        "body": [
+            "extend type Product {",
+            "  reviews: [Review] @delegate(schema: \"reviews\" path:\"reviewsByProduct(upc: $fields:upc)\")",
+            "}"
+        ],
+        "description": "product_reviews"
+    },
+    "service_names": {
+        "prefix": "service_names",
+        "body": [
+            "public const string Accounts = \"accounts\";",
+            "public const string Inventory = \"inventory\";",
+            "public const string Products = \"products\";",
+            "public const string Reviews = \"reviews\";"
+        ],
+        "description": "service_names"
+    },
+    "service_connections": {
+        "prefix": "service_connections",
+        "body": [
+            "services.AddHttpClient(Accounts, c => c.BaseAddress = new Uri(\"http://localhost:5051/graphql\"));",
+            "services.AddHttpClient(Inventory, c => c.BaseAddress = new Uri(\"http://localhost:5052/graphql\"));",
+            "services.AddHttpClient(Products, c => c.BaseAddress = new Uri(\"http://localhost:5053/graphql\"));",
+            "services.AddHttpClient(Reviews, c => c.BaseAddress = new Uri(\"http://localhost:5054/graphql\"));"
+        ],
+        "description": "service_connections"
+    },
+    "remote_schemas": {
+        "prefix": "remote_schemas",
+        "body": [
+            ".AddRemoteSchema(Accounts)",
+            ".AddRemoteSchema(Inventory)",
+            ".AddRemoteSchema(Products)",
+            ".AddRemoteSchema(Reviews)"
+        ],
+        "description": "remote_schemas"
+    },
+    "service_session": {
+        "prefix": "service_session",
+        "body": [
+            ".AddHttpRequestInterceptor((httpContext, executor, builder, ct) =>",
+            "{",
+            "    builder.SetProperty(\"userId\", 1);",
+            "    return default;",
+            "})"
+        ],
+        "description": "service_session"
+    }
+}
