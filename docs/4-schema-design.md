@@ -408,6 +408,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
                 descriptor
                     .Field(t => t.SessionsAttendees)
                     .ResolveWith<AttendeeResolvers>(t => t.GetSessionsAsync(default!, default!, default!, default))
+                    .UseDbContext<ApplicationDbContext>()
                     .Name("sessions");
             }
 
@@ -461,11 +462,13 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
                 descriptor
                     .Field(t => t.SessionSpeakers)
                     .ResolveWith<SessionResolvers>(t => t.GetSpeakersAsync(default!, default!, default!, default))
+                    .UseDbContext<ApplicationDbContext>()
                     .Name("speakers");
 
                 descriptor
                     .Field(t => t.SessionAttendees)
                     .ResolveWith<SessionResolvers>(t => t.GetAttendeesAsync(default!, default!, default!, default))
+                    .UseDbContext<ApplicationDbContext>()
                     .Name("attendees");
 
                 descriptor
@@ -479,7 +482,6 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
 
             private class SessionResolvers
             {
-                [UseApplicationDbContext]
                 public async Task<IEnumerable<Speaker>> GetSpeakersAsync(
                     Session session,
                     [ScopedService] ApplicationDbContext dbContext,
@@ -495,7 +497,6 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
                     return await speakerById.LoadAsync(speakerIds, cancellationToken);
                 }
 
-                [UseApplicationDbContext]
                 public async Task<IEnumerable<Attendee>> GetAttendeesAsync(
                     Session session,
                     [ScopedService] ApplicationDbContext dbContext,
@@ -557,6 +558,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
                 descriptor
                     .Field(t => t.Sessions)
                     .ResolveWith<TrackResolvers>(t => t.GetSessionsAsync(default!, default!, default!, default))
+                    .UseDbContext<ApplicationDbContext>()
                     .Name("sessions");
             }
 
