@@ -125,7 +125,7 @@ Let us start by implementing the last Relay server specification we are still mi
    ```csharp
    descriptor
        .Field(t => t.Sessions)
-       .ResolveWith<TrackResolvers>(t => t.GetSessionsAsync(default!, default!, default))
+       .ResolveWith<TrackResolvers>(t => t.GetSessionsAsync(default!, default!, default!, default))
        .UseDbContext<ApplicationDbContext>()
        .UsePaging<NonNullType<SessionType>>()
        .Name("sessions");
