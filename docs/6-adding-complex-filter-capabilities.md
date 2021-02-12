@@ -108,7 +108,7 @@ Let us start by implementing the last Relay server specification we are still mi
 
    We have now replaced all the root level list fields and are now using our pagination middleware. There are still more lists left where we should apply pagination if we wanted to really have a refined schema. Let us change the API a bit more to incorporate this.
 
-1. First, go back to the `SessionQueries.cs` in the `Sessions` directory and replace the `[UsePaging]` with `[UsePaging(SchemaType = typeof(NonNullType<SessionType>))]`.
+1. First, go back to the `SessionQueries.cs` in the `Sessions` directory and replace the `[UsePaging]` with `[UsePaging(typeof(NonNullType<SessionType>))]`.
 
    ```csharp
    [UseApplicationDbContext]
@@ -152,7 +152,7 @@ Let us start by implementing the last Relay server specification we are still mi
 
    ![Query speaker names](images/28-bcp-GetTrackWithSessions.png)
 
-   > There is one caveat in our implementation with the `TrackType`. Since, we are using a DataLoader within our resolver and first fetch the list of IDs we essentially will always fetch everything and and chop in memory. In an actual project this can be split into two actions by moving the `DataLoader` part into a middleware and first page on the id queryable. Also one could implement a special `IPagingHandler` that uses the DataLoader and applies paging logic.
+   > There is one caveat in our implementation with the `TrackType`. Since, we are using a DataLoader within our resolver and first fetch the list of IDs we essentially will always fetch everything and chop in memory. In an actual project this can be split into two actions by moving the `DataLoader` part into a middleware and first page on the id queryable. Also one could implement a special `IPagingHandler` that uses the DataLoader and applies paging logic.
 
 ## Add filter capabilities to the top-level field `sessions`
 
