@@ -24,11 +24,13 @@ namespace ConferencePlanner.GraphQL.Types
             descriptor
                 .Field(t => t.SessionSpeakers)
                 .ResolveWith<SessionResolvers>(t => t.GetSpeakersAsync(default!, default!, default!, default))
+                .UseDbContext<ApplicationDbContext>()
                 .Name("speakers");
 
             descriptor
                 .Field(t => t.SessionAttendees)
                 .ResolveWith<SessionResolvers>(t => t.GetAttendeesAsync(default!, default!, default!, default))
+                .UseDbContext<ApplicationDbContext>()
                 .Name("attendees");
 
             descriptor
@@ -42,7 +44,6 @@ namespace ConferencePlanner.GraphQL.Types
 
         private class SessionResolvers
         {
-            [UseApplicationDbContext]
             public async Task<IEnumerable<Speaker>> GetSpeakersAsync(
                 Session session,
                 [ScopedService] ApplicationDbContext dbContext,
@@ -58,7 +59,6 @@ namespace ConferencePlanner.GraphQL.Types
                 return await speakerById.LoadAsync(speakerIds, cancellationToken);
             }
 
-            [UseApplicationDbContext]
             public async Task<IEnumerable<Attendee>> GetAttendeesAsync(
                 Session session,
                 [ScopedService] ApplicationDbContext dbContext,
