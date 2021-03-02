@@ -18,7 +18,7 @@ First, we will restructure our GraphQL server so that it will better scale once 
    mkdir GraphQL/Common
    ```
 
-1. Create a field `PayloadBase.cs` in the `Common` directory with the following code:
+1. Create a class `Payload.cs` in the `Common` directory with the following code:
 
    ```csharp
     using System.Collections.Generic;
