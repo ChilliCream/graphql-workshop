@@ -19,26 +19,25 @@ namespace GraphQL.Tests
     public class AttendeeTests
     {
         [Fact]
-        public void Attendee_Schema_Changed()
+        public async Task Attendee_Schema_Changed()
         {
-            var services = new ServiceCollection();
-            services.AddDbContextPool<ApplicationDbContext>(
-                options => options.UseInMemoryDatabase("Data Source=conferences.db"));
+            ISchema schema =
+                await new ServiceCollection()
+                    .AddDbContextPool<ApplicationDbContext>(
+                        options => options.UseInMemoryDatabase("Data Source=conferences.db"))
+                    .AddGraphQL()
+                    .AddQueryType(d => d.Name("Query"))
+                        .AddTypeExtension<AttendeeQueries>()
+                    .AddMutationType(d => d.Name("Mutation"))
+                        .AddTypeExtension<AttendeeMutations>()
+                    .AddType<AttendeeType>()
+                    .AddType<SessionType>()
+                    .AddType<SpeakerType>()
+                    .AddType<TrackType>()
+                    .EnableRelaySupport()
+                    .BuildSchemaAsync();
 
-             SchemaBuilder.New()
-                .AddServices(services.BuildServiceProvider())
-                .AddQueryType(d => d.Name("Query"))
-                    .AddTypeExtension<AttendeeQueries>()
-                .AddMutationType(d => d.Name("Mutation"))
-                    .AddTypeExtension<AttendeeMutations>()
-                .AddType<AttendeeType>()
-                .AddType<SessionType>()
-                .AddType<SpeakerType>()
-                .AddType<TrackType>()
-                .EnableRelaySupport()
-                .Create()
-                .ToString()
-                .MatchSnapshot();
+            schema.Print().MatchSnapshot();
         }
         
         [Fact]
