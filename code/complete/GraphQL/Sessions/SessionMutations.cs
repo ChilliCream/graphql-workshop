@@ -82,5 +82,30 @@ namespace ConferencePlanner.GraphQL.Sessions
 
             return new ScheduleSessionPayload(session);
         }
+
+        [UseApplicationDbContext]
+        public async Task<RenameSessionPayload> RenameSessionAsync(
+            RenameSessionInput input,
+            [ScopedService] ApplicationDbContext context,
+            [Service]ITopicEventSender eventSender)
+        {
+            Session session = await context.Sessions.FindAsync(input.SessionId);
+
+            if (session is null)
+            {
+                return new RenameSessionPayload(
+                    new UserError("Session not found.", "SESSION_NOT_FOUND"));
+            }
+
+            session.Title = input.Title;
+
+            await context.SaveChangesAsync();
+
+            await eventSender.SendAsync(
+                nameof(SessionSubscriptions.OnSessionScheduledAsync),
+                session.Id);
+
+            return new RenameSessionPayload(session);
+        }
     }
 }

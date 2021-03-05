@@ -13,8 +13,6 @@ using ConferencePlanner.GraphQL.Speakers;
 using ConferencePlanner.GraphQL.Tracks;
 using ConferencePlanner.GraphQL.Types;
 using HotChocolate;
-using HotChocolate.Data.Sorting;
-
 
 namespace ConferencePlanner.GraphQL
 {
@@ -25,6 +23,12 @@ namespace ConferencePlanner.GraphQL
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddCors(o => 
+                    o.AddDefaultPolicy(b => 
+                        b.AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowAnyOrigin()))
+
                 // First we add the DBContext which we will be using to interact with our
                 // Database.
                 .AddPooledDbContextFactory<ApplicationDbContext>(
@@ -85,6 +89,8 @@ namespace ConferencePlanner.GraphQL
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors();
 
             app.UseWebSockets();
             app.UseRouting();
