@@ -49,7 +49,7 @@ The GraphQL type system distinguishes between nullable and non-nullable types. T
 
    > The schema still will infer nullability correct since the schema understands the data annotations.
 
-   ```csharp
+    ```csharp
     using System.ComponentModel.DataAnnotations;
 
     namespace ConferencePlanner.GraphQL.Data
@@ -69,11 +69,11 @@ The GraphQL type system distinguishes between nullable and non-nullable types. T
             public virtual string? WebSite { get; set; }
         }
     }
-   ```
+    ```
 
 1. Now update the input type by marking nullable fields.
 
-   ```csharp
+    ```csharp
     namespace ConferencePlanner.GraphQL
     {
         public record AddSpeakerInput(
@@ -81,7 +81,7 @@ The GraphQL type system distinguishes between nullable and non-nullable types. T
             string? Bio,
             string? WebSite);
     }
-   ```
+    ```
 
    > The payload type can stay for now as it is.
 

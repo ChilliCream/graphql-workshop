@@ -57,7 +57,7 @@ Before we can start with introducing our new subscriptions, we need first to bri
 
 1. Add a class `AttendeePayloadBase` to the `Attendees` directory.
 
-   ```csharp
+    ```csharp
     using System.Collections.Generic;
     using ConferencePlanner.GraphQL.Common;
     using ConferencePlanner.GraphQL.Data;
@@ -79,7 +79,7 @@ Before we can start with introducing our new subscriptions, we need first to bri
             public Attendee? Attendee { get; }
         }
     }
-   ```
+    ```
 
 ### Add `registerAttendee` Mutation
 
@@ -87,7 +87,7 @@ We now have the base types integrated and can start adding the attendee mutation
 
 1. Add a new class `RegisterAttendeeInput` to the `Attendees` directory.
 
-   ```csharp
+    ```csharp
     namespace ConferencePlanner.GraphQL.Attendees
     {
         public record RegisterAttendeeInput(
@@ -96,11 +96,11 @@ We now have the base types integrated and can start adding the attendee mutation
             string UserName,
             string EmailAddress);
     }
-   ```
+    ```
 
 1. Now, add the `RegisterAttendeePayload` class to the `Attendees` directory.
 
-   ```csharp
+    ```csharp
     using ConferencePlanner.GraphQL.Common;
     using ConferencePlanner.GraphQL.Data;
 
@@ -119,7 +119,7 @@ We now have the base types integrated and can start adding the attendee mutation
             }
         }
     }
-   ```
+    ```
 
 1. Add the `AttendeeMutations` with the `RegisterAttendeeAsync` resolver to the `Attendees` directory.
 
@@ -167,7 +167,7 @@ Now that we have the mutation in to register new attendees, let us move on to ad
 
 1. Add the `CheckInAttendeeInput` to the `Attendees` directory.
 
-   ```csharp
+    ```csharp
     using ConferencePlanner.GraphQL.Data;
     using HotChocolate.Types.Relay;
 
@@ -179,11 +179,11 @@ Now that we have the mutation in to register new attendees, let us move on to ad
             [ID(nameof(Attendee))]
             int AttendeeId);
     }
-   ```
+    ```
 
 1. Next we add the payload type for the `checkInAttendee` Mutation:
 
-   ```csharp
+    ```csharp
     using System.Threading;
     using System.Threading.Tasks;
     using ConferencePlanner.GraphQL.Common;
@@ -220,11 +220,11 @@ Now that we have the mutation in to register new attendees, let us move on to ad
             }
         }
     }
-   ```
+    ```
 
 1. Head back to the `AttendeeMutations` class in the `Attendees` directory and add the `` resolver to it:
 
-   ```csharp
+    ```csharp
     [UseApplicationDbContext]
     public async Task<CheckInAttendeePayload> CheckInAttendeeAsync(
         CheckInAttendeeInput input,
@@ -250,11 +250,11 @@ Now that we have the mutation in to register new attendees, let us move on to ad
 
         return new CheckInAttendeePayload(attendee, input.SessionId);
     }
-   ```
+    ```
 
    Your `AttendeeMutations` class should now look like the following:
 
-   ```csharp
+    ```csharp
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
@@ -316,11 +316,11 @@ Now that we have the mutation in to register new attendees, let us move on to ad
             }
         }
     }
-   ```
+    ```
 
 1. Head over to the `Startup.cs` and register the query and mutation type that we have just added with the schema builder.
 
-   ```csharp
+    ```csharp
     services
         .AddGraphQLServer()
         .AddQueryType(d => d.Name("Query"))
@@ -342,7 +342,7 @@ Now that we have the mutation in to register new attendees, let us move on to ad
         .AddSorting()
         .AddDataLoader<SpeakerByIdDataLoader>()
         .AddDataLoader<SessionByIdDataLoader>();
-   ```
+    ```
 
 1. Start your GraphQL server.
 
@@ -358,7 +358,7 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
 
 1. Head over to `Startup.cs` and add `app.WebSockets` to the request pipeline. Middleware order is also important with ASP.NET Core, so this middleware needs to come before the GraphQL middleware.
 
-   ```csharp
+    ```csharp
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         if (env.IsDevelopment())
@@ -374,11 +374,11 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
             endpoints.MapGraphQL();
         });
     }
-   ```
+    ```
 
 1. Stay in the `Startup.cs` and add `.AddInMemorySubscriptions();` to the `ConfigureServices` method.
 
-   ```csharp
+    ```csharp
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddPooledDbContextFactory<ApplicationDbContext>(
@@ -407,13 +407,13 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
             .AddDataLoader<SpeakerByIdDataLoader>()
             .AddDataLoader<SessionByIdDataLoader>();
     }
-   ```
+    ```
 
    > With `app.UseWebSockets()` we have enabled our server to handle websocket request. With `.AddInMemorySubscriptions();` we have added an in-memory pub/sub system for GraphQL subscriptions to our schema.
 
 1. Add a new class `SessionSubscriptions` to the `Sessions` directory.
 
-   ```csharp
+    ```csharp
     using System.Threading;
     using System.Threading.Tasks;
     using ConferencePlanner.GraphQL.Data;
@@ -435,7 +435,7 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
                 sessionById.LoadAsync(sessionId, cancellationToken);
         }
     }
-   ```
+    ```
 
    > The `[Topic]` attribute can be put on the method or a parameter of the method and will infer the pub/sub-topic for this subscription.
 
@@ -445,7 +445,7 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
 
 1. Head back to the `Startup.cs` and register the `SessionSubscriptions` with the schema builder.
 
-   ```csharp
+    ```csharp
     services
         .AddGraphQLServer()
         .AddQueryType(d => d.Name("Query"))
@@ -470,13 +470,13 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
         .AddInMemorySubscriptions()
         .AddDataLoader<SpeakerByIdDataLoader>()
         .AddDataLoader<SessionByIdDataLoader>();
-   ```
+    ```
 
    The subscription type itself is now registered, but we still need something to trigger the event. So, next, we are going to update our `scheduleSession` resolver to trigger an event.
 
 1. Head over to the `SessionMutations` class in the `Sessions` directory and replace `ScheduleSessionAsync` with the following code:
 
-   ```csharp
+    ```csharp
     [UseApplicationDbContext]
     public async Task<ScheduleSessionPayload> ScheduleSessionAsync(
         ScheduleSessionInput input,
@@ -510,7 +510,7 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
 
         return new ScheduleSessionPayload(session);
     }
-   ```
+    ```
 
    > Our improved resolver now injects `[Service]ITopicEventSender eventSender`. This gives us access to send messages to the underlying pub/sub-system.
 
@@ -597,7 +597,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to a dynami
 
 1. Head over to the `AttendeeMutations` class and replace the `CheckInAttendeeAsync` resolver with the following code:
 
-   ```csharp
+    ```csharp
     [UseApplicationDbContext]
     public async Task<CheckInAttendeePayload> CheckInAttendeeAsync(
         CheckInAttendeeInput input,
@@ -629,20 +629,20 @@ The `onSessionScheduled` was quite simple since we did not subscribe to a dynami
 
         return new CheckInAttendeePayload(attendee, input.SessionId);
     }
-   ```
+    ```
 
    In this instance, we are again using our `ITopicEventSender` to send messages to our pub/sub-system. However, we are now creating a string topic combined with parts of the input `input.SessionId` and a string describing the event `OnAttendeeCheckedIn_`. If nobody is subscribed, the messages will just be dropped.
 
-   ```csharp
+    ```csharp
     await eventSender.SendAsync(
         "OnAttendeeCheckedIn_" + input.SessionId,
         input.AttendeeId,
         cancellationToken);
-   ```
+    ```
 
 1. Add a new class `SessionAttendeeCheckIn` to the `Attendees` directory. This will be our subscription payload.
 
-   ```csharp
+    ```csharp
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -688,11 +688,11 @@ The `onSessionScheduled` was quite simple since we did not subscribe to a dynami
                 sessionById.LoadAsync(AttendeeId, cancellationToken);
         }
     }
-   ```
+    ```
 
 1. Create a new class, `AttendeeSubscriptions` and put it in the `Attendees` directory.
 
-   ```csharp
+    ```csharp
     using System.Threading;
     using System.Threading.Tasks;
     using ConferencePlanner.GraphQL.Data;
@@ -724,7 +724,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to a dynami
                     "OnAttendeeCheckedIn_" + sessionId, cancellationToken);
         }
     }
-   ```
+    ```
 
    `OnAttendeeCheckedIn` represents our resolver like in the first subscription we built, but now in our `SubscribeAttribute` we are referring to a method called `SubscribeToOnAttendeeCheckedInAsync`. So, instead of letting the system generate a subscribe resolver that handles subscribing to the pub/sub-system we are creating it ourselves in order to control how it is done or event order to filter out events that we do not want to pass down.
 
@@ -741,7 +741,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to a dynami
 
    1. Head back to the `Startup.cs` and register this new subscription type with the schema builder.
 
-   ```csharp
+    ```csharp
     services
         .AddGraphQLServer()
         .AddQueryType(d => d.Name("Query"))
@@ -767,7 +767,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to a dynami
         .AddInMemorySubscriptions()
         .AddDataLoader<SpeakerByIdDataLoader>()
         .AddDataLoader<SessionByIdDataLoader>();
-   ```
+    ```
 
    1. Start your GraphQL server again.
 

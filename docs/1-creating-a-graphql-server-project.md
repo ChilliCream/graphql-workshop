@@ -9,7 +9,7 @@
    1. `mkdir GraphQL/Data`
 1. Add a new file `Speaker.cs` in the `Data` directory using the following code:
 
-   ```csharp
+    ```csharp
     using System.ComponentModel.DataAnnotations;
 
     namespace ConferencePlanner.GraphQL.Data
@@ -29,13 +29,13 @@
             public virtual string WebSite { get; set; }
         }
     }
-   ```
+    ```
 
 1. Add a reference to the NuGet package package `Microsoft.EntityFrameworkCore.Sqlite` version `5.0.0`.
    1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Sqlite --version 5.0.0`
 1. Next we'll create a new Entity Framework DbContext. Create a new `ApplicationDbContext` class in the `Data` folder using the following code:
 
-   ```csharp
+    ```csharp
     using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Data
@@ -50,15 +50,15 @@
             public DbSet<Speaker> Speakers { get; set; }
         }
     }
-   ```
+    ```
 
 ## Register the DB Context Service
 
 1. Add the following code to the top of the `ConfigureServices()` method in `Startup.cs`:
 
-   ```csharp
+    ```csharp
     services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Data Source=conferences.db"));
-   ```
+    ```
 
     > This code registers the `ApplicationDbContext` service so it can be injected into resolvers.
 
@@ -91,11 +91,11 @@
 
 3. Run the following commands in the command prompt:
 
-   ```console
+    ```console
     dotnet build GraphQL
     dotnet ef migrations add Initial --project GraphQL
     dotnet ef database update --project GraphQL
-   ```
+    ```
 
 Commands Explained
 
@@ -112,7 +112,7 @@ Commands Explained
    1. `dotnet add GraphQL package HotChocolate.AspNetCore --version 11.0.0`
 1. Next we'll create our query root type (`Query.cs`) and add a resolver that fetches all of our speakers.
 
-   ```csharp
+    ```csharp
     using System.Linq;
     using HotChocolate;
     using ConferencePlanner.GraphQL.Data;
@@ -125,30 +125,30 @@ Commands Explained
                 context.Speakers;
         }
     }
-   ```
+    ```
 
 1. Before we can do anything with our query root type we need to setup GraphQL and register our query root type. Add the following code below `AddDbContext` in the `ConfigureServices()` method in `Startup.cs`:
 
-   ```csharp
+    ```csharp
     services
         .AddGraphQLServer()
         .AddQueryType<Query>();
-   ```
+    ```
 
     > The above code registers a GraphQL schema with our dependency injection and with that registers our `Query` type.
 
 1. Next we need to configure our GraphQL middleware so that the server knows how to execute GraphQL requests. For this replace `app.UseEndpoints...` with the following code in the method  `Configure(IApplicationBuilder app, IWebHostEnvironment env)` in the `Startup.cs`
 
-   ```csharp
+    ```csharp
     app.UseEndpoints(endpoints =>
     {
         endpoints.MapGraphQL();
     });
-   ```
+    ```
 
     > Your Startup.cs should now look like the following:
 
-   ```csharp
+    ```csharp
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -195,7 +195,7 @@ Commands Explained
             }
         }
     }
-   ```
+    ```
 
 1. Start the server.
    1. `dotnet run --project GraphQL`
@@ -222,7 +222,7 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
 
 1. Add a class `AddSpeakerInput` to your project with the following code:
 
-   ```csharp
+    ```csharp
     namespace ConferencePlanner.GraphQL
     {
         public record AddSpeakerInput(
@@ -230,13 +230,13 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
             string Bio,
             string WebSite);
     }
-   ```
+    ```
 
    > The input and output (payload) both contain a client mutation identifier used to reconcile requests and responses in some client frameworks.
 
 1. Next we add our `AddSpeakerPayload` which represents the output of our GraphQL mutation by adding the following code:
 
-   ```csharp
+    ```csharp
     using ConferencePlanner.GraphQL.Data;
 
     namespace ConferencePlanner.GraphQL
@@ -251,11 +251,11 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
             public Speaker Speaker { get; }
         }
     }
-   ```
+    ```
 
 1. Now lets add the actual mutation type with our `addSpeaker` mutation in it.
 
-   ```csharp
+    ```csharp
     using System.Threading.Tasks;
     using ConferencePlanner.GraphQL.Data;
     using HotChocolate;
@@ -282,16 +282,16 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
             }
         }
     }
-   ```
+    ```
 
 1. Last but not least you need to add the new `Mutation` type to your schema:
 
-   ```csharp
+    ```csharp
     services
         .AddGraphQLServer()
         .AddQueryType<Query>()
         .AddMutationType<Mutation>();
-   ```
+    ```
 
 1. Start the server again in order to validate if it is working properly.
    1. `dotnet run --project GraphQL`
@@ -301,7 +301,7 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
 
 1. Next add a speaker by writing a GraphQL mutation.
 
-   ```graphql
+    ```graphql
     mutation AddSpeaker {
       addSpeaker(input: {
         name: "Speaker Name"
@@ -312,19 +312,19 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
         }
       }
     }
-   ```
+    ```
 
    ![Add speaker](images/5-bcp-mutation-add-addspeaker.png)
 
 1. Query the names of all the speakers in the database.
 
-   ```graphql
+    ```graphql
     query GetSpeakerNames {
       speakers {
         name
       }
     }
-   ```
+    ```
 
    ![Query speaker names](images/6-bcp-query-get-speakers.png)
 
