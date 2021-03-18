@@ -50,7 +50,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
 
 1. Create a new file located in `Extensions` called `ObjectFieldDescriptorExtensions.cs` with the following code:
 
-   ```csharp
+    ```csharp
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using HotChocolate.Types;
@@ -69,7 +69,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
             }
         }
     }
-   ```
+    ```
 
    > The `UseDbContext` will create a new middleware that handles scoping for a field.
    > The `create` part will rent from the pool a `DBContext`, the `dispose`
@@ -130,7 +130,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
 
 1. Now head over to the `Mutation.cs` and do the same there:
 
-   ```csharp
+    ```csharp
     using System.Threading.Tasks;
     using ConferencePlanner.GraphQL.Data;
     using HotChocolate;
@@ -158,7 +158,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
             }
         }
     }
-   ```
+    ```
 
 1. Start your GraphQL Server again.
    1. `dotnet run --project Graphql`
@@ -405,29 +405,29 @@ Now, that we have all of our models in we need to create another migration and u
 
 1. First, validate your project by building it.
 
-   ```console
+    ```console
     dotnet build GraphQL
-   ```
+    ```
 
 1. Next, generate a new migration for the database.
 
-   ```console
+    ```console
     dotnet ef migrations add Refactoring --project GraphQL
-   ```
+    ```
 
 1. Last, update the database with the new migration.
 
-   ```console
+    ```console
     dotnet ef database update --project GraphQL
-   ```
+    ```
 
 After having everything in let us have a look at our schema and see if something changed.
 
 1. Start, your server.
 
-   ```console
+    ```console
     dotnet run --project GraphQL
-   ```
+    ```
 
 1. Open Banana Cake Pop and refresh the schema.
 
@@ -439,13 +439,13 @@ After having everything in let us have a look at our schema and see if something
 
 1. Add a new directory `DataLoader` to your project:
 
-   ```console
+    ```console
     mkdir GraphQL/DataLoader
-   ```
+    ```
 
 1. Add a new class called `SpeakerByIdDataLoader` to the `DataLoader` directory with the following code:
 
-   ```csharp
+    ```csharp
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -484,17 +484,17 @@ After having everything in let us have a look at our schema and see if something
             }
         }
     }
-   ```
+    ```
 
 1. Now, register your `DataLoader` with the schema like the following in the `Startup.cs`:
 
-   ```csharp
+    ```csharp
     services
         .AddGraphQLServer()
         .AddQueryType<Query>()
         .AddMutationType<Mutation>()
         .AddDataLoader<SpeakerByIdDataLoader>();
-   ```
+    ```
 
 1. Add a new method `GetSpeakerAsync` to your `Query.cs`.
 
@@ -508,7 +508,7 @@ After having everything in let us have a look at our schema and see if something
 
    The `Query.cs` should now look like the following:
 
-   ```csharp
+    ```csharp
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
@@ -532,7 +532,7 @@ After having everything in let us have a look at our schema and see if something
                 dataLoader.LoadAsync(id, cancellationToken);
         }
     }
-   ```
+    ```
 
 1. Let us have a look at the new schema with Banana Cake Pop. For this start your server and refresh Banana Cake Pop.
 
@@ -567,7 +567,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
 
 1. First let us add a new `DataLoader`for sessions in order to efficiently fetch sessions. for this create a file `SessionByIdDataLoader.cs` with the following code:
 
-   ```csharp
+    ```csharp
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -606,18 +606,18 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
             }
         }
     }
-   ```
+    ```
 
 1. Register the new `DataLoader` with the schema.
 
-   ```csharp
+    ```csharp
     services
         .AddGraphQLServer()
         .AddQueryType<Query>()
         .AddMutationType<Mutation>()
         .AddDataLoader<SpeakerByIdDataLoader>()
         .AddDataLoader<SessionByIdDataLoader>();
-   ```
+    ```
 
 1. Create a new directory `Types`.
 
@@ -627,7 +627,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
 
 1. Create a new class `SpeakerType` in the directory types with the following code:
 
-   ```csharp
+    ```csharp
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -670,7 +670,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
             }
         }
     }
-   ```
+    ```
 
    > In the type configuration we are giving `SessionSpeakers` a new name `sessions`.
    > Also, we are binding a new resolver to this field which also rewrites the result type.
@@ -678,7 +678,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
 
 1. Register the type with the schema builder in the `Startup.cs`:
 
-   ```csharp
+    ```csharp
     services
         .AddGraphQLServer()
         .AddQueryType<Query>()
@@ -686,7 +686,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
         .AddType<SpeakerType>()
         .AddDataLoader<SpeakerByIdDataLoader>()
         .AddDataLoader<SessionByIdDataLoader>();
-   ```
+    ```
 
    The new GraphQL representation of our speaker type is now:
 
@@ -708,7 +708,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
 
 1. Go back to Banana Cake Pop, refresh the schema and execute the following query:
 
-   ```graphql
+    ```graphql
     query GetSpeakerWithSessions {
        speakers {
            name
@@ -717,7 +717,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
            }
        }
     }
-   ```
+    ```
 
    > Since we do not have any data for sessions yet the server will return an empty list for session. Still, our server works already and we will soon be able to add more data.
 

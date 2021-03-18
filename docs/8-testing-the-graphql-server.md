@@ -38,7 +38,7 @@ A schema change test will simply create a snapshot of your schema and always fai
 
 1. Rename the file `UnitTest1.cs` to `AttendeeTests.cs` and replace the code with the following:
 
-   ```csharp
+    ```csharp
     using System;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
@@ -84,7 +84,7 @@ A schema change test will simply create a snapshot of your schema and always fai
             }
         }
     }
-   ```
+    ```
 
    The above test takes the service collection and builds from it a schema. We only integrates the part needed that we want to snapshot. On the schema, we are doing a `Print` that will print out the GraphQL SDL representation of the schema on which we do a `MatchSnapshot` that will create in the first run a snapshot file and will compare the SDL in consecutive runs against the snapshot file.
 
@@ -92,7 +92,7 @@ A schema change test will simply create a snapshot of your schema and always fai
 
 1. Add the following test to the AttendeeTests.cs:
 
-   ```csharp
+    ```csharp
     [Fact]
     public async Task RegisterAttendee()
     {
@@ -132,7 +132,7 @@ A schema change test will simply create a snapshot of your schema and always fai
         // assert
         result.ToJson().MatchSnapshot();
     }
-   ```
+    ```
 
    In the above test, we again only take the parts of the schema builder that we are concerned about within our test. Also, we have replaced the services that we do not need at this point.
 
