@@ -65,7 +65,7 @@
 ## Configuring EF Migrations
 
 1. Add a reference to the NuGet package `Microsoft.EntityFrameworkCore.Tools` version `5.0.0`.
-   1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Tools --version 5.0.0`
+   1. `dotnet add package Microsoft.EntityFrameworkCore.Tools --version 5.0.0`
 
 ### Option 1 - Visual Studio: Package Manager Console
 
@@ -109,7 +109,7 @@ Commands Explained
 ## Adding GraphQL
 
 1. Add a reference to the NuGet package package `HotChocolate.AspNetCore` version `11.0.0`.
-   1. `dotnet add GraphQL package HotChocolate.AspNetCore --version 11.0.0`
+   1. `dotnet add package HotChocolate.AspNetCore --version 11.0.0`
 1. Next we'll create our query root type (`Query.cs`) and add a resolver that fetches all of our speakers.
 
    ```csharp
