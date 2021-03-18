@@ -20,11 +20,11 @@ A schema change test will simply create a snapshot of your schema and always fai
 
 1. Add a reference to the NuGet package package `Snapshooter.Xunit` version `0.5.7`.
 
-   1. `dotnet add GraphQL package Snapshooter.Xunit --version 0.5.7`
+   1. `dotnet add GraphQL.Tests package Snapshooter.Xunit --version 0.5.7`
 
 1. Add a reference to the NuGet package package `Microsoft.EntityFrameworkCore.InMemory` version `5.0.0`.
 
-   1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.InMemory --version 5.0.0`
+   1. `dotnet add GraphQL.Tests package Microsoft.EntityFrameworkCore.InMemory --version 5.0.0`
 
 1. Head over to the `GraphQL.Tests.csproj` and change the version of `xunit` to `2.4.1`.
 
