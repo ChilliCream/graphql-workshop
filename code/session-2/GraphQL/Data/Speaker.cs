@@ -8,7 +8,7 @@ namespace ConferencePlanner.GraphQL.Data
 
         [Required]
         [StringLength(200)]
-        public string? Name { get; set; }
+        public string Name { get; set; } = default!;
 
         [StringLength(4000)]
         public string? Bio { get; set; }
