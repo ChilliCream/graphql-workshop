@@ -19,6 +19,7 @@ namespace ConferencePlanner.GraphQL.Tracks
         public string? GetName([Parent] Track track) => track.Name;
         
         [UseApplicationDbContext]
+        // TODO : we have an issue with paging here
         // [UsePaging(typeof(NonNullType<ObjectType<Session>>))]
         [BindProperty(nameof(Track.Sessions))]
         public async Task<IEnumerable<Session>> GetSessionsAsync(
