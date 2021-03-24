@@ -4,6 +4,6 @@ using HotChocolate.Types.Relay;
 namespace ConferencePlanner.GraphQL.Sessions
 {
     public record RenameSessionInput(
-        [ID(nameof(Session))] string SessionId,
+        [ID(nameof(Session))] int SessionId,
         string Title);
 }

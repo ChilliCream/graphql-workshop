@@ -51,10 +51,10 @@ namespace ConferencePlanner.GraphQL
                     .AddSubscriptionType(d => d.Name("Subscription"))
                         .AddTypeExtension<AttendeeSubscriptions>()
                         .AddTypeExtension<SessionSubscriptions>()
-                    .AddType<AttendeeType>()
-                    .AddType<SessionType>()
-                    .AddType<SpeakerType>()
-                    .AddType<TrackType>()
+                    .AddTypeExtension<AttendeeExtensions>()
+                    .AddTypeExtension<SessionExtensions>()
+                    .AddTypeExtension<TrackExtensions>()
+                    .AddTypeExtension<SpeakerExtensions>()
 
                     // In this section we are adding extensions like relay helpers,
                     // filtering and sorting.
@@ -79,7 +79,8 @@ namespace ConferencePlanner.GraphQL
                     // The first line adds the persisted query storage, 
                     // the second one the persisted query processing pipeline.
                     .AddFileSystemQueryStorage("./persisted_queries")
-                    .UsePersistedQueryPipeline();
+                    .UsePersistedQueryPipeline()
+                    .InitializeOnStartup();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
