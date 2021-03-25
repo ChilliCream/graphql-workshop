@@ -15,7 +15,7 @@ namespace ConferencePlanner.GraphQL.Attendees
     [ExtendObjectType(typeof(Attendee))]
     public class AttendeeExtensions
     {
-        [BindProperty(nameof(Attendee.SessionsAttendees))]
+        [BindMember(nameof(Attendee.SessionsAttendees))]
         public async Task<IEnumerable<Session>> GetSessionsAsync(
             [Parent] Attendee attendee,
             [ScopedService] ApplicationDbContext dbContext,

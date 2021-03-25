@@ -16,7 +16,7 @@ namespace ConferencePlanner.GraphQL.Sessions
     public class SessionExtensions
     {
         [UseApplicationDbContext]
-        [BindProperty(nameof(Session.SessionSpeakers))]
+        [BindMember(nameof(Session.SessionSpeakers))]
         public async Task<IEnumerable<Speaker>> GetSpeakersAsync(
             [Parent] Session session,
             [ScopedService] ApplicationDbContext dbContext,
@@ -33,7 +33,7 @@ namespace ConferencePlanner.GraphQL.Sessions
         }
 
         [UseApplicationDbContext]
-        [BindProperty(nameof(Session.SessionAttendees))]
+        [BindMember(nameof(Session.SessionAttendees))]
         public async Task<IEnumerable<Attendee>> GetAttendeesAsync(
             [Parent] Session session,
             [ScopedService] ApplicationDbContext dbContext,
@@ -49,7 +49,7 @@ namespace ConferencePlanner.GraphQL.Sessions
             return await attendeeById.LoadAsync(attendeeIds, cancellationToken);
         }
 
-        [BindProperty(nameof(Session.Track))]
+        [BindMember(nameof(Session.Track))]
         public async Task<Track?> GetTrackAsync(
             [Parent] Session session,
             TrackByIdDataLoader trackById,
@@ -64,7 +64,7 @@ namespace ConferencePlanner.GraphQL.Sessions
         }
 
         [ID(nameof(Track))]
-        [BindProperty(nameof(Session.TrackId))]
+        [BindMember(nameof(Session.TrackId))]
         public int? TrackId([Parent] Session session) => session.TrackId; 
 
         [NodeResolver]
