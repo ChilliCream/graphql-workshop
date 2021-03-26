@@ -7,7 +7,7 @@ using HotChocolate.Types;
 
 namespace ConferencePlanner.GraphQL.Sessions
 {
-    [ExtendObjectType(Name = "Subscription")]
+    [ExtendObjectType(OperationTypeNames.Subscription)]
     public class SessionSubscriptions
     {
         [Subscribe]

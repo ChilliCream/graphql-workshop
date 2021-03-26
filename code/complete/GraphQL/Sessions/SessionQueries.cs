@@ -12,7 +12,7 @@ using HotChocolate.Types.Relay;
 
 namespace ConferencePlanner.GraphQL.Sessions
 {
-    [ExtendObjectType(Name = "Query")]
+    [ExtendObjectType(OperationTypeNames.Query)]
     public class SessionQueries
     {
         [UseApplicationDbContext]
