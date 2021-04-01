@@ -11,7 +11,6 @@ using ConferencePlanner.GraphQL.Imports;
 using ConferencePlanner.GraphQL.Sessions;
 using ConferencePlanner.GraphQL.Speakers;
 using ConferencePlanner.GraphQL.Tracks;
-using ConferencePlanner.GraphQL.Types;
 using HotChocolate;
 
 namespace ConferencePlanner.GraphQL

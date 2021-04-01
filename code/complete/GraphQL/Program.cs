@@ -1,7 +1,5 @@
-using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using ConferencePlanner.GraphQL.Imports;
 
 namespace ConferencePlanner.GraphQL
 {
