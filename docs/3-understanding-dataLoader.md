@@ -124,7 +124,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
    }
    ```
 
-   > By annotating `UseApplicationDbContext` we are essentially applying a Middleware to the field resolver pipeline. We will have a more in-depth look into filed middleware later on.
+   > By annotating `UseApplicationDbContext` we are essentially applying a Middleware to the field resolver pipeline. We will have a more in-depth look into field middleware later on.
 
    > **Important**: Note, that we no longer are returning the `IQueryable` but are executing the `IQueryable` by using `ToListAsync`. We will explain why later in the middleware and filter session.
 
