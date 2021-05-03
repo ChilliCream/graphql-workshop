@@ -1139,7 +1139,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    using HotChocolate.Types;
    using HotChocolate.Types.Relay;
 
-   namespace ConferencePlanner.GraphQL
+   namespace ConferencePlanner.GraphQL.Speakers
    {
        [ExtendObjectType(Name = "Query")]
        public class SpeakerQueries
@@ -1173,7 +1173,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
    using HotChocolate.Types;
    using HotChocolate.Types.Relay;
 
-   namespace ConferencePlanner.GraphQL
+   namespace ConferencePlanner.GraphQL.Speakers
    {
        [ExtendObjectType(Name = "Query")]
        public class SpeakerQueries
