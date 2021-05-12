@@ -222,7 +222,7 @@ Now that we have the mutation in to register new attendees, let us move on to ad
     }
     ```
 
-1. Head back to the `AttendeeMutations` class in the `Attendees` directory and add the `` resolver to it:
+1. Head back to the `AttendeeMutations` class in the `Attendees` directory and add the `CheckInAttendeeAsync` resolver to it:
 
     ```csharp
     [UseApplicationDbContext]
