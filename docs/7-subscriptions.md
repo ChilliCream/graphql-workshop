@@ -181,7 +181,7 @@ Now that we have the mutation in to register new attendees, let us move on to ad
     }
     ```
 
-1. Next we add the payload type for the `checkInAttendee` Mutation:
+1. Next we add the payload type for the `CheckInAttendeePayload` Mutation:
 
     ```csharp
     using System.Threading;
