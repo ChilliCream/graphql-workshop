@@ -305,7 +305,7 @@ In order to expand our GraphQL server model further we've got several more data 
    }
    ```
 
-1. Create a `SessionSpeaker` class with the following code:
+1. Create a `SessionSpeaker.cs` class with the following code:
 
    ```csharp
    namespace ConferencePlanner.GraphQL.Data
