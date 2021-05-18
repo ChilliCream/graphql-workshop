@@ -4,9 +4,9 @@ So far, our GraphQL server only exposes plain lists that would, at some point, g
 
 ## Add paging to your lists
 
-Let us start by implementing the last Relay server specification we are still missing in our server by adding Relay compliant paging to our lists. In general, you should avoid plain lists wherever lists grow or are very large. Relay describes a curser based paging where you can navigate between edges through their cursors. Cursor based paging is ideal whenever you implement infinite scrolling solutions. In contrast to offset-pagination, you cannot jump to a specific page, but you can jump to a particular curser and navigate from there.
+Let us start by implementing the last Relay server specification we are still missing in our server by adding Relay compliant paging to our lists. In general, you should avoid plain lists wherever lists grow or are very large. Relay describes a cursor based paging where you can navigate between edges through their cursors. Cursor based paging is ideal whenever you implement infinite scrolling solutions. In contrast to offset-pagination, you cannot jump to a specific page, but you can jump to a particular cursor and navigate from there.
 
-> Many database drivers or databases do not support `skip while`, so Hot Chocolate will under the hood use positions instead of proper IDs for cursers in theses cases. Meaning, you can always use cursor-based pagination, and Hot Chocolate will handle the rest underneath.
+> Many database drivers or databases do not support `skip while`, so Hot Chocolate will under the hood use positions instead of proper IDs for cursors in theses cases. Meaning, you can always use cursor-based pagination, and Hot Chocolate will handle the rest underneath.
 
 1. Head over to the `Tracks`directory and replace the `GetTracksAsync` resolver in the `TrackQueries.cs` with the following code.
 
@@ -62,7 +62,7 @@ Let us start by implementing the last Relay server specification we are still mi
 
    ![Query speaker names](images/25-bcp-GetFirstTrack.png)
 
-1. Take the curser from this item and add a second argument after and feed in the cursor.
+1. Take the cursor from this item and add a second argument after and feed in the cursor.
 
    ```graphql
    query GetNextItem {
