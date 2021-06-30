@@ -437,7 +437,7 @@ After having everything in let us have a look at our schema and see if something
 
 1. Open Banana Cake Pop and refresh the schema.
 
-1. Head over to the schema explorer and have a look at the speaker.
+2. Head over to the schema explorer and have a look at the speaker. **Note**: You might have to reload the schema, you can do so by clicking the refresh-button in the upper-right corner.  
 
    ![Connect to GraphQL server with Banana Cake Pop](images/10-bcp-schema-updated.png)
 
