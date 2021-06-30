@@ -209,11 +209,13 @@ Commands Explained
 
     ![Start GraphQL server](images/1-start-server.png)
 
-1. Start Banana Cake Pop and connect to our server.
+1. Start [Banana Cake Pop](https://chillicream.com/docs/bananacakepop) or use it built-in your browser at [http://localhost:5000/graphql/](http://localhost:5000/graphql/) and connect to our server (usually at [http://localhost:5000/graphql](http://localhost:5000/graphql)).   
+   **Note**: `<address>/graphql/` might **not** show mutations, make sure you use `<address>/graphql` (without trailing slash). 
 
     ![Connect to GraphQL server with Banana Cake Pop](images/2-bcp-connect-to-server.png)
 
-1. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.
+1. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.   
+   **Note**: You might have to reload the schema, you can do so by clicking the refresh-button in the upper-right corner. 
 
     ![Explore GraphQL schema with Banana Cake Pop](images/3-bcp-schema-explorer.png)
 
