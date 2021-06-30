@@ -1,3 +1,9 @@
+- [Understanding GraphQL query execution and DataLoader](#understanding-graphql-query-execution-and-dataloader)
+  - [Configure field scoped services](#configure-field-scoped-services)
+  - [Adding the remaining data models](#adding-the-remaining-data-models)
+  - [Adding DataLoader](#adding-dataloader)
+  - [Fluent type configurations](#fluent-type-configurations)
+  - [Summary](#summary)
 
 # Understanding GraphQL query execution and DataLoader
 

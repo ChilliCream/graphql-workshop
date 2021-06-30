@@ -1,3 +1,11 @@
+- [GraphQL schema design approaches](#graphql-schema-design-approaches)
+  - [Reorganize mutation types](#reorganize-mutation-types)
+  - [Enable Relay support](#enable-relay-support)
+  - [Build out the schema](#build-out-the-schema)
+    - [Think beyond CRUD](#think-beyond-crud)
+    - [Offer plural versions fields and be precise about field names](#offer-plural-versions-fields-and-be-precise-about-field-names)
+  - [Summary](#summary)
+
 # GraphQL schema design approaches
 
 In GraphQL, most APIs are designed in Relay style. Relay is Facebook's GraphQL client for React and represents Facebook's opinionated view on GraphQL. The GraphQL community adopted the Relay server specifications since it provides a battle-tested way of exposing GraphQL at massive scale.

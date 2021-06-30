@@ -1,4 +1,11 @@
-
+- [Create a new GraphQL server project](#create-a-new-graphql-server-project)
+  - [Register the DB Context Service](#register-the-db-context-service)
+  - [Configuring EF Migrations](#configuring-ef-migrations)
+    - [Option 1 - Visual Studio: Package Manager Console](#option-1---visual-studio-package-manager-console)
+    - [Option 2 - Command line](#option-2---command-line)
+  - [Adding GraphQL](#adding-graphql)
+  - [Adding Mutations](#adding-mutations)
+  - [Summary](#summary)
 # Create a new GraphQL server project
 
 1. Create a new project for our GraphQL Server.
