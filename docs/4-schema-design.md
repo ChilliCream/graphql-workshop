@@ -259,18 +259,19 @@ Now that we have reorganized our mutations, we will refactor the schema to a pro
 
    > The following piece of code marked our `SpeakerType` as implementing the `Node` interface. It also defined that the `id` field that the node interface specifies is implemented by the `Id` on our entity. The internal `Id` is consequently rewritten to a global object identifier that contains the internal id plus the type name. Last but not least we defined a `ResolveNode` that is able to load the entity by `id`.
 
-   > ```csharp
-   > descriptor
-   >     .ImplementsNode()
-   >     .IdField(t => t.Id)
-   >    .ResolveNode((ctx, id) => ctx.DataLoader<SpeakerByIdDataLoader>().LoadAsync(id, ctx.RequestAborted));
-   > ```
+    > ```csharp
+    > descriptor
+    >    .ImplementsNode()
+    >    .IdField(t => t.Id)
+    >    .ResolveNode((ctx, id) => ctx.DataLoader<SpeakerByIdDataLoader>()
+    >    .LoadAsync(id, ctx.RequestAborted));
+    > ```
 
 1. Head over to the `Query.cs` and annotate the `id` argument of `GetSpeaker` with the `ID` attribute.
 
    ```csharp
    public Task<Speaker> GetSpeakerAsync(
-       [ID(nameof(Speaker))]int id,
+       [ID(nameof(Speaker))] int id,
        SpeakerByIdDataLoader dataLoader,
        CancellationToken cancellationToken) =>
        dataLoader.LoadAsync(id, cancellationToken);
@@ -388,7 +389,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
 
 1. Now, add the missing type classes, `AttendeeType`, `TrackType`, and `SessionType` to the `Types` directory.
 
-   `AttendeeType`
+   `AttendeeType.cs`
 
     ```csharp
     using System.Collections.Generic;
@@ -649,7 +650,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
         .AddType<SessionType>()
         .AddType<SpeakerType>()
         .AddType<TrackType>()
-        .EnableRelaySupport());
+        .EnableRelaySupport();
     ```
 
 Great, we now have our base schema and are ready to dive into some schema design topics. Although GraphQL has a single root query type, a single root mutation type, and a single root subscription type, Hot Chocolate allows splitting the root types into multiple classes, which will enable us to organize our schema around topics rather than divide it along its root types.
