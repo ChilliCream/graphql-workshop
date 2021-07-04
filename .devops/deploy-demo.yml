@@ -102,10 +102,10 @@ steps:
       spec:
         tls:
         - hosts:
-          - $(portal-domain)
+          - workshop.demos.chillicream.cloud
           secretName: management-tls
         rules:
-        - host: $(portal-domain)
+        - host: workshop.demos.chillicream.cloud
           http:
             paths:
             - path: /
