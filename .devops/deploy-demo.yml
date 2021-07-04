@@ -24,7 +24,7 @@ steps:
     repository: 'chillicream-oss-graphqlworkshop'
     command: 'buildAndPush'
     Dockerfile: 'code/complete/GraphQL/dockerfile'
-    buildContext: '.'
+    buildContext: 'code/complete/GraphQL'
 - task: Kubernetes@1
   displayName: "Deploy Demo Service"
   inputs:
