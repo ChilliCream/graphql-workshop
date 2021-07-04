@@ -23,7 +23,7 @@ steps:
     containerRegistry: '$(container-registry)'
     repository: 'chillicream-oss-graphqlworkshop'
     command: 'buildAndPush'
-    Dockerfile: 'code/complete/graphql/dockerfile'
+    Dockerfile: 'code/complete/GraphQL/dockerfile'
     buildContext: '.'
 - task: Kubernetes@1
   displayName: "Deploy Demo Service"
