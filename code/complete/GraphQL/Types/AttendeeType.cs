@@ -25,6 +25,9 @@ namespace ConferencePlanner.GraphQL.Types
                 .ResolveWith<AttendeeResolvers>(t => t.GetSessionsAsync(default!, default!, default!, default))
                 .UseDbContext<ApplicationDbContext>()
                 .Name("sessions");
+
+            descriptor
+                .Field(l => l.Color).Type<NonNullType<ColorType>>();
         }
 
         private class AttendeeResolvers

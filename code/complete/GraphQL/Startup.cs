@@ -56,6 +56,11 @@ namespace ConferencePlanner.GraphQL
                     .AddType<SpeakerType>()
                     .AddType<TrackType>()
 
+                    .AddType<ColorType>()
+                    .AddType<ColorFilterInputType>()
+                    .AddType<AttendeeFilterInputType>()
+
+
                     // In this section we are adding extensions like relay helpers,
                     // filtering and sorting.
                     .AddFiltering()

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 namespace ConferencePlanner.GraphQL.Data
 {
@@ -21,6 +22,8 @@ namespace ConferencePlanner.GraphQL.Data
 
         [StringLength(256)]
         public string? EmailAddress { get; set; }
+
+        public Color Color { get; set; }
 
         public ICollection<SessionAttendee> SessionsAttendees { get; set; } =
             new List<SessionAttendee>();

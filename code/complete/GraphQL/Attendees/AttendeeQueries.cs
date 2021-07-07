@@ -4,7 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
+using ConferencePlanner.GraphQL.Types;
 using HotChocolate;
+using HotChocolate.Data;
 using HotChocolate.Types;
 using HotChocolate.Types.Relay;
 
@@ -15,6 +17,7 @@ namespace ConferencePlanner.GraphQL.Attendees
     {
         [UseApplicationDbContext]
         [UsePaging]
+        [UseFiltering(typeof(AttendeeFilterInputType))]
         public IQueryable<Attendee> GetAttendees(
             [ScopedService] ApplicationDbContext context) => 
             context.Attendees;

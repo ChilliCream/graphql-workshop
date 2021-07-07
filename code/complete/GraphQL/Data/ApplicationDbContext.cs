@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Drawing;
 
 namespace ConferencePlanner.GraphQL.Data
 {
@@ -25,6 +26,12 @@ namespace ConferencePlanner.GraphQL.Data
             modelBuilder
                 .Entity<SessionSpeaker>()
                 .HasKey(ss => new { ss.SessionId, ss.SpeakerId });
+
+            modelBuilder
+                .Entity<Attendee>()
+                .Property(x => x.Color)
+                .HasConversion(c => c.Name, s => Color.FromName(s))
+                .HasMaxLength(150);
         }
 
         public DbSet<Session> Sessions { get; set; } = default!;
