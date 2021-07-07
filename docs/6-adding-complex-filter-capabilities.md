@@ -19,6 +19,8 @@ Let us start by implementing the last Relay server specification we are still mi
    ```
 
    > The new resolver will instead of executing the database query return an `IQueryable`. The `IQueryable` is like a query builder. By applying the `UsePaging` middleware, we are rewriting the database query to only fetch the items that we need for our data-set.
+   
+   > For offset-pagination, apply the [`UseOffsetPaging`](https://github.com/ChilliCream/hotchocolate/blob/main/src/HotChocolate/Core/src/Types.OffsetPagination/Extensions/UseOffsetPagingAttribute.cs) attribute/middleware instead.
 
    The resolver pipeline for our field now looks like the following:
 
