@@ -100,16 +100,16 @@
 
     ```console
     dotnet build GraphQL
-    dotnet ef migrations add Initial --project GraphQL
-    dotnet ef database update --project GraphQL
+    dotnet-ef migrations add Initial --project GraphQL
+    dotnet-ef database update --project GraphQL
     ```
 
 Commands Explained
 
 | Command                                                      | Description                                                                                                                                             |
 | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `dotnet ef migrations add Initial` / `Add-Migration Initial` | generates code to create the initial database schema based on the model specified in 'ApplicationDbContext.cs'. `Initial` is the name of the migration. |
-| `dotnet ef database update` / `Update-Database`              | creates the database                                                                                                                                    |
+| `dotnet-ef migrations add Initial` / `Add-Migration Initial` | generates code to create the initial database schema based on the model specified in 'ApplicationDbContext.cs'. `Initial` is the name of the migration. |
+| `dotnet-ef database update` / `Update-Database`              | creates the database                                                                                                                                    |
 
 > If your database ever gets in a bad state and you'd like to reset things, you can use `dotnet ef database drop` followed by `dotnet ef database update` to remove your database and run all migrations again.
 
