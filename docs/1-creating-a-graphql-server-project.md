@@ -1,4 +1,11 @@
-
+- [Create a new GraphQL server project](#create-a-new-graphql-server-project)
+  - [Register the DB Context Service](#register-the-db-context-service)
+  - [Configuring EF Migrations](#configuring-ef-migrations)
+    - [Option 1 - Visual Studio: Package Manager Console](#option-1---visual-studio-package-manager-console)
+    - [Option 2 - Command line](#option-2---command-line)
+  - [Adding GraphQL](#adding-graphql)
+  - [Adding Mutations](#adding-mutations)
+  - [Summary](#summary)
 # Create a new GraphQL server project
 
 1. Create a new project for our GraphQL Server.
@@ -93,16 +100,16 @@
 
     ```console
     dotnet build GraphQL
-    dotnet ef migrations add Initial --project GraphQL
-    dotnet ef database update --project GraphQL
+    dotnet-ef migrations add Initial --project GraphQL
+    dotnet-ef database update --project GraphQL
     ```
 
 Commands Explained
 
 | Command                                                      | Description                                                                                                                                             |
 | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `dotnet ef migrations add Initial` / `Add-Migration Initial` | generates code to create the initial database schema based on the model specified in 'ApplicationDbContext.cs'. `Initial` is the name of the migration. |
-| `dotnet ef database update` / `Update-Database`              | creates the database                                                                                                                                    |
+| `dotnet-ef migrations add Initial` / `Add-Migration Initial` | generates code to create the initial database schema based on the model specified in 'ApplicationDbContext.cs'. `Initial` is the name of the migration. |
+| `dotnet-ef database update` / `Update-Database`              | creates the database                                                                                                                                    |
 
 > If your database ever gets in a bad state and you'd like to reset things, you can use `dotnet ef database drop` followed by `dotnet ef database update` to remove your database and run all migrations again.
 
@@ -202,11 +209,13 @@ Commands Explained
 
     ![Start GraphQL server](images/1-start-server.png)
 
-1. Start Banana Cake Pop and connect to our server.
+1. Start [Banana Cake Pop](https://chillicream.com/docs/bananacakepop) or use it built-in your browser at [http://localhost:5000/graphql/](http://localhost:5000/graphql/) and connect to our server (usually at [http://localhost:5000/graphql](http://localhost:5000/graphql)).   
+   **Note**: `<address>/graphql/` might **not** show mutations, make sure you use `<address>/graphql` (without trailing slash). 
 
     ![Connect to GraphQL server with Banana Cake Pop](images/2-bcp-connect-to-server.png)
 
-1. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.
+1. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.   
+   **Note**: You might have to reload the schema, you can do so by clicking the refresh-button in the upper-right corner. 
 
     ![Explore GraphQL schema with Banana Cake Pop](images/3-bcp-schema-explorer.png)
 

@@ -1,3 +1,8 @@
+- [Adding complex filter capabilities](#adding-complex-filter-capabilities)
+  - [Add paging to your lists](#add-paging-to-your-lists)
+  - [Add filter capabilities to the top-level field `sessions`](#add-filter-capabilities-to-the-top-level-field-sessions)
+  - [Summary](#summary)
+
 # Adding complex filter capabilities
 
 So far, our GraphQL server only exposes plain lists that would, at some point, grow so large that our server would time out. Moreover, we miss some filter capabilities for our session list so that the application using our backend can filter for tracks, titles, or search the abstract for topics.

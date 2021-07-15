@@ -1,3 +1,6 @@
+- [Controlling nullability](#controlling-nullability)
+  - [Configure Nullability](#configure-nullability)
+  - [Summary](#summary)
 
 # Controlling nullability
 

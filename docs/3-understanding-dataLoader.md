@@ -1,3 +1,9 @@
+- [Understanding GraphQL query execution and DataLoader](#understanding-graphql-query-execution-and-dataloader)
+  - [Configure field scoped services](#configure-field-scoped-services)
+  - [Adding the remaining data models](#adding-the-remaining-data-models)
+  - [Adding DataLoader](#adding-dataloader)
+  - [Fluent type configurations](#fluent-type-configurations)
+  - [Summary](#summary)
 
 # Understanding GraphQL query execution and DataLoader
 
@@ -188,7 +194,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
 
 ## Adding the remaining data models
 
-In order to expand our GraphQL server model further we've got several more data models to add, and unfortunately it's a little mechanical. You can copy the following classes manually, or open the session 3 solution which is shown at the end.
+In order to expand our GraphQL server model further we've got several more data models to add, and unfortunately it's a little mechanical. You can copy the following classes manually, or open the [session 3 solution](/code/session-3).
 
 1. Create an `Attendee.cs` class in the `Data` directory with the following code:
 
@@ -431,7 +437,7 @@ After having everything in let us have a look at our schema and see if something
 
 1. Open Banana Cake Pop and refresh the schema.
 
-1. Head over to the schema explorer and have a look at the speaker.
+2. Head over to the schema explorer and have a look at the speaker. **Note**: You might have to reload the schema, you can do so by clicking the refresh-button in the upper-right corner.  
 
    ![Connect to GraphQL server with Banana Cake Pop](images/10-bcp-schema-updated.png)
 

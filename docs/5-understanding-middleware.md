@@ -1,3 +1,9 @@
+- [Understanding middleware](#understanding-middleware)
+  - [Add UseUpper middleware](#add-useupper-middleware)
+  - [Create middleware attribute](#create-middleware-attribute)
+  - [Middleware order](#middleware-order)
+  - [Summary](#summary)
+
 # Understanding middleware
 
 The field middleware is one of the foundational components in Hot Chocolate. Many features that you use like, for instance, the `ID` transformation from internal IDs to global object identifiers, are a field middleware. Even resolvers are compiled into a field middleware.
