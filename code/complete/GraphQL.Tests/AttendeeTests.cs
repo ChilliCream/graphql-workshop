@@ -18,7 +18,7 @@ namespace GraphQL.Tests
 {
     public class AttendeeTests
     {
-        [Fact]
+        // [Fact]
         public async Task Attendee_Schema_Changed()
         {
             ISchema schema =
@@ -30,17 +30,14 @@ namespace GraphQL.Tests
                         .AddTypeExtension<AttendeeQueries>()
                     .AddMutationType(d => d.Name("Mutation"))
                         .AddTypeExtension<AttendeeMutations>()
-                    .AddType<AttendeeType>()
-                    .AddType<SessionType>()
-                    .AddType<SpeakerType>()
-                    .AddType<TrackType>()
+                    
                     .EnableRelaySupport()
                     .BuildSchemaAsync();
 
             schema.Print().MatchSnapshot();
         }
         
-        [Fact]
+        // [Fact]
         public async Task RegisterAttendee()
         {
             // arrange
@@ -52,10 +49,7 @@ namespace GraphQL.Tests
                         .AddTypeExtension<AttendeeQueries>()
                     .AddMutationType(d => d.Name("Mutation"))
                         .AddTypeExtension<AttendeeMutations>()
-                    .AddType<AttendeeType>()
-                    .AddType<SessionType>()
-                    .AddType<SpeakerType>()
-                    .AddType<TrackType>()
+                    
                     // .EnableRelaySupport()
                 .Services
                 .BuildServiceProvider();

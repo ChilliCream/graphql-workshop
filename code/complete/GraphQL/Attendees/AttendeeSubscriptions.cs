@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Data;
@@ -11,7 +10,7 @@ using HotChocolate.Types.Relay;
 
 namespace ConferencePlanner.GraphQL.Attendees
 {
-    [ExtendObjectType(Name = "Subscription")]
+    [ExtendObjectType(OperationTypeNames.Subscription)]
     public class AttendeeSubscriptions
     {
         [Subscribe(With = nameof(SubscribeToOnAttendeeCheckedInAsync))]
