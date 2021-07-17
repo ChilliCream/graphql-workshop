@@ -35,13 +35,13 @@ namespace ConferencePlanner.GraphQL.Types
                 SessionByIdDataLoader sessionById,
                 CancellationToken cancellationToken)
             {
-                int[] speakerIds = await dbContext.Attendees
+                int[] sessionIds = await dbContext.Attendees
                     .Where(a => a.Id == attendee.Id)
                     .Include(a => a.SessionsAttendees)
                     .SelectMany(a => a.SessionsAttendees.Select(t => t.SessionId))
                     .ToArrayAsync();
 
-                return await sessionById.LoadAsync(speakerIds, cancellationToken);
+                return await sessionById.LoadAsync(sessionIds, cancellationToken);
             }
         }
     }
