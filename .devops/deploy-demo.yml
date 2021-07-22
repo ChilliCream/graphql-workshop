@@ -40,7 +40,7 @@ steps:
       metadata:
         name: chillicream-oss-graphqlworkshop
       spec:
-        replicas: 1
+        replicas: 3
         selector:
           matchLabels:
             app: chillicream-oss-graphqlworkshop

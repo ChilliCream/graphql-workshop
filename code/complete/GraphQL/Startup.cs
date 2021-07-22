@@ -23,8 +23,8 @@ namespace ConferencePlanner.GraphQL
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddCors(o => 
-                    o.AddDefaultPolicy(b => 
+                .AddCors(o =>
+                    o.AddDefaultPolicy(b =>
                         b.AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowAnyOrigin()))
@@ -36,7 +36,7 @@ namespace ConferencePlanner.GraphQL
 
                 // This adds the GraphQL server core service and declares a schema.
                 .AddGraphQLServer()
-
+                
                     // Next we add the types to our schema.
                     .AddQueryType()
                         .AddTypeExtension<AttendeeQueries>()
