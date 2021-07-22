@@ -68,8 +68,6 @@ namespace ConferencePlanner.GraphQL
                     .AddDataLoader<SpeakerByIdDataLoader>()
                     .AddDataLoader<TrackByIdDataLoader>()
 
-                    .InitializeOnStartup()
-
                     // we make sure that the db exists and prefill it with conference data.
                     .EnsureDatabaseIsCreated()
 
