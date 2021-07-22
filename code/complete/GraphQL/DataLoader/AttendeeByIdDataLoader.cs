@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ConferencePlanner.GraphQL.Data;
 using GreenDonut;
-using HotChocolate.DataLoader;
+using HotChocolate.Fetching;
 
 namespace ConferencePlanner.GraphQL.DataLoader
 {

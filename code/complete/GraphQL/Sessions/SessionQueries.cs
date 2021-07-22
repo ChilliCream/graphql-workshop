@@ -12,12 +12,12 @@ using HotChocolate.Types.Relay;
 
 namespace ConferencePlanner.GraphQL.Sessions
 {
-    [ExtendObjectType(Name = "Query")]
+    [ExtendObjectType(OperationTypeNames.Query)]
     public class SessionQueries
     {
         [UseApplicationDbContext]
         [UsePaging(typeof(NonNullType<SessionType>))]
-        [UseFiltering] // TODO : fix    [UseFiltering(typeof(SessionFilterInputType))]
+        [UseFiltering]        // [UseFiltering(typeof(SessionFilterInputType))]
         [UseSorting]
         public IQueryable<Session> GetSessions(
             [ScopedService] ApplicationDbContext context) =>

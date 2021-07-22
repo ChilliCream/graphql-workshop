@@ -11,7 +11,7 @@ using HotChocolate.Types.Relay;
 
 namespace ConferencePlanner.GraphQL.Tracks
 {
-    [ExtendObjectType(Name = "Query")]
+    [ExtendObjectType(OperationTypeNames.Query)]
     public class TrackQueries
     {
         [UseApplicationDbContext]

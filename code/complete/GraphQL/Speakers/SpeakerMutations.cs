@@ -7,7 +7,7 @@ using HotChocolate.Types;
 
 namespace ConferencePlanner.GraphQL.Speakers
 {
-    [ExtendObjectType(Name = "Mutation")]
+    [ExtendObjectType(OperationTypeNames.Mutation)]
     public class SpeakerMutations
     {
         [UseApplicationDbContext]
