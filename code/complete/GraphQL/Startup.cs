@@ -38,17 +38,17 @@ namespace ConferencePlanner.GraphQL
                 .AddGraphQLServer()
 
                     // Next we add the types to our schema.
-                    .AddQueryType(d => d.Name("Query"))
+                    .AddQueryType()
                         .AddTypeExtension<AttendeeQueries>()
                         .AddTypeExtension<SessionQueries>()
                         .AddTypeExtension<SpeakerQueries>()
                         .AddTypeExtension<TrackQueries>()
-                    .AddMutationType(d => d.Name("Mutation"))
+                    .AddMutationType()
                         .AddTypeExtension<AttendeeMutations>()
                         .AddTypeExtension<SessionMutations>()
                         .AddTypeExtension<SpeakerMutations>()
                         .AddTypeExtension<TrackMutations>()
-                    .AddSubscriptionType(d => d.Name("Subscription"))
+                    .AddSubscriptionType()
                         .AddTypeExtension<AttendeeSubscriptions>()
                         .AddTypeExtension<SessionSubscriptions>()
                     .AddType<AttendeeType>()
@@ -60,7 +60,7 @@ namespace ConferencePlanner.GraphQL
                     // filtering and sorting.
                     .AddFiltering()
                     .AddSorting()
-                    .EnableRelaySupport()
+                    .AddGlobalObjectIdentification()
 
                     // Now we add some the DataLoader to our system. 
                     .AddDataLoader<AttendeeByIdDataLoader>()

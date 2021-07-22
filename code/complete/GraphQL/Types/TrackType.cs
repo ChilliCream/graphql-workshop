@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
 using HotChocolate;
-using HotChocolate.Resolvers;
 using HotChocolate.Types;
 
 namespace ConferencePlanner.GraphQL.Types
@@ -35,7 +34,7 @@ namespace ConferencePlanner.GraphQL.Types
         private class TrackResolvers
         {
             public async Task<IEnumerable<Session>> GetSessionsAsync(
-                Track track,
+                [Parent] Track track,
                 [ScopedService] ApplicationDbContext dbContext,
                 SessionByIdDataLoader sessionById,
                 CancellationToken cancellationToken)
