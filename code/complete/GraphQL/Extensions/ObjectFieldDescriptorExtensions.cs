@@ -18,15 +18,17 @@ namespace ConferencePlanner.GraphQL
         public static IObjectFieldDescriptor UseUpperCase(
             this IObjectFieldDescriptor descriptor)
         {
-            return descriptor.Use(next => async context =>
-            {
-                await next(context);
+            descriptor.Extend().Definition.ResultConverters.Add(
+                (context, result) =>
+                {            
+                    if (result is string s)
+                    {
+                        return s.ToUpperInvariant();
+                    }
+                    return result;
+                });
 
-                if (context.Result is string s)
-                {
-                    context.Result = s.ToUpperInvariant();
-                }
-            });
+            return descriptor;
         }
     }
 }
