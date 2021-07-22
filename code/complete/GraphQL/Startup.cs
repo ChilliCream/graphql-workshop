@@ -36,7 +36,7 @@ namespace ConferencePlanner.GraphQL
 
                 // This adds the GraphQL server core service and declares a schema.
                 .AddGraphQLServer()
-                
+
                     // Next we add the types to our schema.
                     .AddQueryType()
                         .AddTypeExtension<AttendeeQueries>()
@@ -67,6 +67,8 @@ namespace ConferencePlanner.GraphQL
                     .AddDataLoader<SessionByIdDataLoader>()
                     .AddDataLoader<SpeakerByIdDataLoader>()
                     .AddDataLoader<TrackByIdDataLoader>()
+
+                    .InitializeOnStartup()
 
                     // we make sure that the db exists and prefill it with conference data.
                     .EnsureDatabaseIsCreated()
