@@ -53,14 +53,14 @@ First, we will restructure our GraphQL server so that it will better scale once 
        public class UserError
        {
            public UserError(string message, string code)
-           {
+            {
                Message = message;
                Code = code;
-        }
+            }
 
-        public string Message { get; }
+            public string Message { get; }
 
-        public string Code { get; }
+            public string Code { get; }
        }
    }
    ```
