@@ -79,7 +79,7 @@ Now, that we have some base classes for our mutation let us start to reorganize 
 
     namespace ConferencePlanner.GraphQL.Speakers
     {
-        [ExtendObjectType(Name = "Mutation")]
+        [ExtendObjectType("Mutation")]
         public class SpeakerMutations
         {
             [UseApplicationDbContext]
@@ -584,7 +584,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
 
 1. Move the `Query.cs` to the `Speakers` directory and rename it to `SpeakerQueries.cs`.
 
-1. Next, add the `[ExtendObjectType(Name = "Query")]` on top of our `SpeakerQueries` class. The code should now look like the following.
+1. Next, add the `[ExtendObjectType("Query")]` on top of our `SpeakerQueries` class. The code should now look like the following.
 
     ```csharp
     using System.Collections.Generic;
@@ -599,7 +599,7 @@ We will start by adding the rest of the DataLoader that we will need. Then we wi
 
     namespace ConferencePlanner.GraphQL.Speakers
     {
-        [ExtendObjectType(Name = "Query")]
+        [ExtendObjectType("Query")]
         public class SpeakerQueries
         {
             [UseApplicationDbContext]
@@ -717,19 +717,20 @@ mkdir GraphQL/Sessions
 
     namespace ConferencePlanner.GraphQL.Sessions
     {
-        public class AddSessionPayload : Payload
+        public class AddSessionPayload : SessionPayloadBase
         {
-            public AddSessionPayload(Session session)
-            {
-                Session = session;
-            }
-
             public AddSessionPayload(UserError error)
                 : base(new[] { error })
             {
             }
 
-            public Session? Session { get; }
+            public AddSessionPayload(Session session) : base(session)
+            {
+            }
+
+            public AddSessionPayload(IReadOnlyList<UserError> errors) : base(errors)
+            {
+            }
         }
     }
     ```
@@ -746,7 +747,7 @@ mkdir GraphQL/Sessions
 
     namespace ConferencePlanner.GraphQL.Sessions
     {
-        [ExtendObjectType(Name = "Mutation")]
+        [ExtendObjectType("Mutation")]
         public class SessionMutations
         {
             [UseApplicationDbContext]
@@ -1001,7 +1002,7 @@ mkdir GraphQL/Sessions
 
     namespace ConferencePlanner.GraphQL.Tracks
     {
-        [ExtendObjectType(Name = "Mutation")]
+        [ExtendObjectType("Mutation")]
         public class TrackMutations
         {
             [UseApplicationDbContext]
@@ -1141,7 +1142,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
 
    namespace ConferencePlanner.GraphQL.Speakers
    {
-       [ExtendObjectType(Name = "Query")]
+       [ExtendObjectType("Query")]
        public class SpeakerQueries
        {
            [UseApplicationDbContext]
@@ -1175,7 +1176,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
 
    namespace ConferencePlanner.GraphQL.Speakers
    {
-       [ExtendObjectType(Name = "Query")]
+       [ExtendObjectType("Query")]
        public class SpeakerQueries
        {
            [UseApplicationDbContext]
@@ -1213,7 +1214,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
 
    namespace ConferencePlanner.GraphQL.Sessions
    {
-       [ExtendObjectType(Name = "Query")]
+       [ExtendObjectType("Query")]
        public class SessionQueries
        {
            [UseApplicationDbContext]
@@ -1272,7 +1273,7 @@ In this section, we will optimize our `Query` type by bringing in more fields to
 
    namespace ConferencePlanner.GraphQL.Tracks
    {
-       [ExtendObjectType(Name = "Query")]
+       [ExtendObjectType("Query")]
        public class TrackQueries
        {
            [UseApplicationDbContext]
