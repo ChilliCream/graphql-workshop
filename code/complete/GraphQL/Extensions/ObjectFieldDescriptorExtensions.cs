@@ -18,6 +18,7 @@ namespace ConferencePlanner.GraphQL
         public static IObjectFieldDescriptor UseUpperCase(
             this IObjectFieldDescriptor descriptor)
         {
+            // TODO : we need a better API for the user.
             descriptor.Extend().Definition.ResultConverters.Add(
                 new((context, result) =>
                 {
