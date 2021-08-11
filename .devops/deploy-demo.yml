@@ -21,7 +21,7 @@ steps:
   displayName: "Build Host Container"
   inputs:
     containerRegistry: '$(container-registry)'
-    repository: 'chillicream-oss-graphqlworkshop'
+    repository: 'ccc-oss-graphqlworkshop'
     command: 'buildAndPush'
     Dockerfile: 'code/complete/GraphQL/dockerfile'
     buildContext: 'code/complete/GraphQL'
@@ -30,7 +30,7 @@ steps:
   inputs:
     connectionType: 'Kubernetes Service Connection'
     kubernetesServiceEndpoint: '$(aks-cluster)'
-    namespace: 'chillicream-oss'
+    namespace: 'ccc-oss'
     command: 'apply'
     useConfigurationFile: true
     configurationType: 'inline'
@@ -38,19 +38,19 @@ steps:
       apiVersion: apps/v1
       kind: Deployment
       metadata:
-        name: chillicream-oss-graphqlworkshop
+        name: ccc-oss-graphqlworkshop
       spec:
         replicas: 3
         selector:
           matchLabels:
-            app: chillicream-oss-graphqlworkshop
+            app: ccc-oss-graphqlworkshop
         template:
           metadata:
             labels:
-              app: chillicream-oss-graphqlworkshop
+              app: ccc-oss-graphqlworkshop
           spec:
             containers:
-              - image: $(container-registry-domain)/chillicream-oss-graphqlworkshop:$(Build.BuildId)
+              - image: $(container-registry-domain)/ccc-oss-graphqlworkshop:$(Build.BuildId)
                 resources:
                   limits:
                     memory: "128Mi"
@@ -58,20 +58,20 @@ steps:
                   requests:
                     memory: "64Mi"
                     cpu: "1m"
-                name: chillicream-oss-graphqlworkshop
+                name: ccc-oss-graphqlworkshop
                 ports:
                   - containerPort: 80
       ---
       apiVersion: v1
       kind: Service
       metadata:
-        name: chillicream-oss-graphqlworkshop
+        name: ccc-oss-graphqlworkshop
       spec:
         type: ClusterIP
         ports:
         - port: 80
         selector:
-          app: chillicream-oss-graphqlworkshop
+          app: ccc-oss-graphqlworkshop
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
 - task: Kubernetes@1
@@ -86,8 +86,8 @@ steps:
       apiVersion: networking.k8s.io/v1
       kind: Ingress
       metadata:
-        name: chillicream-oss-graphqlworkshop-ingress
-        namespace: chillicream-oss
+        name: ccc-oss-graphqlworkshop-ingress
+        namespace: ccc-oss
         annotations:
           kubernetes.io/ingress.class: nginx
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -112,7 +112,7 @@ steps:
               pathType: Prefix
               backend:
                 service:
-                  name: chillicream-oss-graphqlworkshop
+                  name: ccc-oss-graphqlworkshop
                   port:
                     number: 80
     secretType: 'dockerRegistry'
