@@ -19,14 +19,14 @@ namespace ConferencePlanner.GraphQL
             this IObjectFieldDescriptor descriptor)
         {
             descriptor.Extend().Definition.ResultConverters.Add(
-                (context, result) =>
-                {            
+                new((context, result) =>
+                {
                     if (result is string s)
                     {
                         return s.ToUpperInvariant();
                     }
                     return result;
-                });
+                }));
 
             return descriptor;
         }
