@@ -1,9 +1,3 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using ConferencePlanner.GraphQL.Attendees;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
@@ -13,8 +7,13 @@ using ConferencePlanner.GraphQL.Speakers;
 using ConferencePlanner.GraphQL.Tracks;
 using ConferencePlanner.GraphQL.Types;
 using HotChocolate;
-using HotChocolate.Data.Sorting;
-
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.Threading.Tasks;
 
 namespace ConferencePlanner.GraphQL
 {
@@ -28,7 +27,8 @@ namespace ConferencePlanner.GraphQL
                 // First we add the DBContext which we will be using to interact with our
                 // Database.
                 .AddPooledDbContextFactory<ApplicationDbContext>(
-                    options => options.UseSqlite("Data Source=conferences.db"))
+                    options => options.UseSqlite("Data Source=conferences.db")
+                    .LogTo(Console.WriteLine))
 
                 // This adds the GraphQL server core service and declares a schema.
                 .AddGraphQLServer()
@@ -52,13 +52,15 @@ namespace ConferencePlanner.GraphQL
                     .AddType<SpeakerType>()
                     .AddType<TrackType>()
 
+                    .AddProjections()
                     // In this section we are adding extensions like relay helpers,
                     // filtering and sorting.
                     .AddFiltering()
                     .AddSorting()
                     .EnableRelaySupport()
+                    .SetPagingOptions(new HotChocolate.Types.Pagination.PagingOptions { IncludeTotalCount = true })
 
-                    // Now we add some the DataLoader to our system. 
+                    // Now we add some the DataLoader to our system.
                     .AddDataLoader<AttendeeByIdDataLoader>()
                     .AddDataLoader<SessionByIdDataLoader>()
                     .AddDataLoader<SpeakerByIdDataLoader>()
@@ -71,8 +73,8 @@ namespace ConferencePlanner.GraphQL
                     // for our demo we are using a in-memory pub/sub system.
                     .AddInMemorySubscriptions()
 
-                    // Last we add support for persisted queries. 
-                    // The first line adds the persisted query storage, 
+                    // Last we add support for persisted queries.
+                    // The first line adds the persisted query storage,
                     // the second one the persisted query processing pipeline.
                     .AddFileSystemQueryStorage("./persisted_queries")
                     .UsePersistedQueryPipeline();
@@ -85,6 +87,10 @@ namespace ConferencePlanner.GraphQL
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            using var ctx = app.ApplicationServices.GetService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext();
+            //ctx.Database.EnsureDeleted();
+            ctx.Database.EnsureCreated();
 
             app.UseWebSockets();
             app.UseRouting();

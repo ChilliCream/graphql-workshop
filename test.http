@@ -1,0 +1,77 @@
+@url = https://localhost:5001
+POST {{url}}/graphql
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+
+query {
+  sessions {
+    nodes {
+      id
+      title
+    }
+  }
+}
+
+###
+POST {{url}}/graphql
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+
+mutation {
+  addSpeaker(input: {
+     name: "Speaker Name"
+     bio: "Speaker Bio"
+     webSite: "http://speaker.website" }) {
+     speaker {
+       id
+     }
+   }
+}
+
+###
+POST {{url}}/graphql
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+
+mutation {
+  addSession(input: {
+    title: "session 1",
+    speakerIds: ["U3BlYWtlcgppMQ=="]
+  }) {
+    session {
+      id
+    }
+  }
+}
+
+###
+POST {{url}}/graphql
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+
+mutation {
+  addTrack(input:{
+    name: "track 1"
+  }) {
+    track {
+      id
+    }
+  }
+}
+
+###
+POST {{url}}/graphql
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+mutation {
+  scheduleSession(input:{
+    sessionId: "U2Vzc2lvbgppMQ==",
+    trackId: "VHJhY2sKaTE=",
+    startTime: "2021-01-01",
+    endTime: "2021-01-02"
+  }) {
+    session {
+      id
+    }
+  }
+}

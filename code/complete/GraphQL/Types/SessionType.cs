@@ -1,14 +1,13 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
 using HotChocolate;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
-using HotChocolate.Types.Relay;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ConferencePlanner.GraphQL.Types
 {
@@ -40,10 +39,17 @@ namespace ConferencePlanner.GraphQL.Types
             descriptor
                 .Field(t => t.TrackId)
                 .ID(nameof(Track));
+
+            descriptor
+                .Field("testxx")
+                .ResolveWith<SessionResolvers>(t => t.GetTest(default!));
         }
 
         private class SessionResolvers
         {
+            public string GetTest(
+                Session session) => "aaa";
+
             public async Task<IEnumerable<Speaker>> GetSpeakersAsync(
                 Session session,
                 [ScopedService] ApplicationDbContext dbContext,

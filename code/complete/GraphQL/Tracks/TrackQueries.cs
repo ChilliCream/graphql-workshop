@@ -1,13 +1,13 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
 using HotChocolate;
 using HotChocolate.Types;
 using HotChocolate.Types.Relay;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ConferencePlanner.GraphQL.Tracks
 {
@@ -15,7 +15,7 @@ namespace ConferencePlanner.GraphQL.Tracks
     public class TrackQueries
     {
         [UseApplicationDbContext]
-        [UsePaging]
+        [UsePaging(IncludeTotalCount = true)]
         public IQueryable<Track> GetTracks(
             [ScopedService] ApplicationDbContext context) =>
             context.Tracks.OrderBy(t => t.Name);
