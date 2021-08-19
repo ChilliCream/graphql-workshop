@@ -13,6 +13,8 @@ using ConferencePlanner.GraphQL.Speakers;
 using ConferencePlanner.GraphQL.Tracks;
 using ConferencePlanner.GraphQL.Types;
 using HotChocolate;
+using HotChocolate.Types;
+using HotChocolate.Resolvers;
 
 namespace ConferencePlanner.GraphQL
 {
@@ -38,7 +40,10 @@ namespace ConferencePlanner.GraphQL
                 .AddGraphQLServer()
 
                     // Next we add the types to our schema.
-                    .AddQueryType()
+                    .AddQueryType(d => d
+                        .Name(OperationTypeNames.Query)
+                        .Field("version")
+                        .Resolve(typeof(IResolverContext).Assembly.GetName().Version?.ToString()))
                         .AddTypeExtension<AttendeeQueries>()
                         .AddTypeExtension<SessionQueries>()
                         .AddTypeExtension<SpeakerQueries>()
