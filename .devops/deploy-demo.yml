@@ -62,6 +62,13 @@ steps:
                 name: ccc-oss-graphqlworkshop
                 ports:
                   - containerPort: 80
+                startupProbe:
+                  httpGet:
+                    path: /graphql/?query=%7Bsessions%7Bnodes%7Btitle%7D%7D%7D
+                    port: 80
+                  failureThreshold: 30
+                  periodSeconds: 10
+
       ---
       apiVersion: v1
       kind: Service
