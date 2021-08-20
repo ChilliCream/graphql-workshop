@@ -6,7 +6,8 @@
 trigger:
 - main
 
-pool: local-pool
+pool:
+  vmImage: ubuntu-latest
 
 steps:
 - task: DockerInstaller@0
