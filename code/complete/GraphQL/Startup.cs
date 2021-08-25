@@ -17,6 +17,7 @@ using HotChocolate.Types;
 using HotChocolate.Resolvers;
 using HotChocolate.AspNetCore;
 using System.Diagnostics;
+using HotChocolate.Types.Pagination;
 
 namespace ConferencePlanner.GraphQL
 {
@@ -71,7 +72,11 @@ namespace ConferencePlanner.GraphQL
                 .AddDataLoader<SessionByIdDataLoader>()
                 .AddDataLoader<SpeakerByIdDataLoader>()
                 .AddDataLoader<TrackByIdDataLoader>()
-                .ModifyRequestOptions(o => o.IncludeExceptionDetails = true)
+
+                .SetPagingOptions(new PagingOptions
+                {
+                    RequirePagingBoundaries = true
+                })
 
                 // we make sure that the db exists and prefill it with conference data.
                 .EnsureDatabaseIsCreated()
