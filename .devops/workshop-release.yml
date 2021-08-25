@@ -1,10 +1,14 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
+  batch: true
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - .devops/workshop-release.yml
+      - code/complete/GraphQL
+
+pr: none
 
 pool:
   vmImage: ubuntu-latest
@@ -14,10 +18,12 @@ steps:
   displayName: "Install Docker"
   inputs:
     dockerVersion: '17.09.0-ce'
+
 - task: KubectlInstaller@0
   displayName: "Install Kubectl"
   inputs:
     kubectlVersion: 'latest'
+
 - task: Docker@2
   displayName: "Build Host Container"
   inputs:
@@ -26,6 +32,7 @@ steps:
     command: 'buildAndPush'
     Dockerfile: 'code/complete/GraphQL/dockerfile'
     buildContext: 'code/complete/GraphQL'
+
 - task: Kubernetes@1
   displayName: "Deploy Demo Service"
   inputs:
@@ -41,7 +48,7 @@ steps:
       metadata:
         name: ccc-oss-graphqlworkshop
       spec:
-        replicas: 3
+        replicas: 2
         selector:
           matchLabels:
             app: ccc-oss-graphqlworkshop
@@ -82,46 +89,4 @@ steps:
           app: ccc-oss-graphqlworkshop
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
-- task: Kubernetes@1
-  displayName: "Deploy Demo Ingress Configuration"
-  inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: '$(aks-cluster)'
-    command: 'apply'
-    useConfigurationFile: true
-    configurationType: 'inline'
-    inline: |
-      apiVersion: networking.k8s.io/v1
-      kind: Ingress
-      metadata:
-        name: ccc-oss-graphqlworkshop-ingress
-        namespace: ccc-oss
-        annotations:
-          kubernetes.io/ingress.class: nginx
-          nginx.ingress.kubernetes.io/proxy-buffering: "on"
-          nginx.ingress.kubernetes.io/proxy-buffer-size: "128k"
-          nginx.ingress.kubernetes.io/proxy-buffers: "4 256k"
-          nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "256k"
-          nginx.ingress.kubernetes.io/client-header-buffer-size: "64k"
-          nginx.ingress.kubernetes.io/http2-max-field-size: "16k"
-          nginx.ingress.kubernetes.io/http2-max-header-size: "128k"
-          nginx.ingress.kubernetes.io/large-client-header-buffers: "128k"
-          nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
-      spec:
-        tls:
-        - hosts:
-          - workshop.chillicream.cloud
-          secretName: management-tls
-        rules:
-        - host: workshop.chillicream.cloud
-          http:
-            paths:
-            - path: /
-              pathType: Prefix
-              backend:
-                service:
-                  name: ccc-oss-graphqlworkshop
-                  port:
-                    number: 80
-    secretType: 'dockerRegistry'
-    containerRegistryType: 'Azure Container Registry'
+
