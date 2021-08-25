@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM mcr.microsoft.com/dotnet/6.0.100-preview.7-alpine3.13-amd64 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:6.0.100-preview.7-alpine3.13-amd64 AS build-env
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
