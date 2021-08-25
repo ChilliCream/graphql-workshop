@@ -71,6 +71,7 @@ namespace ConferencePlanner.GraphQL
                 .AddDataLoader<SessionByIdDataLoader>()
                 .AddDataLoader<SpeakerByIdDataLoader>()
                 .AddDataLoader<TrackByIdDataLoader>()
+                .ModifyRequestOptions(o => o.IncludeExceptionDetails = true)
 
                 // we make sure that the db exists and prefill it with conference data.
                 .EnsureDatabaseIsCreated()
