@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="12.0.0-preview.33" />
-    <PackageReference Include="HotChocolate.Data" Version="12.0.0-preview.33" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="12.0.0-preview.34" />
+    <PackageReference Include="HotChocolate.Data" Version="12.0.0-preview.34" />
     <PackageReference Include="HotChocolate.PersistedQueries.FileSystem" Version="12.0.0-preview.33" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0-preview.7.21378.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0-preview.7.21378.4">
