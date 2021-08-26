@@ -2,7 +2,7 @@
 
 # Getting started with GraphQL on ASP.NET Core and Hot Chocolate - Workshop
 
-If you want to browse the GraphQL server head over [here](http://workshop.chillicream.cloud/).
+If you want to browse the GraphQL server head over [here](http://workshop.chillicream.com/).
 
 ## Prerequisites
 
