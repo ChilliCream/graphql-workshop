@@ -73,11 +73,6 @@ namespace ConferencePlanner.GraphQL
                 .AddDataLoader<SpeakerByIdDataLoader>()
                 .AddDataLoader<TrackByIdDataLoader>()
 
-                .SetPagingOptions(new PagingOptions
-                {
-                    RequirePagingBoundaries = true
-                })
-
                 // we make sure that the db exists and prefill it with conference data.
                 .EnsureDatabaseIsCreated()
 
