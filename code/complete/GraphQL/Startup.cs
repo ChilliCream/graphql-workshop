@@ -108,7 +108,7 @@ namespace ConferencePlanner.GraphQL
                     {
                         Tool =
                         {
-                            GaTrackingId = "UA-72800164-1"
+                            GaTrackingId = "G-2Y04SFDV8F"
                         }
                     });
 
