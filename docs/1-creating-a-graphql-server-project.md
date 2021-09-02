@@ -31,8 +31,9 @@
     }
     ```
 
-1. Add a reference to the NuGet package package `Microsoft.EntityFrameworkCore.Sqlite` version `5.0.0`.
+1. Add a reference to the NuGet package package `Microsoft.EntityFrameworkCore.Sqlite` version `5.0.0` and also Microsoft.EntityFrameworkCore.Sqlite.Design.
    1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Sqlite --version 5.0.0`
+   2. ` dotnet add GraphQL package  Microsoft.EntityFrameworkCore.Sqlite.Design`
 1. Next we'll create a new Entity Framework DbContext. Create a new `ApplicationDbContext` class in the `Data` folder using the following code:
 
     ```csharp
@@ -57,7 +58,6 @@
 1. Add the following code to the top of the `ConfigureServices()` method in `Startup.cs`:
 
     ```csharp
-    services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Data Source=conferences.db"));
     ```
 
     > This code registers the `ApplicationDbContext` service so it can be injected into resolvers.
