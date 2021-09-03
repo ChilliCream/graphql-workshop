@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,7 +19,12 @@ using HotChocolate.Types;
 using HotChocolate.Resolvers;
 using HotChocolate.AspNetCore;
 using System.Diagnostics;
+using GreenDonut;
+using HotChocolate.Execution;
+using HotChocolate.Execution.Instrumentation;
 using HotChocolate.Types.Pagination;
+using Microsoft.Extensions.Logging;
+using IActivityScope = GreenDonut.IActivityScope;
 
 namespace ConferencePlanner.GraphQL
 {
@@ -37,42 +44,52 @@ namespace ConferencePlanner.GraphQL
                 // First we add the DBContext which we will be using to interact with our
                 // Database.
                 .AddPooledDbContextFactory<ApplicationDbContext>(
-                    options => options.UseSqlite("Data Source=conferences.db"))
+                    (s, o) => o
+                        .UseSqlite("Data Source=conferences.db")
+                        .UseLoggerFactory(s.GetRequiredService<ILoggerFactory>()))
+                
+                .AddSingleton<IDataLoaderDiagnosticEvents, DataLoaderDiagnostics>()
 
                 // This adds the GraphQL server core service and declares a schema.
                 .AddGraphQLServer()
+                
+                .AddDiagnosticEventListener<HotChocolateDiagnostics>()
 
                 // Next we add the types to our schema.
                 .AddQueryType()
-                .AddTypeExtension<AttendeeQueries>()
-                .AddTypeExtension<SessionQueries>()
-                .AddTypeExtension<SpeakerQueries>()
-                .AddTypeExtension<TrackQueries>()
                 .AddMutationType()
-                .AddTypeExtension<AttendeeMutations>()
-                .AddTypeExtension<SessionMutations>()
-                .AddTypeExtension<SpeakerMutations>()
-                .AddTypeExtension<TrackMutations>()
                 .AddSubscriptionType()
+                
+                .AddTypeExtension<AttendeeQueries>()
+                .AddTypeExtension<AttendeeMutations>()
                 .AddTypeExtension<AttendeeSubscriptions>()
+                .AddTypeExtension<AttendeeNode>()
+                .AddDataLoader<AttendeeByIdDataLoader>()
+                
+                .AddTypeExtension<SessionQueries>()
+                .AddTypeExtension<SessionMutations>()
                 .AddTypeExtension<SessionSubscriptions>()
-                .AddType<AttendeeType>()
-                .AddType<SessionType>()
-                .AddType<SpeakerType>()
-                .AddType<TrackType>()
+                .AddTypeExtension<SessionNode>()
+                .AddDataLoader<SessionByIdDataLoader>()
+                .AddDataLoader<SessionBySpeakerIdDataLoader>()
+                
+                .AddTypeExtension<SpeakerQueries>()
+                .AddTypeExtension<SpeakerMutations>()
+                .AddTypeExtension<SpeakerNode>()
+                .AddDataLoader<SpeakerByIdDataLoader>()
+                .AddDataLoader<SessionBySpeakerIdDataLoader>()
+                
+                .AddTypeExtension<TrackQueries>()
+                .AddTypeExtension<TrackMutations>()
+                .AddTypeExtension<TrackNode>()
+                .AddDataLoader<TrackByIdDataLoader>()
 
                 // In this section we are adding extensions like relay helpers,
                 // filtering and sorting.
                 .AddFiltering()
                 .AddSorting()
                 .AddGlobalObjectIdentification()
-
-                // Now we add some the DataLoader to our system. 
-                .AddDataLoader<AttendeeByIdDataLoader>()
-                .AddDataLoader<SessionByIdDataLoader>()
-                .AddDataLoader<SpeakerByIdDataLoader>()
-                .AddDataLoader<TrackByIdDataLoader>()
-
+                
                 // we make sure that the db exists and prefill it with conference data.
                 .EnsureDatabaseIsCreated()
 
@@ -118,6 +135,27 @@ namespace ConferencePlanner.GraphQL
                     return Task.CompletedTask;
                 });
             });
+        }
+    }
+
+    public class DataLoaderDiagnostics : DataLoaderDiagnosticEventListener
+    {
+        public override IActivityScope ExecuteBatch<TKey>(IDataLoader dataLoader, IReadOnlyList<TKey> keys)
+        {
+            Console.WriteLine($"{dataLoader.GetType().Name}:{keys.Count}");
+            return EmptyScope;
+        }
+    }
+
+    public class HotChocolateDiagnostics : DiagnosticEventListener
+    {
+        public override HotChocolate.Execution.Instrumentation.IActivityScope ExecuteRequest(IRequestContext context)
+        {
+            Console.Clear();
+            Console.WriteLine("REQUEST_START");
+            Console.WriteLine();
+            Console.WriteLine();
+            return base.ExecuteRequest(context);
         }
     }
 }

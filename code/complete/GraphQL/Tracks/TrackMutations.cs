@@ -29,7 +29,13 @@ namespace ConferencePlanner.GraphQL.Tracks
             [ScopedService] ApplicationDbContext context,
             CancellationToken cancellationToken)
         {
-            Track track = await context.Tracks.FindAsync(input.Id);
+            Track? track = await context.Tracks.FindAsync(input.Id);
+
+            if (track is null)
+            {
+                throw new GraphQLException("Track not found.");
+            }
+            
             track.Name = input.Name;
 
             await context.SaveChangesAsync(cancellationToken);

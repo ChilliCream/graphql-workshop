@@ -14,9 +14,10 @@ namespace ConferencePlanner.GraphQL.DataLoader
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
         public TrackByIdDataLoader(
-            IBatchScheduler batchScheduler, 
-            IDbContextFactory<ApplicationDbContext> dbContextFactory)
-            : base(batchScheduler)
+            IDbContextFactory<ApplicationDbContext> dbContextFactory,
+            IBatchScheduler batchScheduler,
+            DataLoaderOptions options)
+            : base(batchScheduler, options)
         {
             _dbContextFactory = dbContextFactory ?? 
                 throw new ArgumentNullException(nameof(dbContextFactory));

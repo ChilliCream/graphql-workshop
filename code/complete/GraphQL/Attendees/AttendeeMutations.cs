@@ -40,7 +40,7 @@ namespace ConferencePlanner.GraphQL.Attendees
             [Service] ITopicEventSender eventSender,
             CancellationToken cancellationToken)
         {
-            Attendee attendee = await context.Attendees.FirstOrDefaultAsync(
+            var attendee = await context.Attendees.FirstOrDefaultAsync(
                 t => t.Id == input.AttendeeId, cancellationToken);
 
             if (attendee is null)
