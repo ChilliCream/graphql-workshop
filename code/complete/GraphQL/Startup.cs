@@ -25,8 +25,6 @@ using HotChocolate.Resolvers;
 using HotChocolate.Types;
 using HotChocolate.Types.Pagination;
 
-using IActivityScope = GreenDonut.IActivityScope;
-
 namespace ConferencePlanner.GraphQL
 {
     public class Startup
