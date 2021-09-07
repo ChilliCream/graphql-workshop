@@ -12,9 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="/Users/michael/local/hc-2/src/HotChocolate/AspNetCore/src/AspNetCore/HotChocolate.AspNetCore.csproj" />
-    <ProjectReference Include="/Users/michael/local/hc-2/src/HotChocolate/Data/src/Data/HotChocolate.Data.csproj" />
-    <ProjectReference Include="/Users/michael/local/hc-2/src/HotChocolate/PersistedQueries/src/PersistedQueries.FileSystem/HotChocolate.PersistedQueries.FileSystem.csproj" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="12.0.0-rc.3" />
     <PackageReference Include="HotChocolate.Data" Version="12.0.0-rc.3" />
     <PackageReference Include="HotChocolate.PersistedQueries.FileSystem" Version="12.0.0-rc.3" />
