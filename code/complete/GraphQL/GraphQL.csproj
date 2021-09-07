@@ -12,9 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="/Users/michaelstaib/local/hc-2/src/HotChocolate/AspNetCore/src/AspNetCore/HotChocolate.AspNetCore.csproj" />
-    <ProjectReference Include="/Users/michaelstaib/local/hc-2/src/HotChocolate/Data/src/Data/HotChocolate.Data.csproj" />
-    <ProjectReference Include="/Users/michaelstaib/local/hc-2/src/HotChocolate/PersistedQueries/src/PersistedQueries.FileSystem/HotChocolate.PersistedQueries.FileSystem.csproj" />
+    <ProjectReference Include="/Users/michael/local/hc-2/src/HotChocolate/AspNetCore/src/AspNetCore/HotChocolate.AspNetCore.csproj" />
+    <ProjectReference Include="/Users/michael/local/hc-2/src/HotChocolate/Data/src/Data/HotChocolate.Data.csproj" />
+    <ProjectReference Include="/Users/michael/local/hc-2/src/HotChocolate/PersistedQueries/src/PersistedQueries.FileSystem/HotChocolate.PersistedQueries.FileSystem.csproj" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="12.0.0-rc.3" />
+    <PackageReference Include="HotChocolate.Data" Version="12.0.0-rc.3" />
+    <PackageReference Include="HotChocolate.PersistedQueries.FileSystem" Version="12.0.0-rc.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0-preview.7.21378.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0-preview.7.21378.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

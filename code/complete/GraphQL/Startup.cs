@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using ConferencePlanner.GraphQL.Attendees;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
@@ -14,16 +16,15 @@ using ConferencePlanner.GraphQL.Sessions;
 using ConferencePlanner.GraphQL.Speakers;
 using ConferencePlanner.GraphQL.Tracks;
 using ConferencePlanner.GraphQL.Types;
-using HotChocolate;
-using HotChocolate.Types;
-using HotChocolate.Resolvers;
-using HotChocolate.AspNetCore;
-using System.Diagnostics;
 using GreenDonut;
+using HotChocolate;
+using HotChocolate.AspNetCore;
 using HotChocolate.Execution;
 using HotChocolate.Execution.Instrumentation;
+using HotChocolate.Resolvers;
+using HotChocolate.Types;
 using HotChocolate.Types.Pagination;
-using Microsoft.Extensions.Logging;
+
 using IActivityScope = GreenDonut.IActivityScope;
 
 namespace ConferencePlanner.GraphQL
@@ -47,13 +48,9 @@ namespace ConferencePlanner.GraphQL
                     (s, o) => o
                         .UseSqlite("Data Source=conferences.db")
                         .UseLoggerFactory(s.GetRequiredService<ILoggerFactory>()))
-                
-                .AddSingleton<IDataLoaderDiagnosticEvents, DataLoaderDiagnostics>()
 
                 // This adds the GraphQL server core service and declares a schema.
                 .AddGraphQLServer()
-                
-                .AddDiagnosticEventListener<HotChocolateDiagnostics>()
 
                 // Next we add the types to our schema.
                 .AddQueryType()
@@ -135,27 +132,6 @@ namespace ConferencePlanner.GraphQL
                     return Task.CompletedTask;
                 });
             });
-        }
-    }
-
-    public class DataLoaderDiagnostics : DataLoaderDiagnosticEventListener
-    {
-        public override IActivityScope ExecuteBatch<TKey>(IDataLoader dataLoader, IReadOnlyList<TKey> keys)
-        {
-            Console.WriteLine($"{dataLoader.GetType().Name}:{keys.Count}");
-            return EmptyScope;
-        }
-    }
-
-    public class HotChocolateDiagnostics : DiagnosticEventListener
-    {
-        public override HotChocolate.Execution.Instrumentation.IActivityScope ExecuteRequest(IRequestContext context)
-        {
-            Console.Clear();
-            Console.WriteLine("REQUEST_START");
-            Console.WriteLine();
-            Console.WriteLine();
-            return base.ExecuteRequest(context);
         }
     }
 }
