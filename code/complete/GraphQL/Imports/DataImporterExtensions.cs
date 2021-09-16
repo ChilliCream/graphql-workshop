@@ -2,7 +2,6 @@
 using ConferencePlanner.GraphQL.Data;
 using HotChocolate.Execution.Configuration;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ConferencePlanner.GraphQL.Imports
 {

@@ -15,9 +15,6 @@ namespace ConferencePlanner.GraphQL.Imports
             using var stream = File.OpenRead("Imports/NDC_London_2019.json");
             using var reader = new JsonTextReader(new StreamReader(stream));
 
-            var speakerNames = new Dictionary<string, Speaker>();
-            var tracks = new Dictionary<string, Track>();
-
             JArray conference = await JArray.LoadAsync(reader);
             var speakers = new Dictionary<string, Speaker>();
 
@@ -44,12 +41,16 @@ namespace ConferencePlanner.GraphQL.Imports
 
                         foreach (JObject speakerData in sessionData["speakers"]!)
                         {
-                            if (!speakers.TryGetValue(speakerData["id"]!.ToString(), out Speaker? speaker))
+                            string id = speakerData["id"]!.ToString();
+
+                            if (!speakers.TryGetValue(id, out Speaker? speaker))
                             {
                                 speaker = new Speaker
                                 { 
                                     Name = speakerData["name"]!.ToString()
                                 };
+
+                                speakers.Add(id, speaker);
                                 db.Speakers.Add(speaker);
                             }
 
