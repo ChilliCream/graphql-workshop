@@ -7,7 +7,7 @@ using HotChocolate;
 using HotChocolate.Types;
 using HotChocolate.Types.Relay;
 
-namespace ConferencePlanner.GraphQL.Types
+namespace ConferencePlanner.GraphQL.Tracks
 {
     [Node]
     [ExtendObjectType(typeof(Track))]

@@ -12,22 +12,22 @@ namespace ConferencePlanner.GraphQL.Imports
     {
         public async Task LoadDataAsync(ApplicationDbContext db)
         {
-            using var stream = File.OpenRead("Imports/NDC_London_2019.json");
+            await using var stream = File.OpenRead("Imports/NDC_London_2019.json");
             using var reader = new JsonTextReader(new StreamReader(stream));
 
             JArray conference = await JArray.LoadAsync(reader);
             var speakers = new Dictionary<string, Speaker>();
 
-            foreach (JObject conferenceDay in conference)
+            foreach (var conferenceDay in conference)
             {
-                foreach (JObject roomData in conferenceDay["rooms"]!)
+                foreach (var roomData in conferenceDay["rooms"]!)
                 {
                     var track = new Track
                     {
                         Name = roomData["name"]!.ToString()
                     };
 
-                    foreach (JObject sessionData in roomData["sessions"]!)
+                    foreach (var sessionData in roomData["sessions"]!)
                     {
                         var session = new Session
                         {
@@ -39,7 +39,7 @@ namespace ConferencePlanner.GraphQL.Imports
 
                         track.Sessions.Add(session);
 
-                        foreach (JObject speakerData in sessionData["speakers"]!)
+                        foreach (var speakerData in sessionData["speakers"]!)
                         {
                             string id = speakerData["id"]!.ToString();
 

@@ -29,7 +29,7 @@ namespace ConferencePlanner.GraphQL.Tracks
             [ScopedService] ApplicationDbContext context,
             CancellationToken cancellationToken)
         {
-            Track? track = await context.Tracks.FindAsync(input.Id);
+            var track = await context.Tracks.FindAsync(input.Id, cancellationToken);
 
             if (track is null)
             {

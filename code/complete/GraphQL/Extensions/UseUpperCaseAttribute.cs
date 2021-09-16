@@ -10,8 +10,6 @@ namespace ConferencePlanner.GraphQL
             IDescriptorContext context, 
             IObjectFieldDescriptor descriptor, 
             MemberInfo member)
-        {
-            descriptor.UseUpperCase();
-        }
+            => descriptor.UseUpperCase();
     }
 }

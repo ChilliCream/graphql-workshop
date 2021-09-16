@@ -11,7 +11,7 @@ namespace ConferencePlanner.GraphQL.Speakers
         }
 
         public ModifySpeakerPayload(UserError error)
-            : base(new [] { error })
+            : base(new [] { error })
         {
         }
     }

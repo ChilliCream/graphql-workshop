@@ -1,7 +1,7 @@
 using ConferencePlanner.GraphQL.Data;
 using HotChocolate.Data.Filters;
 
-namespace ConferencePlanner.GraphQL.Types
+namespace ConferencePlanner.GraphQL.Sessions
 {
     public class SessionFilterInputType : FilterInputType<Session>
     {
