@@ -514,7 +514,7 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
 
    > Our improved resolver now injects `[Service]ITopicEventSender eventSender`. This gives us access to send messages to the underlying pub/sub-system.
 
-   > After `await context.SaveChangesAsync();` we are add sending in a new message.
+   > After `await context.SaveChangesAsync();` we are sending in a new message.
 
    ```csharp
    await eventSender.SendAsync(
