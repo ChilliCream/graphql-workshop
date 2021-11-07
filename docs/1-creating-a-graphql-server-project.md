@@ -1,4 +1,11 @@
-
+- [Create a new GraphQL server project](#create-a-new-graphql-server-project)
+  - [Register the DB Context Service](#register-the-db-context-service)
+  - [Configuring EF Migrations](#configuring-ef-migrations)
+    - [Option 1 - Visual Studio: Package Manager Console](#option-1---visual-studio-package-manager-console)
+    - [Option 2 - Command line](#option-2---command-line)
+  - [Adding GraphQL](#adding-graphql)
+  - [Adding Mutations](#adding-mutations)
+  - [Summary](#summary)
 # Create a new GraphQL server project
 
 1. Create a new project for our GraphQL Server.
@@ -202,11 +209,13 @@ Commands Explained
 
     ![Start GraphQL server](images/1-start-server.png)
 
-1. Start Banana Cake Pop and connect to our server.
+1. Start [Banana Cake Pop](https://chillicream.com/docs/bananacakepop) or use it built-in your browser at [http://localhost:5000/graphql/](http://localhost:5000/graphql/) and connect to our server (usually at [http://localhost:5000/graphql](http://localhost:5000/graphql)).   
+   **Note**: `<address>/graphql/` might **not** show mutations, make sure you use `<address>/graphql` (without trailing slash). 
 
     ![Connect to GraphQL server with Banana Cake Pop](images/2-bcp-connect-to-server.png)
 
-1. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.
+1. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.   
+   **Note**: You might have to reload the schema, you can do so by clicking the refresh-button in the upper-right corner. 
 
     ![Explore GraphQL schema with Banana Cake Pop](images/3-bcp-schema-explorer.png)
 
@@ -216,7 +225,7 @@ So, far we have added the Query root type to our schema, which allows us to quer
 
 > For mutations we are using the [relay mutation pattern](https://relay.dev/docs/en/graphql-server-specification.html#mutations) which is commonly used in GraphQL.
 
-A mutation consists of three components, the input, the payload and the mutation itself. In our case we want to create a mutation called `addSpeaker`, by convention, mutations are named as verbs, their inputs are the name with "Input" appended at the end, and they return an object that is the name with "Payload" appended.
+A mutation consists of three components, the **input**, the **payload** and the **mutation** itself. In our case we want to create a mutation called `addSpeaker`, by convention, mutations are named as verbs, their inputs are the name with "Input" appended at the end, and they return an object that is the name with "Payload" appended.
 
 So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `AddSpeakerPayload`.
 

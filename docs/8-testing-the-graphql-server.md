@@ -1,3 +1,7 @@
+- [Testing the GraphQL server](#testing-the-graphql-server)
+  - [Add a schema change test](#add-a-schema-change-test)
+  - [Add a simple query tests](#add-a-simple-query-tests)
+
 # Testing the GraphQL server
 
 There are many ways to test; what we want to have a look at is how we can test parts of the GraphQL schema without writing system tests.
