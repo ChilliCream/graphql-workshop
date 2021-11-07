@@ -229,7 +229,7 @@ A mutation consists of three components, the **input**, the **payload** and the 
 
 So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `AddSpeakerPayload`.
 
-1. Add a class `AddSpeakerInput` to your project with the following code:
+1. Add a file `AddSpeakerInput.cs` to your project with the following code:
 
     ```csharp
     namespace ConferencePlanner.GraphQL
