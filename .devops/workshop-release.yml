@@ -48,7 +48,7 @@ steps:
       metadata:
         name: ccc-oss-graphqlworkshop
       spec:
-        replicas: 2
+        replicas: 1
         selector:
           matchLabels:
             app: ccc-oss-graphqlworkshop
