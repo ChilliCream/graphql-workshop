@@ -1,26 +1,23 @@
-using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Data;
-using HotChocolate;
 
-namespace ConferencePlanner.GraphQL
+namespace ConferencePlanner.GraphQL;
+
+public class Mutation
 {
-    public class Mutation
+    public async Task<Speaker> AddSpeakerAsync(
+        string name,
+        string? bio,
+        string? webSite,
+        [Service] ApplicationDbContext context)
     {
-        public async Task<AddSpeakerPayload> AddSpeakerAsync(
-            AddSpeakerInput input,
-            [Service] ApplicationDbContext context)
+        var speaker = new Speaker
         {
-            var speaker = new Speaker
-            {
-                Name = input.Name,
-                Bio = input.Bio,
-                WebSite = input.WebSite
-            };
-
-            context.Speakers.Add(speaker);
-            await context.SaveChangesAsync();
-
-            return new AddSpeakerPayload(speaker);
-        }
+            Name = name,
+            Bio = bio,
+            WebSite = webSite
+        };
+        context.Speakers.Add(speaker);
+        await context.SaveChangesAsync();
+        return speaker;
     }
 }

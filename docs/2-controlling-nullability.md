@@ -1,101 +1,94 @@
 - [Controlling nullability](#controlling-nullability)
-  - [Configure Nullability](#configure-nullability)
   - [Summary](#summary)
 
 # Controlling nullability
 
-## Configure Nullability
+The GraphQL type system distinguishes between nullable and non-nullable types. This helps the API consumer by providing guarantees when a field value can be trusted never to be null or when an input is not allowed to be null. The ability to rely on such information simplifies the frontend code since we do not have to write null checks for things that will never be null.
 
-The GraphQL type system distinguishes between nullable and non-nullable types. This helps the consumer of the API by providing guarantees when a field value can be trusted to never be null or when an input is not allowed to be null. The ability to rely on such type information simplifies the code of the null since we do not have to write a ton of null checks for things that will never be null.
+GraphQL and C# have one big difference regarding nullability. In C#, everything is non-null by default, meaning if I write the type name, e.g. `int` or `String`, it will be interpreted as nullable. To expose something as nullable, I have to append a `?` to the type name, e.g. `int?` or `String?`.
 
-1. Open the project file of your GraphQL server project `GraphQL.csproj` and add the following property:
+In GraphQL, this is the other way around; types are by default nullable, e.g., `Int` or `String` would be interpreted as nullable types. To have something non-null, we need to append a `!` to the type name. So, in GraphQL, `Int!` or `String!` would be non-null types.
 
-   ```xml
-   <Nullable>enable</Nullable>
-   ```
+1. Open the project file of your GraphQL server project `GraphQL.csproj` and inspect it:
 
-   You project file now look like the following:
+   You project file should look like the following:
 
    ```xml
    <Project Sdk="Microsoft.NET.Sdk.Web">
 
-     <PropertyGroup>
-       <TargetFramework>net5.0</TargetFramework>
-       <RootNamespace>ConferencePlanner.GraphQL</RootNamespace>
-       <Nullable>enable</Nullable>
-     </PropertyGroup>
+    <PropertyGroup>
+      <RootNamespace>ConferencePlanner.GraphQL.Data</RootNamespace>
+      <TargetFramework>net6.0</TargetFramework>
+      <Nullable>enable</Nullable>
+      <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
 
-     <ItemGroup>
-       <PackageReference Include="HotChocolate.AspNetCore" Version="11.0.0" />
-       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.0" />
-       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0">
-         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-         <PrivateAssets>all</PrivateAssets>
-       </PackageReference>
-     </ItemGroup>
+    <ItemGroup Condition="'$(ImplicitUsings)' == 'enable'">
+      <Using Include="ConferencePlanner.GraphQL" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="HotChocolate.AspNetCore" Version="12.4.0" />
+      <PackageReference Include="HotChocolate.Data.EntityFramework" Version="12.4.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
+    </ItemGroup>
 
    </Project>
    ```
 
-1. Build your project.
-   1. `dotnet build`
+   With .NET 6, we have two crucial things here that are important.
+   - Nullable: enable
+     This enables nullable reference types.
+   - ImplicitUsings: enable
+     This automatically will add common namespace imports to all our code files.
 
-   > The compiler will now output a lot of warnings about properties that are now not nullable that are likely to be null. In GraphQL types are by default nullable whereas in C# types are per default not nullable.
-
-1. The compiler is complaining that the `ApplicationDBContext` property `Speakers` might be null when the type is created. The Entity Framework is setting this field dynamically so the compiler can not see that this field will actually be set. So, in order to fix this lets tell the compiler not to worry about it by assigning `default!` to it:
-
-   ```csharp
-   public DbSet<Speaker> Speakers { get; set; } = default!;
-   ```
-
-1. Next update the speaker model by marking all the reference types as nullable.
-
-   > The schema still will infer nullability correct since the schema understands the data annotations.
-
-    ```csharp
-    using System.ComponentModel.DataAnnotations;
-
-    namespace ConferencePlanner.GraphQL.Data
-    {
-        public class Speaker
-        {
-            public int Id { get; set; }
-
-            [Required]
-            [StringLength(200)]
-            public string? Name { get; set; }
-
-            [StringLength(4000)]
-            public string? Bio { get; set; }
-
-            [StringLength(1000)]
-            public virtual string? WebSite { get; set; }
-        }
-    }
-    ```
-
-1. Now update the input type by marking nullable fields.
-
-    ```csharp
-    namespace ConferencePlanner.GraphQL
-    {
-        public record AddSpeakerInput(
-            string Name,
-            string? Bio,
-            string? WebSite);
-    }
-    ```
-
-   > The payload type can stay for now as it is.
-
-1. Start your server again and verify the nullability changes in your schema explorer.
+2. Start our GraphQL server again, and let's have a look at our schema:
 
    1. `dotnet run --project GraphQL`
+   2. Open Banana Cakepop
+   3. Head over to the **Schema Reference**
+   4. Search for the `Speaker` type and explore the nullability.
 
-   ![Query speaker names](images/39-bcp-verify-nullability.png)
+   ![Speaker nullability](images/39-bcp-explore-nullability.png)
+
+3. When we compare the C# Speaker type to its GraphQL counter part, we can see that Hot Chocolate will consider the nullability information and the data annotation attributes. In this case, the `Speaker.Name` is technically nullable in C#, but it is logically non-null. In this case, the Hot Chocolate will let the `RequiredAttribute` override the nullability information from the type.
+
+   **GraphQL Type:**
+
+   ```graphql
+   type Speaker {
+     id: Int!
+     name: String!
+     bio: String
+     webSite: String
+   }
+   ```
+
+   **C# Type:**
+
+   ```csharp
+   public class Speaker
+   {
+       public int Id { get; set; }
+
+       [Required]
+       [StringLength(200)]
+       public string? Name { get; set; }
+
+       [StringLength(4000)]
+       public string? Bio { get; set; }
+
+       [StringLength(1000)]
+       public string? WebSite { get; set; }
+   }
+   ```
 
 ## Summary
 
-In this session, we have further discovered the GraphQL type system, by understanding how nullability works in GraphQL and how Hot Chocolate infers nullability from .NET types.
+In this session, we have further explored the GraphQL type system capabilities, by understanding how nullability works in GraphQL and how Hot Chocolate infers nullability from .NET types.
 
 [**<< Session #1 - Building a basic GraphQL server API**](1-creating-a-graphql-server-project.md) | [**Session #3 - Understanding GraphQL query execution and DataLoader >>**](3-understanding-dataLoader.md) 
