@@ -62,7 +62,7 @@
 
 ## Register the DB Context Service
 
-1. Add the following code to the top of the `ConfigureServices()` method in `Startup.cs`:
+1. Add the following code to the `Program.cs`:
 
     ```csharp
     services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Data Source=conferences.db"));
