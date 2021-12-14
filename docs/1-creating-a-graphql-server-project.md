@@ -177,18 +177,24 @@ Since we used the GraphQL template we already have a basic GraphQL server. In or
 
    1. `dotnet run --project GraphQL`
 
-   ![Start GraphQL server](images/1-start-server.png)
+   ![Console that shows the GraphQL server running](images/1-start-server.png)
 
-5. Start [Banana Cake Pop](https://chillicream.com/docs/bananacakepop) or use it built-in your browser at [http://localhost:5000/graphql/](http://localhost:5000/graphql/) and connect to our server (usually at [http://localhost:5000/graphql](http://localhost:5000/graphql)).
+5. Start [Banana Cakepop](https://chillicream.com/docs/bananacakepop) or use it built-in your browser at [http://localhost:5000/graphql/](http://localhost:5000/graphql/) and connect to our server (usually at [http://localhost:5000/graphql](http://localhost:5000/graphql)).
 
-   ![Connect to GraphQL server with Banana Cake Pop](images/2-bcp-connect-to-server.png)
+   ![Connect to GraphQL server with Banana Cakepop](images/2-bcp-connect-to-server-1.png)
 
-   ![Connect to GraphQL server with Banana Cake Pop](images/2-bcp-connect-to-server.png)
+   After you have connected to Banana Cakepop, hit `Enter` to open a new tab.
 
-6. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.  
+   ![Banana Cakepop new document](images/2-bcp-connect-to-server-2.png)
+
+6. Click on the operation drop down and select **Schema Reference**. Click on the `speakers` field in order to check the return type.  
    **Note**: You might have to reload the schema, you can do so by clicking the refresh-button in the upper-right corner.
 
-   ![Explore GraphQL schema with Banana Cake Pop](images/3-bcp-schema-explorer.png)
+   ![Select schema reference in Banana Cakepop](images/3-bcp-schema-explorer-1.png)
+
+   ![Explore Query type in Banana Cakepop](images/3-bcp-schema-explorer-2.png)
+
+   ![Explore Speaker type in Banana Cakepop](images/3-bcp-schema-explorer-3.png)
 
 ## Adding Mutations
 
@@ -277,7 +283,7 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
 
    1. `dotnet run --project GraphQL`
 
-1. Explore with Banana Cake Pop the changes schema to the schema. There should now be a mutation type and the `addSpeaker` mutation.
+1. Explore with Banana Cakepop the changes schema to the schema. There should now be a mutation type and the `addSpeaker` mutation.
    ![GraphQL type explorer](images/4-bcp-schema-explorer-mutation.png)
 
 1. Next add a speaker by writing a GraphQL mutation.
