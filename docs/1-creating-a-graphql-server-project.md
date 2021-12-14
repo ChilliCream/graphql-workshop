@@ -8,8 +8,9 @@
   - [Summary](#summary)
 
 # Create a new GraphQL server project
+
 1. Make sure that you have installed .NET 6 SDK before you start. In order to download and install the SDK head over to https://dot.net
-1. Next install the Hot Chocolate templates 
+1. Next install the Hot Chocolate templates
    1. `dotnet new -i HotChocolate.Templates`
 1. Create a new project for our GraphQL Server.
    1. `dotnet new sln -n ConferencePlanner`
@@ -19,56 +20,81 @@
    1. `mkdir GraphQL/Data`
 1. Add a new file `Speaker.cs` in the `Data` directory using the following code:
 
-    ```csharp
-    using System.ComponentModel.DataAnnotations;
+   ```csharp
+   using System.ComponentModel.DataAnnotations;
 
-    namespace ConferencePlanner.GraphQL.Data
-    
-    public class Speaker
-    {
-        public int Id { get; set; }
+   namespace ConferencePlanner.GraphQL.Data;
 
-        [Required]
-        [StringLength(200)]
-        public string Name { get; set; }
+   public class Speaker
+   {
+       public int Id { get; set; }
 
-        [StringLength(4000)]
-        public string Bio { get; set; }
+       [Required]
+       [StringLength(200)]
+       public string Name { get; set; }
 
-        [StringLength(1000)]
-        public virtual string WebSite { get; set; }
-    }
-    ```
+       [StringLength(4000)]
+       public string Bio { get; set; }
 
-2. Add a reference to the NuGet package package `Microsoft.EntityFrameworkCore.Sqlite` version `6.0.0`.
+       [StringLength(1000)]
+       public virtual string WebSite { get; set; }
+   }
+   ```
+
+1. Add a reference to the NuGet package package `Microsoft.EntityFrameworkCore.Sqlite` version `6.0.0`.
    1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Sqlite --version 6.0.0`
-3. Next we'll create a new Entity Framework DbContext. Create a new `ApplicationDbContext` class in the `Data` folder using the following code:
+1. Next we'll create a new Entity Framework DbContext. Create a new `ApplicationDbContext` class in the `Data` folder using the following code:
 
-    ```csharp
-    using Microsoft.EntityFrameworkCore;
+   ```csharp
+   using Microsoft.EntityFrameworkCore;
 
-    namespace ConferencePlanner.GraphQL.Data;
+   namespace ConferencePlanner.GraphQL.Data;
 
-    public class ApplicationDbContext : DbContext
-    {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
+   public class ApplicationDbContext : DbContext
+   {
+       public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+           : base(options)
+       {
+       }
 
-        public DbSet<Speaker> Speakers { get; set; }
-    }
-    ```
+       public DbSet<Speaker> Speakers { get; set; }
+   }
+   ```
 
 ## Register the DB Context Service
 
-1. Add the following code to the `Program.cs`:
+1. Add the following code to the `Program.cs` just after the line `var builder = WebApplication.CreateBuilder(args);`:
 
-    ```csharp
-    services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Data Source=conferences.db"));
-    ```
+   ```csharp
+   builder.Services
+       .AddDbContext<ApplicationDbContext>(
+           options => options.UseSqlite("Data Source=conferences.db"));
+   ```
 
-    > This code registers the `ApplicationDbContext` service so it can be injected into resolvers.
+   The file should no look like the following:
+
+   ```csharp
+   using ConferencePlanner.GraphQL.Data;
+   using Microsoft.EntityFrameworkCore;
+
+   var builder = WebApplication.CreateBuilder(args);
+
+   builder.Services
+       .AddDbContext<ApplicationDbContext>(
+           options => options.UseSqlite("Data Source=conferences.db"));
+
+   builder.Services
+       .AddGraphQLServer()
+       .AddQueryType<Query>();
+
+   var app = builder.Build();
+
+   app.MapGraphQL();
+
+   app.Run();
+   ```
+
+   > This code registers the `ApplicationDbContext` service so it can be injected into resolvers.
 
 ## Configuring EF Migrations
 
@@ -99,11 +125,11 @@
 
 3. Run the following commands in the command prompt:
 
-    ```console
-    dotnet build GraphQL
-    dotnet ef migrations add Initial --project GraphQL
-    dotnet ef database update --project GraphQL
-    ```
+   ```console
+   dotnet build GraphQL
+   dotnet ef migrations add Initial --project GraphQL
+   dotnet ef database update --project GraphQL
+   ```
 
 Commands Explained
 
@@ -116,110 +142,53 @@ Commands Explained
 
 ## Adding GraphQL
 
-1. Add a reference to the NuGet package package `HotChocolate.AspNetCore` version `12.4.0`.
-   1. `dotnet add GraphQL package HotChocolate.AspNetCore --version 12.4.0`
-2. Further we add a reference to the NuGet package package `HotChocolate.Data.EntityFramework` version `12.4.0` to help us with EF Core specifics.
+Since we used the GraphQL template we already have a basic GraphQL server. In order to query our data we need to replace the `Query` class with our own implementation. Also, since we are using EF core we need to add the `HotChocolate.Data.EntityFramework` package to get the EF core integrations for Hot Chocolate.
+ 
+1. Add a reference to the NuGet package package `HotChocolate.Data.EntityFramework` version `12.4.0`.
    1. `dotnet add GraphQL package HotChocolate.Data.EntityFramework --version 12.4.0`
-3. Next we'll create our query root type (`Query.cs`) and add a resolver that fetches all of our speakers.
+2. Next we'll replace the query root type (`Query.cs`) and add a resolver that fetches all of our speakers.
 
-    ```csharp
-    using System.Linq;
-    using HotChocolate;
-    using ConferencePlanner.GraphQL.Data;
+   ```csharp
+   using ConferencePlanner.GraphQL.Data;
 
-    namespace ConferencePlanner.GraphQL;
+   namespace ConferencePlanner.GraphQL;
 
-    public class Query
-    {
-        public IQueryable<Speaker> GetSpeakers(ApplicationDbContext context) =>
-            context.Speakers;
-    }
-    ```
+   public class Query
+   {
+       public IQueryable<Speaker> GetSpeakers(ApplicationDbContext context) =>
+           context.Speakers;
+   }
+   ```
 
-4. Before we can do anything with our query root type we need to setup GraphQL and register our query root type. Add the following code below `AddDbContext` in the `ConfigureServices()` method in `Startup.cs`:
+3. Before we can do anything with our query root type we need to register our `ApplicationDbContext` with the schema so that the execution engine knows how to use this service. For this head to the `Program.cs` and chain in `.RegisterDbContext<ApplicationDbContext>()` right after `.AddQueryType<Query>()`:
 
-    ```csharp
-    services
-        .AddGraphQLServer()
-        .AddQueryType<Query>();
-    ```
+   ```csharp
+   builder.Services
+      .AddGraphQLServer()
+      .AddQueryType<Query>()
+      .RegisterDbContext<ApplicationDbContext>();
+   ```
 
-    > The above code registers a GraphQL schema with our dependency injection and with that registers our `Query` type.
+   > The above code registers a GraphQL server with our dependency injection and declares the `Query` class as the GraphQL query root type. We also registered our `ApplicationDbContext` as a well-known DBContext with our schema.
 
-5. Next we need to configure our GraphQL middleware so that the server knows how to execute GraphQL requests. For this replace `app.UseEndpoints...` with the following code in the method  `Configure(IApplicationBuilder app, IWebHostEnvironment env)` in the `Startup.cs`
+    We now have a GraphQL server that should allow us to fetch speakers from our database through GraphQL.
 
-    ```csharp
-    app.UseEndpoints(endpoints =>
-    {
-        endpoints.MapGraphQL();
-    });
-    ```
+4. Start the server.
 
-    > Your Startup.cs should now look like the following:
-
-    ```csharp
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using ConferencePlanner.GraphQL;
-    using ConferencePlanner.GraphQL.Data;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-
-    namespace GraphQL
-    {
-        public class Startup
-        {
-            // This method gets called by the runtime. Use this method to add services to the container.
-            // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-            public void ConfigureServices(IServiceCollection services)
-            {
-                services.AddDbContext<ApplicationDbContext>(
-                    options => options.UseSqlite("Data Source=conferences.db"));
-
-                services
-                    .AddGraphQLServer()
-                    .AddQueryType<Query>();
-            }
-
-            // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-            public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-            {
-                if (env.IsDevelopment())
-                {
-                    app.UseDeveloperExceptionPage();
-                }
-
-                app.UseRouting();
-
-                app.UseEndpoints(endpoints =>
-                {
-                    endpoints.MapGraphQL();
-                });
-            }
-        }
-    }
-    ```
-
-6. Start the server.
    1. `dotnet run --project GraphQL`
 
-    ![Start GraphQL server](images/1-start-server.png)
+   ![Start GraphQL server](images/1-start-server.png)
 
-7. Start [Banana Cake Pop](https://chillicream.com/docs/bananacakepop) or use it built-in your browser at [http://localhost:5000/graphql/](http://localhost:5000/graphql/) and connect to our server (usually at [http://localhost:5000/graphql](http://localhost:5000/graphql)).   
-   **Note**: `<address>/graphql/` might **not** show mutations, make sure you use `<address>/graphql` (without trailing slash). 
+5. Start [Banana Cake Pop](https://chillicream.com/docs/bananacakepop) or use it built-in your browser at [http://localhost:5000/graphql/](http://localhost:5000/graphql/) and connect to our server (usually at [http://localhost:5000/graphql](http://localhost:5000/graphql)).
 
-    ![Connect to GraphQL server with Banana Cake Pop](images/2-bcp-connect-to-server.png)
+   ![Connect to GraphQL server with Banana Cake Pop](images/2-bcp-connect-to-server.png)
 
-8. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.   
-   **Note**: You might have to reload the schema, you can do so by clicking the refresh-button in the upper-right corner. 
+   ![Connect to GraphQL server with Banana Cake Pop](images/2-bcp-connect-to-server.png)
 
-    ![Explore GraphQL schema with Banana Cake Pop](images/3-bcp-schema-explorer.png)
+6. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.  
+   **Note**: You might have to reload the schema, you can do so by clicking the refresh-button in the upper-right corner.
+
+   ![Explore GraphQL schema with Banana Cake Pop](images/3-bcp-schema-explorer.png)
 
 ## Adding Mutations
 
@@ -233,78 +202,79 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
 
 1. Add a file `AddSpeakerInput.cs` to your project with the following code:
 
-    ```csharp
-    namespace ConferencePlanner.GraphQL
-    {
-        public record AddSpeakerInput(
-            string Name,
-            string Bio,
-            string WebSite);
-    }
-    ```
+   ```csharp
+   namespace ConferencePlanner.GraphQL
+   {
+       public record AddSpeakerInput(
+           string Name,
+           string Bio,
+           string WebSite);
+   }
+   ```
 
    > The input and output (payload) both contain a client mutation identifier used to reconcile requests and responses in some client frameworks.
 
 1. Next we add our `AddSpeakerPayload` which represents the output of our GraphQL mutation by adding the following code:
 
-    ```csharp
-    using ConferencePlanner.GraphQL.Data;
+   ```csharp
+   using ConferencePlanner.GraphQL.Data;
 
-    namespace ConferencePlanner.GraphQL
-    {
-        public class AddSpeakerPayload
-        {
-            public AddSpeakerPayload(Speaker speaker)
-            {
-                Speaker = speaker;
-            }
+   namespace ConferencePlanner.GraphQL
+   {
+       public class AddSpeakerPayload
+       {
+           public AddSpeakerPayload(Speaker speaker)
+           {
+               Speaker = speaker;
+           }
 
-            public Speaker Speaker { get; }
-        }
-    }
-    ```
+           public Speaker Speaker { get; }
+       }
+   }
+   ```
 
 1. Now lets add the actual mutation type with our `addSpeaker` mutation in it.
 
-    ```csharp
-    using System.Threading.Tasks;
-    using ConferencePlanner.GraphQL.Data;
-    using HotChocolate;
+   ```csharp
+   using System.Threading.Tasks;
+   using ConferencePlanner.GraphQL.Data;
+   using HotChocolate;
 
-    namespace ConferencePlanner.GraphQL
-    {
-        public class Mutation
-        {
-            public async Task<AddSpeakerPayload> AddSpeakerAsync(
-                AddSpeakerInput input,
-                [Service] ApplicationDbContext context)
-            {
-                var speaker = new Speaker
-                {
-                    Name = input.Name,
-                    Bio = input.Bio,
-                    WebSite = input.WebSite
-                };
+   namespace ConferencePlanner.GraphQL
+   {
+       public class Mutation
+       {
+           public async Task<AddSpeakerPayload> AddSpeakerAsync(
+               AddSpeakerInput input,
+               [Service] ApplicationDbContext context)
+           {
+               var speaker = new Speaker
+               {
+                   Name = input.Name,
+                   Bio = input.Bio,
+                   WebSite = input.WebSite
+               };
 
-                context.Speakers.Add(speaker);
-                await context.SaveChangesAsync();
+               context.Speakers.Add(speaker);
+               await context.SaveChangesAsync();
 
-                return new AddSpeakerPayload(speaker);
-            }
-        }
-    }
-    ```
+               return new AddSpeakerPayload(speaker);
+           }
+       }
+   }
+   ```
 
 1. Last but not least you need to add the new `Mutation` type to your schema:
 
-    ```csharp
-    services
-        .AddGraphQLServer()
-        .AddQueryType<Query>()
-        .AddMutationType<Mutation>();
-    ```
+   ```csharp
+   services
+       .AddGraphQLServer()
+       .AddQueryType<Query>()
+       .AddMutationType<Mutation>();
+   ```
 
 1. Start the server again in order to validate if it is working properly.
+
    1. `dotnet run --project GraphQL`
 
 1. Explore with Banana Cake Pop the changes schema to the schema. There should now be a mutation type and the `addSpeaker` mutation.
@@ -312,30 +282,33 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
 
 1. Next add a speaker by writing a GraphQL mutation.
 
-    ```graphql
-    mutation AddSpeaker {
-      addSpeaker(input: {
-        name: "Speaker Name"
-        bio: "Speaker Bio"
-        webSite: "http://speaker.website" }) {
-        speaker {
-          id
-        }
-      }
-    }
-    ```
+   ```graphql
+   mutation AddSpeaker {
+     addSpeaker(
+       input: {
+         name: "Speaker Name"
+         bio: "Speaker Bio"
+         webSite: "http://speaker.website"
+       }
+     ) {
+       speaker {
+         id
+       }
+     }
+   }
+   ```
 
    ![Add speaker](images/5-bcp-mutation-add-addspeaker.png)
 
 1. Query the names of all the speakers in the database.
 
-    ```graphql
-    query GetSpeakerNames {
-      speakers {
-        name
-      }
-    }
-    ```
+   ```graphql
+   query GetSpeakerNames {
+     speakers {
+       name
+     }
+   }
+   ```
 
    ![Query speaker names](images/6-bcp-query-get-speakers.png)
 
