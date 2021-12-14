@@ -10,10 +10,9 @@ namespace ConferencePlanner.GraphQL.Speakers
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class SpeakerMutations
     {
-        [UseApplicationDbContext]
         public async Task<AddSpeakerPayload> AddSpeakerAsync(
             AddSpeakerInput input,
-            [ScopedService] ApplicationDbContext context,
+            ApplicationDbContext context,
             CancellationToken cancellationToken)
         {
             var speaker = new Speaker
@@ -29,10 +28,9 @@ namespace ConferencePlanner.GraphQL.Speakers
             return new AddSpeakerPayload(speaker);
         }
 
-        [UseApplicationDbContext]
         public async Task<ModifySpeakerPayload> ModifySpeakerAsync(
             ModifySpeakerInput input,
-            [ScopedService] ApplicationDbContext context,
+            ApplicationDbContext context,
             CancellationToken cancellationToken)
         {
             if (input.Name.HasValue && input.Name.Value is null)

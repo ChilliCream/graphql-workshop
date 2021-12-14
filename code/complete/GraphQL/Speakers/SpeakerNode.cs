@@ -43,7 +43,7 @@ namespace ConferencePlanner.GraphQL.Speakers
 
         public async IAsyncEnumerable<Session> GetSessionsStreamAsync(
             [Parent] Speaker speaker,
-            [Service] IDbContextFactory<ApplicationDbContext> contextFactory,
+            IDbContextFactory<ApplicationDbContext> contextFactory,
             [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             var random = new Random();

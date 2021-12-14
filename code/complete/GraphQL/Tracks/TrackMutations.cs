@@ -9,24 +9,23 @@ namespace ConferencePlanner.GraphQL.Tracks
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class TrackMutations
     {
-        [UseApplicationDbContext]
-        public async Task<AddTrackPayload> AddTrackAsync(
-            AddTrackInput input,
-            [ScopedService] ApplicationDbContext context,
+        [Input] 
+        public async Task<Track> AddTrackAsync(
+            string name,
+            ApplicationDbContext context,
             CancellationToken cancellationToken)
         {
-            var track = new Track { Name = input.Name };
+            var track = new Track { Name = name };
             context.Tracks.Add(track);
 
             await context.SaveChangesAsync(cancellationToken);
 
-            return new AddTrackPayload(track);
+            return track;
         }
 
-        [UseApplicationDbContext]
         public async Task<RenameTrackPayload> RenameTrackAsync(
             RenameTrackInput input,
-            [ScopedService] ApplicationDbContext context,
+            ApplicationDbContext context,
             CancellationToken cancellationToken)
         {
             var track = await context.Tracks.FindAsync(input.Id, cancellationToken);

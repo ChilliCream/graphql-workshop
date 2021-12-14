@@ -16,10 +16,9 @@ namespace ConferencePlanner.GraphQL.Attendees
         /// <summary>
         /// Gets all attendees of this conference.
         /// </summary>
-        [UseApplicationDbContext]
         [UsePaging]
         public IQueryable<Attendee> GetAttendees(
-            [ScopedService] ApplicationDbContext context) 
+            ApplicationDbContext context) 
             => context.Attendees;
 
         /// <summary>

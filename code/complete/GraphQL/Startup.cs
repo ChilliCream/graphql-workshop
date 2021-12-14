@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,18 +8,13 @@ using Microsoft.Extensions.Logging;
 using ConferencePlanner.GraphQL.Attendees;
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.DataLoader;
-using ConferencePlanner.GraphQL.Imports;
 using ConferencePlanner.GraphQL.Sessions;
 using ConferencePlanner.GraphQL.Speakers;
 using ConferencePlanner.GraphQL.Tracks;
-using GreenDonut;
 using HotChocolate;
 using HotChocolate.AspNetCore;
-using HotChocolate.Execution;
-using HotChocolate.Execution.Instrumentation;
-using HotChocolate.Resolvers;
-using HotChocolate.Types;
-using HotChocolate.Types.Pagination;
+using HotChocolate.Data;
+using HotChocolate.Subscriptions;
 
 namespace ConferencePlanner.GraphQL
 {
@@ -77,6 +69,13 @@ namespace ConferencePlanner.GraphQL
                 .AddTypeExtension<TrackMutations>()
                 .AddTypeExtension<TrackNode>()
                 .AddDataLoader<TrackByIdDataLoader>()
+
+                .RegisterDbContext<ApplicationDbContext>(DbContextKind.Pooled)
+                .RegisterService<IDbContextFactory<ApplicationDbContext>>(ServiceKind.Synchronized)
+                .RegisterService<ITopicEventReceiver>()
+                .RegisterService<ITopicEventSender>()
+
+                .AddMutationConventions()
 
                 // In this section we are adding extensions like relay helpers,
                 // filtering and sorting.

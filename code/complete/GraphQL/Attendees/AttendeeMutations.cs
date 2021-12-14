@@ -12,10 +12,9 @@ namespace ConferencePlanner.GraphQL.Attendees
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class AttendeeMutations
     {
-        [UseApplicationDbContext]
         public async Task<RegisterAttendeePayload> RegisterAttendeeAsync(
             RegisterAttendeeInput input,
-            [ScopedService] ApplicationDbContext context,
+            ApplicationDbContext context,
             CancellationToken cancellationToken)
         {
             var attendee = new Attendee
@@ -33,11 +32,10 @@ namespace ConferencePlanner.GraphQL.Attendees
             return new RegisterAttendeePayload(attendee);
         }
 
-        [UseApplicationDbContext]
         public async Task<CheckInAttendeePayload> CheckInAttendeeAsync(
             CheckInAttendeeInput input,
-            [ScopedService] ApplicationDbContext context,
-            [Service] ITopicEventSender eventSender,
+            ApplicationDbContext context,
+            ITopicEventSender eventSender,
             CancellationToken cancellationToken)
         {
             var attendee = await context.Attendees.FirstOrDefaultAsync(

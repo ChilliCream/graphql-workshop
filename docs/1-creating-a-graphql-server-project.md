@@ -6,11 +6,14 @@
   - [Adding GraphQL](#adding-graphql)
   - [Adding Mutations](#adding-mutations)
   - [Summary](#summary)
-# Create a new GraphQL server project
 
+# Create a new GraphQL server project
+1. Make sure that you have installed .NET 6 SDK before you start. In order to download and install the SDK head over to https://dot.net
+1. Next install the Hot Chocolate templates 
+   1. `dotnet new -i HotChocolate.Templates`
 1. Create a new project for our GraphQL Server.
    1. `dotnet new sln -n ConferencePlanner`
-   1. `dotnet new web -n GraphQL`
+   1. `dotnet new graphql -n GraphQL`
    1. `dotnet sln add GraphQL`
 1. Add a new folder `Data` where we want to place all our database related code.
    1. `mkdir GraphQL/Data`
@@ -20,42 +23,40 @@
     using System.ComponentModel.DataAnnotations;
 
     namespace ConferencePlanner.GraphQL.Data
+    
+    public class Speaker
     {
-        public class Speaker
-        {
-            public int Id { get; set; }
+        public int Id { get; set; }
 
-            [Required]
-            [StringLength(200)]
-            public string Name { get; set; }
+        [Required]
+        [StringLength(200)]
+        public string Name { get; set; }
 
-            [StringLength(4000)]
-            public string Bio { get; set; }
+        [StringLength(4000)]
+        public string Bio { get; set; }
 
-            [StringLength(1000)]
-            public virtual string WebSite { get; set; }
-        }
+        [StringLength(1000)]
+        public virtual string WebSite { get; set; }
     }
     ```
 
-1. Add a reference to the NuGet package package `Microsoft.EntityFrameworkCore.Sqlite` version `5.0.0`.
-   1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Sqlite --version 5.0.0`
-1. Next we'll create a new Entity Framework DbContext. Create a new `ApplicationDbContext` class in the `Data` folder using the following code:
+2. Add a reference to the NuGet package package `Microsoft.EntityFrameworkCore.Sqlite` version `6.0.0`.
+   1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Sqlite --version 6.0.0`
+3. Next we'll create a new Entity Framework DbContext. Create a new `ApplicationDbContext` class in the `Data` folder using the following code:
 
     ```csharp
     using Microsoft.EntityFrameworkCore;
 
-    namespace ConferencePlanner.GraphQL.Data
-    {
-        public class ApplicationDbContext : DbContext
-        {
-            public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-                : base(options)
-            {
-            }
+    namespace ConferencePlanner.GraphQL.Data;
 
-            public DbSet<Speaker> Speakers { get; set; }
+    public class ApplicationDbContext : DbContext
+    {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
         }
+
+        public DbSet<Speaker> Speakers { get; set; }
     }
     ```
 
@@ -71,8 +72,8 @@
 
 ## Configuring EF Migrations
 
-1. Add a reference to the NuGet package `Microsoft.EntityFrameworkCore.Tools` version `5.0.0`.
-   1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Tools --version 5.0.0`
+1. Add a reference to the NuGet package `Microsoft.EntityFrameworkCore.Tools` version `6.0.0`.
+   1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Tools --version 6.0.0`
 
 ### Option 1 - Visual Studio: Package Manager Console
 
@@ -91,7 +92,7 @@
 
    ```console
    dotnet new tool-manifest
-   dotnet tool install dotnet-ef --version 5.0.0 --local
+   dotnet tool install dotnet-ef --version 6.0.0 --local
    ```
 
 2. Open a command prompt and navigate to the project directory. (The directory containing the `Startup.cs` file).
@@ -115,26 +116,27 @@ Commands Explained
 
 ## Adding GraphQL
 
-1. Add a reference to the NuGet package package `HotChocolate.AspNetCore` version `11.0.0`.
-   1. `dotnet add GraphQL package HotChocolate.AspNetCore --version 11.0.0`
-1. Next we'll create our query root type (`Query.cs`) and add a resolver that fetches all of our speakers.
+1. Add a reference to the NuGet package package `HotChocolate.AspNetCore` version `12.4.0`.
+   1. `dotnet add GraphQL package HotChocolate.AspNetCore --version 12.4.0`
+2. Further we add a reference to the NuGet package package `HotChocolate.Data.EntityFramework` version `12.4.0` to help us with EF Core specifics.
+   1. `dotnet add GraphQL package HotChocolate.Data.EntityFramework --version 12.4.0`
+3. Next we'll create our query root type (`Query.cs`) and add a resolver that fetches all of our speakers.
 
     ```csharp
     using System.Linq;
     using HotChocolate;
     using ConferencePlanner.GraphQL.Data;
 
-    namespace ConferencePlanner.GraphQL
+    namespace ConferencePlanner.GraphQL;
+
+    public class Query
     {
-        public class Query
-        {
-            public IQueryable<Speaker> GetSpeakers([Service] ApplicationDbContext context) =>
-                context.Speakers;
-        }
+        public IQueryable<Speaker> GetSpeakers(ApplicationDbContext context) =>
+            context.Speakers;
     }
     ```
 
-1. Before we can do anything with our query root type we need to setup GraphQL and register our query root type. Add the following code below `AddDbContext` in the `ConfigureServices()` method in `Startup.cs`:
+4. Before we can do anything with our query root type we need to setup GraphQL and register our query root type. Add the following code below `AddDbContext` in the `ConfigureServices()` method in `Startup.cs`:
 
     ```csharp
     services
@@ -144,7 +146,7 @@ Commands Explained
 
     > The above code registers a GraphQL schema with our dependency injection and with that registers our `Query` type.
 
-1. Next we need to configure our GraphQL middleware so that the server knows how to execute GraphQL requests. For this replace `app.UseEndpoints...` with the following code in the method  `Configure(IApplicationBuilder app, IWebHostEnvironment env)` in the `Startup.cs`
+5. Next we need to configure our GraphQL middleware so that the server knows how to execute GraphQL requests. For this replace `app.UseEndpoints...` with the following code in the method  `Configure(IApplicationBuilder app, IWebHostEnvironment env)` in the `Startup.cs`
 
     ```csharp
     app.UseEndpoints(endpoints =>
@@ -204,17 +206,17 @@ Commands Explained
     }
     ```
 
-1. Start the server.
+6. Start the server.
    1. `dotnet run --project GraphQL`
 
     ![Start GraphQL server](images/1-start-server.png)
 
-1. Start [Banana Cake Pop](https://chillicream.com/docs/bananacakepop) or use it built-in your browser at [http://localhost:5000/graphql/](http://localhost:5000/graphql/) and connect to our server (usually at [http://localhost:5000/graphql](http://localhost:5000/graphql)).   
+7. Start [Banana Cake Pop](https://chillicream.com/docs/bananacakepop) or use it built-in your browser at [http://localhost:5000/graphql/](http://localhost:5000/graphql/) and connect to our server (usually at [http://localhost:5000/graphql](http://localhost:5000/graphql)).   
    **Note**: `<address>/graphql/` might **not** show mutations, make sure you use `<address>/graphql` (without trailing slash). 
 
     ![Connect to GraphQL server with Banana Cake Pop](images/2-bcp-connect-to-server.png)
 
-1. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.   
+8. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.   
    **Note**: You might have to reload the schema, you can do so by clicking the refresh-button in the upper-right corner. 
 
     ![Explore GraphQL schema with Banana Cake Pop](images/3-bcp-schema-explorer.png)

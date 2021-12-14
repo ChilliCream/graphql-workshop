@@ -14,23 +14,20 @@ namespace ConferencePlanner.GraphQL.Tracks
     [ExtendObjectType(OperationTypeNames.Query)]
     public class TrackQueries
     {
-        [UseApplicationDbContext]
         [UsePaging]
         public IQueryable<Track> GetTracks(
-            [ScopedService] ApplicationDbContext context) 
+            ApplicationDbContext context) 
             => context.Tracks.OrderBy(t => t.Name);
 
-        [UseApplicationDbContext]
         public Task<Track> GetTrackByNameAsync(
             string name,
-            [ScopedService] ApplicationDbContext context,
+            ApplicationDbContext context,
             CancellationToken cancellationToken) 
             => context.Tracks.FirstAsync(t => t.Name == name, cancellationToken);
 
-        [UseApplicationDbContext]
         public async Task<IEnumerable<Track>> GetTrackByNamesAsync(
             string[] names,
-            [ScopedService] ApplicationDbContext context,
+            ApplicationDbContext context,
             CancellationToken cancellationToken) 
             => await context.Tracks.Where(t => names.Contains(t.Name)).ToListAsync(cancellationToken);
 

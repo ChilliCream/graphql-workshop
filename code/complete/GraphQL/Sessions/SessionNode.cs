@@ -25,7 +25,7 @@ namespace ConferencePlanner.GraphQL.Sessions
         [BindMember(nameof(Session.SessionAttendees), Replace = true)]
         public IQueryable<Attendee> GetAttendees(
             [Parent] Session session,
-            [ScopedService] ApplicationDbContext dbContext)
+            ApplicationDbContext dbContext)
             => dbContext.Sessions
                 .Where(s => s.Id == session.Id)
                 .Include(s => s.SessionAttendees)

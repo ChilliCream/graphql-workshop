@@ -21,7 +21,7 @@ namespace ConferencePlanner.GraphQL.Attendees
 
         public async ValueTask<ISourceStream<int>> SubscribeToOnAttendeeCheckedInAsync(
             int sessionId,
-            [Service] ITopicEventReceiver eventReceiver,
+            ITopicEventReceiver eventReceiver,
             CancellationToken cancellationToken) 
             => await eventReceiver.SubscribeAsync<string, int>(
                 "OnAttendeeCheckedIn_" + sessionId, cancellationToken);
