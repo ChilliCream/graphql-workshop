@@ -155,8 +155,8 @@ Since we used the GraphQL template we already have a basic GraphQL server. In or
 
    public class Query
    {
-       public IQueryable<Speaker> GetSpeakers(ApplicationDbContext context) =>
-           context.Speakers;
+       public IQueryable<Speaker> GetSpeakers(ApplicationDbContext context)
+          => context.Speakers;
    }
    ```
 

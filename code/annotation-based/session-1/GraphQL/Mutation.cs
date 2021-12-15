@@ -8,7 +8,7 @@ public class Mutation
         string name,
         string? bio,
         string? webSite,
-        [Service] ApplicationDbContext context)
+        ApplicationDbContext context)
     {
         var speaker = new Speaker
         {

@@ -1,7 +1,7 @@
-- [Controlling nullability](#controlling-nullability)
+- [Nullability](#nullability)
   - [Summary](#summary)
 
-# Controlling nullability
+# Nullability
 
 The GraphQL type system distinguishes between nullable and non-nullable types. This helps the API consumer by providing guarantees when a field value can be trusted never to be null or when an input is not allowed to be null. The ability to rely on such information simplifies the frontend code since we do not have to write null checks for things that will never be null.
 

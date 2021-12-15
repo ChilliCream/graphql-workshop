@@ -1,0 +1,19 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  speakers: [Speaker!]!
+}
+
+type Mutation {
+  addSpeaker(name: String!, bio: String, webSite: String): Speaker
+}
+
+type Speaker {
+  id: Int!
+  name: String!
+  bio: String
+  webSite: String
+}

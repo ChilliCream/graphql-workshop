@@ -1,10 +1,11 @@
 using ConferencePlanner.GraphQL.Data;
+using ConferencePlanner.GraphQL.DataLoader;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddDbContext<ApplicationDbContext>(
+    .AddPooledDbContextFactory<ApplicationDbContext>(
         options => options.UseSqlite("Data Source=conferences.db"));
 
 builder.Services
@@ -12,7 +13,8 @@ builder.Services
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
     .AddMutationConventions()
-    .RegisterDbContext<ApplicationDbContext>();
+    .AddDataLoader<SpeakerByIdDataLoader>()
+    .RegisterDbContext<ApplicationDbContext>(kind: DbContextKind.Pooled);
 
 var app = builder.Build();
 
