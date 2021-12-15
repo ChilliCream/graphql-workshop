@@ -2,7 +2,7 @@
   - [Execution](#execution)
   - [Adding the remaining data models](#adding-the-remaining-data-models)
   - [Adding DataLoader](#adding-dataloader)
-  - [Fluent type configurations](#fluent-type-configurations)
+  - [Projections vs DataLoader](#projections-vs-dataloader)
   - [Summary](#summary)
 
 # Understanding GraphQL query execution and DataLoader
@@ -326,7 +326,7 @@ After having everything in let us have a look at our schema and see if something
 
    ![Connect to GraphQL server with Banana Cake Pop](images/12-bcp-speaker-query.png)
 
-## Fluent type configurations
+## Projections vs DataLoader
 
 At this very moment, we are purely inferring the schema from our C# classes. In some cases where we have everything under control, this might be a good thing, and everything is okay.
 

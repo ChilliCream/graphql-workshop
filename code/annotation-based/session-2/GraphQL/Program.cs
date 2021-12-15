@@ -12,8 +12,10 @@ builder.Services
     .AddGraphQLServer()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
+    .AddTypeExtension<SessionSpeakerResolvers>()
     .AddMutationConventions()
     .AddDataLoader<SpeakerByIdDataLoader>()
+    .AddDataLoader<SessionByIdDataLoader>()
     .RegisterDbContext<ApplicationDbContext>(kind: DbContextKind.Pooled);
 
 var app = builder.Build();
