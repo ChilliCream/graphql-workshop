@@ -17,6 +17,17 @@ namespace ConferencePlanner.GraphQL.Speakers
     [ExtendObjectType(typeof(Speaker))]
     public class SpeakerNode
     {
+        [BindMember(nameof(Speaker.Bio), Replace = true)]
+        public string? GetBio([Parent] Speaker speaker, bool error = false)
+        {
+            if(error) 
+            {
+                throw new GraphQLException("Some error with the bio.");
+            }
+
+            return speaker.Bio;
+        }
+
         [BindMember(nameof(Speaker.SessionSpeakers), Replace = true)]
         public async Task<IEnumerable<Session>> GetSessionsAsync(
             [Parent] Speaker speaker,
@@ -49,7 +60,7 @@ namespace ConferencePlanner.GraphQL.Speakers
             var random = new Random();
 
             await Task.Delay(random.Next(500, 1000), cancellationToken);
-            
+
             await using var context = contextFactory.CreateDbContext();
 
             var stream = (IAsyncEnumerable<SessionSpeaker>)context.Speakers
