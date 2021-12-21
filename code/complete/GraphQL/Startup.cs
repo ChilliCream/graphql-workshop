@@ -78,6 +78,8 @@ namespace ConferencePlanner.GraphQL
                 .AddTypeExtension<TrackNode>()
                 .AddDataLoader<TrackByIdDataLoader>()
 
+                .AddType<UploadType>()
+
                 // In this section we are adding extensions like relay helpers,
                 // filtering and sorting.
                 .AddFiltering()

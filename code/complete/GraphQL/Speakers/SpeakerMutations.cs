@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Common;
@@ -67,6 +68,23 @@ namespace ConferencePlanner.GraphQL.Speakers
             await context.SaveChangesAsync(cancellationToken);
 
             return new ModifySpeakerPayload(speaker);
+        }
+
+        [UseApplicationDbContext]
+        public async Task<UploadSpeakerPhotoPayload> UploadSpeakerPhotoAsync(
+            UploadSpeakerPhotoInput input,
+            [ScopedService] ApplicationDbContext context,
+            CancellationToken cancellationToken)
+        {
+            Speaker? speaker = await context.Speakers.FindAsync(input.Id);
+
+            if (speaker is null)
+            {
+                return new UploadSpeakerPhotoPayload(
+                    new UserError("Speaker with id not found.", "SPEAKER_NOT_FOUND"));
+            }
+
+            return new UploadSpeakerPhotoPayload(speaker);
         }
     }
 }
