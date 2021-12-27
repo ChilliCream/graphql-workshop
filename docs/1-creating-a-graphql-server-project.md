@@ -94,7 +94,7 @@
    dotnet tool install dotnet-ef --version 5.0.0 --local
    ```
 
-2. Open a command prompt and navigate to the project directory. (The directory containing the `Startup.cs` file).
+2. Open a command prompt and navigate to the project directory. (The directory containing the solution `ConferencePlanner.sln` file).
 
 3. Run the following commands in the command prompt:
 
