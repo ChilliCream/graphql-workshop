@@ -14,5 +14,7 @@ namespace ConferencePlanner.GraphQL.Speakers
             : base(new[] { error })
         {
         }
+
+        
     }
 }

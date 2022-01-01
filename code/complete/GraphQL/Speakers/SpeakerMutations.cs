@@ -84,6 +84,18 @@ namespace ConferencePlanner.GraphQL.Speakers
                     new UserError("Speaker with id not found.", "SPEAKER_NOT_FOUND"));
             }
 
+/*
+            if (input.Photo.Length < 1024_0000)
+            {
+                using (Stream inputStream = input.Photo.OpenReadStream())
+                {
+                    using(Stream outputStream = File.)
+
+                    await File.WriteAllBytesAsync(speaker.Id + ".png", );
+                }
+            }
+*/
+
             return new UploadSpeakerPhotoPayload(speaker);
         }
     }
