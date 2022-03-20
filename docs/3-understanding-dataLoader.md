@@ -660,7 +660,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
             private class SpeakerResolvers
             {
                 public async Task<IEnumerable<Session>> GetSessionsAsync(
-                    Speaker speaker,
+                    [Parent]Speaker speaker,
                     [ScopedService] ApplicationDbContext dbContext,
                     SessionByIdDataLoader sessionById,
                     CancellationToken cancellationToken)
