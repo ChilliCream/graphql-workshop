@@ -498,7 +498,6 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
         }
 
         Session session = await context.Sessions.FindAsync(input.SessionId);
-        int? initialTrackId = session.TrackId;
 
         if (session is null)
         {
@@ -693,7 +692,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to a dynami
             public Task<Session> GetSessionAsync(
                 SessionByIdDataLoader sessionById,
                 CancellationToken cancellationToken) =>
-                sessionById.LoadAsync(AttendeeId, cancellationToken);
+                sessionById.LoadAsync(SessionId, cancellationToken);
         }
     }
     ```
@@ -719,9 +718,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to a dynami
             [Subscribe(With = nameof(SubscribeToOnAttendeeCheckedInAsync))]
             public SessionAttendeeCheckIn OnAttendeeCheckedIn(
                 [ID(nameof(Session))] int sessionId,
-                [EventMessage] int attendeeId,
-                SessionByIdDataLoader sessionById,
-                CancellationToken cancellationToken) =>
+                [EventMessage] int attendeeId) =>
                 new SessionAttendeeCheckIn(attendeeId, sessionId);
 
             public async ValueTask<ISourceStream<int>> SubscribeToOnAttendeeCheckedInAsync(
