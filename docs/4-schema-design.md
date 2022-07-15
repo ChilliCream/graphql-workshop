@@ -915,7 +915,6 @@ mkdir GraphQL/Sessions
         }
 
         Session session = await context.Sessions.FindAsync(input.SessionId);
-        int? initialTrackId = session.TrackId;
 
         if (session is null)
         {
