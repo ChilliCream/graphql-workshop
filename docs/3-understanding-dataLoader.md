@@ -70,8 +70,8 @@ The GraphQL execution engine will always try to execute fields in parallel in or
                 where TDbContext : DbContext
             {
                 return descriptor.UseScopedService<TDbContext>(
-                    create: s => s.GetRequiredService<IDbContextFactory<TDbContext>>().CreateDbContext(),
-                    disposeAsync: (s, c) => c.DisposeAsync());
+                    create: s => s.GetRequiredService<IDbContextFactory<TDbContext>>().CreateDbContext()/*,
+                    disposeAsync: (s, c) => c.DisposeAsync()*/); // this would lead to an Error with Disposing the DBContext
             }
         }
     }
