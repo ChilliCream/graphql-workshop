@@ -571,7 +571,7 @@ But if we, for instance, have some parts of the API not under our control and wa
 
 In our specific case, we want to make the GraphQL API nicer and remove the relationship objects like `SessionSpeaker`.
 
-1. First let us add a new `DataLoader`for sessions in order to efficiently fetch sessions. for this create a file `SessionByIdDataLoader.cs` with the following code:
+1. First let us add a new `DataLoader` for sessions in order to efficiently fetch sessions. Let's create a file `SessionByIdDataLoader.cs` for this with the following code:
 
     ```csharp
     using System;
