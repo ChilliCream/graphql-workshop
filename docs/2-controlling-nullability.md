@@ -19,22 +19,21 @@ The GraphQL type system distinguishes between nullable and non-nullable types. T
    ```xml
    <Project Sdk="Microsoft.NET.Sdk.Web">
 
-     <PropertyGroup>
-       <TargetFramework>net5.0</TargetFramework>
-       <RootNamespace>ConferencePlanner.GraphQL</RootNamespace>
-       <Nullable>enable</Nullable>
-     </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>ConferencePlanner</RootNamespace>
+    </PropertyGroup>
 
-     <ItemGroup>
-       <PackageReference Include="HotChocolate.AspNetCore" Version="11.0.0" />
-       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.0" />
-       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0">
-         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-         <PrivateAssets>all</PrivateAssets>
-       </PackageReference>
-     </ItemGroup>
-
-   </Project>
+    <ItemGroup>
+      <PackageReference Include="HotChocolate.AspNetCore" Version="14.0.0-preview.11.3" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0-preview.4.23259.3" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0-preview.4.23259.3">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
    ```
 
 1. Build your project.
@@ -55,7 +54,7 @@ The GraphQL type system distinguishes between nullable and non-nullable types. T
     ```csharp
     using System.ComponentModel.DataAnnotations;
 
-    namespace ConferencePlanner.GraphQL.Data
+    namespace GraphQL.Data
     {
         public class Speaker
         {
@@ -90,7 +89,7 @@ The GraphQL type system distinguishes between nullable and non-nullable types. T
 
 1. Start your server again and verify the nullability changes in your schema explorer.
 
-   1. `dotnet run --project GraphQL`
+   1. `dotnet run --project GraphQL.csproj`
 
    ![Query speaker names](images/39-bcp-verify-nullability.png)
 
