@@ -86,7 +86,7 @@ After `next` has finished executing, the middleware checks if the result is a `s
 1. Start your server and query your tracks.
 
    ```console
-   dotnet run --project GraphQL
+   dotnet run --project GraphQL.csproj
    ```
 
    ```graphql
