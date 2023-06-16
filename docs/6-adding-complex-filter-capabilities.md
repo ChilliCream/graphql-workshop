@@ -19,7 +19,7 @@ Let us start by implementing the last Relay server specification we are still mi
    [UseApplicationDbContext]
    [UsePaging]
    public IQueryable<Track> GetTracks(
-       [ScopedService] ApplicationDbContext context) =>
+       [Service] ApplicationDbContext context) =>
        context.Tracks.OrderBy(t => t.Name);
    ```
 
@@ -32,7 +32,7 @@ Let us start by implementing the last Relay server specification we are still mi
 1. Start your GraphQL server.
 
    ```console
-   dotnet run --project GraphQL
+   dotnet run --project GraphQL.csproj
    ```
 
 1. Open Banana Cake Pop and refresh the schema.
@@ -91,23 +91,23 @@ Let us start by implementing the last Relay server specification we are still mi
 
    ![Query speaker names](images/26-bcp-GetNextTrack.png)
 
-1. Head over to the `SpeakerQueries.cs` which are located in the `Speakers` directory and replace the `GetSpeakersAsync` resolver with the following code:
+1. Head over to the `SpeakerQueries.cs` which are located in the `Speakers` directory and replace the `GetSpeakers` resolver with the following code:
 
    ```csharp
    [UseApplicationDbContext]
    [UsePaging]
    public IQueryable<Speaker> GetSpeakers(
-       [ScopedService] ApplicationDbContext context) =>
+       [Service] ApplicationDbContext context) =>
        context.Speakers.OrderBy(t => t.Name);
    ```
 
-1. Next, go to the `SessionQueries.cs` in the `Sessions` directory and replace the `GetSessionsAsync` with the following code:
+1. Next, go to the `SessionQueries.cs` in the `Sessions` directory and replace the `GetSessions` with the following code:
 
    ```csharp
    [UseApplicationDbContext]
    [UsePaging]
    public IQueryable<Session> GetSessions(
-       [ScopedService] ApplicationDbContext context) =>
+       [Service] ApplicationDbContext context) =>
        context.Sessions;
    ```
 
@@ -119,7 +119,7 @@ Let us start by implementing the last Relay server specification we are still mi
    [UseApplicationDbContext]
    [UsePaging(typeof(NonNullType<SessionType>))]
    public IQueryable<Session> GetSessions(
-       [ScopedService] ApplicationDbContext context) =>
+       [Service] ApplicationDbContext context) =>
        context.Sessions;
    ```
 
@@ -167,14 +167,14 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
 
 ![Filter Middleware Flow](images/20-middleware-flow.png)
 
-1. Add a reference to the NuGet package package `HotChocolate.Data` version `11.0.0`.
+1. Add a reference to the NuGet package package `HotChocolate.Data` version `14.0.0`.
 
-   1. `dotnet add GraphQL package HotChocolate.Data --version 11.0.0`
+   1. `dotnet add GraphQL package HotChocolate.Data --version 14.0.0`
 
 1. Add filter and sorting conventions to the schema configuration.
 
    ```csharp
-   services
+   builder.Services
       .AddGraphQLServer()
       .AddQueryType(d => d.Name("Query"))
          .AddTypeExtension<SpeakerQueries>()
@@ -205,7 +205,7 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
    [UseFiltering]
    [UseSorting]
    public IQueryable<Session> GetSessions(
-       [ScopedService] ApplicationDbContext context) =>
+       [Service] ApplicationDbContext context) =>
        context.Sessions;
    ```
 
@@ -240,14 +240,14 @@ Filters like paging is a middleware that can be applied on `IQueryable`, like me
    [UseFiltering(typeof(SessionFilterInputType))]
    [UseSorting]
    public IQueryable<Session> GetSessions(
-       [ScopedService] ApplicationDbContext context) =>
+       [Service] ApplicationDbContext context) =>
        context.Sessions;
    ```
 
 1. Start your GraphQL server.
 
    ```console
-   dotnet run --project GraphQL
+   dotnet run --project GraphQL.csproj
    ```
 
 1. Open Banana Cake Pop and refresh the schema and head over to the schema browser.
