@@ -45,7 +45,7 @@ Before we can start with introducing our new subscriptions, we need first to bri
            [UseApplicationDbContext]
            [UsePaging]
            public IQueryable<Attendee> GetAttendees(
-               [ScopedService] ApplicationDbContext context) =>
+               [Service] ApplicationDbContext context) =>
                context.Attendees;
 
            public Task<Attendee> GetAttendeeByIdAsync(
@@ -148,7 +148,7 @@ We now have the base types integrated and can start adding the attendee mutation
            [UseApplicationDbContext]
            public async Task<RegisterAttendeePayload> RegisterAttendeeAsync(
                RegisterAttendeeInput input,
-               [ScopedService] ApplicationDbContext context,
+               [Service] ApplicationDbContext context,
                CancellationToken cancellationToken)
            {
                var attendee = new Attendee
@@ -236,7 +236,7 @@ Now that we have the mutation in to register new attendees, let us move on to ad
     [UseApplicationDbContext]
     public async Task<CheckInAttendeePayload> CheckInAttendeeAsync(
         CheckInAttendeeInput input,
-        [ScopedService] ApplicationDbContext context,
+        [Service] ApplicationDbContext context,
         CancellationToken cancellationToken)
     {
         Attendee attendee = await context.Attendees.FirstOrDefaultAsync(
@@ -279,7 +279,7 @@ Now that we have the mutation in to register new attendees, let us move on to ad
             [UseApplicationDbContext]
             public async Task<RegisterAttendeePayload> RegisterAttendeeAsync(
                 RegisterAttendeeInput input,
-                [ScopedService] ApplicationDbContext context,
+                [Service] ApplicationDbContext context,
                 CancellationToken cancellationToken)
             {
                 var attendee = new Attendee
@@ -300,7 +300,7 @@ Now that we have the mutation in to register new attendees, let us move on to ad
             [UseApplicationDbContext]
             public async Task<CheckInAttendeePayload> CheckInAttendeeAsync(
                 CheckInAttendeeInput input,
-                [ScopedService] ApplicationDbContext context,
+                [Service] ApplicationDbContext context,
                 CancellationToken cancellationToken)
             {
                 Attendee attendee = await context.Attendees.FirstOrDefaultAsync(
@@ -326,10 +326,10 @@ Now that we have the mutation in to register new attendees, let us move on to ad
     }
     ```
 
-1. Head over to the `Startup.cs` and register the query and mutation type that we have just added with the schema builder.
+1. Head over to `Program.cs` and register the query and mutation type that we have just added with the schema builder.
 
     ```csharp
-    services
+    builder.Services
         .AddGraphQLServer()
         .AddQueryType(d => d.Name("Query"))
             .AddTypeExtension<AttendeeQueries>()
@@ -355,7 +355,7 @@ Now that we have the mutation in to register new attendees, let us move on to ad
 1. Start your GraphQL server.
 
    ```console
-   dotnet run --project GraphQL
+   dotnet run --project GraphQL.csproj
    ```
 
 1. Validate that you see your new queries and mutations with Banana Cake Pop.
@@ -364,7 +364,7 @@ Now that we have the mutation in to register new attendees, let us move on to ad
 
 With the base in, we now can focus on putting subscriptions on our GraphQL server. GraphQL subscriptions by default work over WebSockets but could also work over SignalR or gRPC. We will first update our request pipeline to use WebSockets, and then we will set up the subscription pub/sub-system. After having our server prepared, we will put in the subscriptions to our API.
 
-1. Head over to `Startup.cs` and add `app.WebSockets` to the request pipeline. Middleware order is also important with ASP.NET Core, so this middleware needs to come before the GraphQL middleware.
+1. Head over to `Program.cs` and add `app.WebSockets` to the request pipeline. Middleware order is also important with ASP.NET Core, so this middleware needs to come before the GraphQL middleware.
 
     ```csharp
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -384,37 +384,35 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
     }
     ```
 
-1. Stay in the `Startup.cs` and add `.AddInMemorySubscriptions();` to the `ConfigureServices` method.
+1. Stay in the `Program.cs` and add `.AddInMemorySubscriptions();` to the `builder.Services` method.
 
     ```csharp
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.AddPooledDbContextFactory<ApplicationDbContext>(
-            options => options.UseSqlite("Data Source=conferences.db"));
+    builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(
+        options => options.UseSqlite("Data Source=conferences.db"));
 
-        services
-            .AddGraphQLServer()
-            .AddQueryType(d => d.Name("Query"))
-                .AddTypeExtension<AttendeeQueries>()
-                .AddTypeExtension<SpeakerQueries>()
-                .AddTypeExtension<SessionQueries>()
-                .AddTypeExtension<TrackQueries>()
-            .AddMutationType(d => d.Name("Mutation"))
-                .AddTypeExtension<AttendeeMutations>()
-                .AddTypeExtension<SessionMutations>()
-                .AddTypeExtension<SpeakerMutations>()
-                .AddTypeExtension<TrackMutations>()
-            .AddType<AttendeeType>()
-            .AddType<SessionType>()
-            .AddType<SpeakerType>()
-            .AddType<TrackType>()
-            .EnableRelaySupport()
-            .AddFiltering()
-            .AddSorting()
-            .AddInMemorySubscriptions()
-            .AddDataLoader<SpeakerByIdDataLoader>()
-            .AddDataLoader<SessionByIdDataLoader>();
-    }
+    builder.Services
+        .AddGraphQLServer()
+        .AddQueryType(d => d.Name("Query"))
+            .AddTypeExtension<AttendeeQueries>()
+            .AddTypeExtension<SpeakerQueries>()
+            .AddTypeExtension<SessionQueries>()
+            .AddTypeExtension<TrackQueries>()
+        .AddMutationType(d => d.Name("Mutation"))
+            .AddTypeExtension<AttendeeMutations>()
+            .AddTypeExtension<SessionMutations>()
+            .AddTypeExtension<SpeakerMutations>()
+            .AddTypeExtension<TrackMutations>()
+        .AddType<AttendeeType>()
+        .AddType<SessionType>()
+        .AddType<SpeakerType>()
+        .AddType<TrackType>()
+        .EnableRelaySupport()
+        .AddFiltering()
+        .AddSorting()
+        .AddInMemorySubscriptions()
+        .AddDataLoader<SpeakerByIdDataLoader>()
+        .AddDataLoader<SessionByIdDataLoader>();
+    
     ```
 
    > With `app.UseWebSockets()` we have enabled our server to handle websocket request. With `.AddInMemorySubscriptions();` we have added an in-memory pub/sub system for GraphQL subscriptions to our schema.
@@ -451,10 +449,10 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
 
    > The `[EventMessage]` attribute marks the parameter where the execution engine shall inject the message payload of the pub/sub-system.
 
-1. Head back to the `Startup.cs` and register the `SessionSubscriptions` with the schema builder.
+1. Head back to the `Program.cs` and register the `SessionSubscriptions` with the schema builder.
 
     ```csharp
-    services
+    builder.Services
         .AddGraphQLServer()
         .AddQueryType(d => d.Name("Query"))
             .AddTypeExtension<AttendeeQueries>()
@@ -488,7 +486,7 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
     [UseApplicationDbContext]
     public async Task<ScheduleSessionPayload> ScheduleSessionAsync(
         ScheduleSessionInput input,
-        [ScopedService] ApplicationDbContext context,
+        [Service] ApplicationDbContext context,
         [Service]ITopicEventSender eventSender)
     {
         if (input.EndTime < input.StartTime)
@@ -534,7 +532,7 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
 1. Start your GraphQL server.
 
    ```console
-   dotnet run --project GraphQL
+   dotnet run --project GraphQL.csproj
    ```
 
 1. Open Banana Cake Pop and refresh the schema.
@@ -608,7 +606,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to a dynami
     [UseApplicationDbContext]
     public async Task<CheckInAttendeePayload> CheckInAttendeeAsync(
         CheckInAttendeeInput input,
-        [ScopedService] ApplicationDbContext context,
+        [Service] ApplicationDbContext context,
         [Service] ITopicEventSender eventSender,
         CancellationToken cancellationToken)
     {
@@ -677,7 +675,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to a dynami
 
             [UseApplicationDbContext]
             public async Task<int> CheckInCountAsync(
-                [ScopedService] ApplicationDbContext context,
+                [Service] ApplicationDbContext context,
                 CancellationToken cancellationToken) =>
                 await context.Sessions
                     .Where(session => session.Id == SessionId)
@@ -744,7 +742,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to a dynami
 
    The subscribe resolver is using `ITopicEventReceiver` to subscribe to a topic. A subscribe resolver can return `IAsyncEnumerable<T>`, `IEnumerable<T>` or `IObservable<T>` to represent the subscription stream. The subscribe resolver has access to all the arguments that the actual resolver has access to.
 
-   1. Head back to the `Startup.cs` and register this new subscription type with the schema builder.
+   1. Head back to the `Program.cs` and register this new subscription type with the schema builder.
 
     ```csharp
     services
