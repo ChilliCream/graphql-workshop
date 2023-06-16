@@ -12,7 +12,7 @@
 The GraphQL execution engine will always try to execute fields in parallel in order to optimize data-fetching and reduce wait time. Entity Framework will have a problem with that since a `DBContext` is not thread-safe. Let us first create the issue and run into this problem before fixing it.
 
 1. Start your GraphQL Server.
-   1. `dotnet run --project Graphql`
+   1. `dotnet run --project Graphql.csproj`
 
 1. Start Banana Cake Pop and run the following query:
 
@@ -41,7 +41,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
 
     Using `DBContext` pooling allows us to issue a `DBContext` instance for each field needing one. But instead of creating a `DBContext` instance for every field and throwing it away after using it, we are renting so fields and requests can reuse it.
 
-1. Head over to the `Startup.cs` and replace `services.AddDbContext` with `services.AddPooledDbContextFactory`.
+1. Head over to the `Startup.cs` and add `services.AddPooledDbContextFactory` after `services.AddDbContext`.
 
    old:
    `services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Data Source=conferences.db"));`
@@ -62,7 +62,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
     using HotChocolate.Types;
 
     namespace ConferencePlanner.GraphQL
-    {
+    
         public static class ObjectFieldDescriptorExtensions
         {
             public static IObjectFieldDescriptor UseDbContext<TDbContext>(
@@ -74,7 +74,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
                     disposeAsync: (s, c) => c.DisposeAsync());
             }
         }
-    }
+    
     ```
 
    > The `UseDbContext` will create a new middleware that handles scoping for a field.
@@ -92,7 +92,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
    using HotChocolate.Types.Descriptors;
 
    namespace ConferencePlanner.GraphQL
-   {
+   
        public class UseApplicationDbContextAttribute : ObjectFieldDescriptorAttribute
        {
            public override void OnConfigure(
@@ -103,7 +103,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
                descriptor.UseDbContext<ApplicationDbContext>();
            }
        }
-   }
+   
    ```
 
    > The above code creates a so-called descriptor-attribute and allows us to wrap GraphQL
@@ -124,7 +124,7 @@ The GraphQL execution engine will always try to execute fields in parallel in or
        public class Query
        {
            [UseApplicationDbContext]
-           public Task<List<Speaker>> GetSpeakers([ScopedService] ApplicationDbContext context) =>
+           public Task<List<Speaker>> GetSpeakersPooled([Service(ServiceKind.Pooled)] ApplicationDbContext context) =>
                context.Speakers.ToListAsync();
        }
    }
@@ -142,13 +142,13 @@ The GraphQL execution engine will always try to execute fields in parallel in or
     using HotChocolate;
 
     namespace ConferencePlanner.GraphQL
-    {
+    
         public class Mutation
         {
             [UseApplicationDbContext]
             public async Task<AddSpeakerPayload> AddSpeakerAsync(
                 AddSpeakerInput input,
-                [ScopedService] ApplicationDbContext context)
+                [Service] ApplicationDbContext context)
             {
                 var speaker = new Speaker
                 {
@@ -163,11 +163,11 @@ The GraphQL execution engine will always try to execute fields in parallel in or
                 return new AddSpeakerPayload(speaker);
             }
         }
-    }
+    
     ```
 
 1. Start your GraphQL Server again.
-   1. `dotnet run --project Graphql`
+   1. `dotnet run --project Graphql.csproj`
 
 1. Start Banana Cake Pop again and run the following query again:
 
@@ -195,15 +195,15 @@ The GraphQL execution engine will always try to execute fields in parallel in or
 ## Adding the remaining data models
 
 In order to expand our GraphQL server model further we've got several more data models to add, and unfortunately it's a little mechanical. You can copy the following classes manually, or open the [session 3 solution](/code/session-3).
-
+   
 1. Create an `Attendee.cs` class in the `Data` directory with the following code:
-
+   
    ```csharp
    using System.Collections.Generic;
    using System.ComponentModel.DataAnnotations;
 
-   namespace ConferencePlanner.GraphQL.Data
-   {
+   namespace ConferencePlanner.Data
+   
        public class Attendee
        {
            public int Id { get; set; }
@@ -226,7 +226,7 @@ In order to expand our GraphQL server model further we've got several more data 
            public ICollection<SessionAttendee> SessionsAttendees { get; set; } =
                new List<SessionAttendee>();
        }
-   }
+   
    ```
 
 1. Create a `Session.cs` class with the following code:
@@ -236,8 +236,8 @@ In order to expand our GraphQL server model further we've got several more data 
    using System.Collections.Generic;
    using System.ComponentModel.DataAnnotations;
 
-   namespace ConferencePlanner.GraphQL.Data
-   {
+   namespace ConferencePlanner.Data
+   
        public class Session
        {
            public int Id { get; set; }
@@ -268,7 +268,7 @@ In order to expand our GraphQL server model further we've got several more data 
 
            public Track? Track { get; set; }
        }
-   }
+   
    ```
 
 1. Create a new `Track.cs` class with the following code:
@@ -277,8 +277,8 @@ In order to expand our GraphQL server model further we've got several more data 
    using System.Collections.Generic;
    using System.ComponentModel.DataAnnotations;
 
-   namespace ConferencePlanner.GraphQL.Data
-   {
+   namespace ConferencePlanner.Data
+   
        public class Track
        {
            public int Id { get; set; }
@@ -290,32 +290,32 @@ In order to expand our GraphQL server model further we've got several more data 
            public ICollection<Session> Sessions { get; set; } = 
                new List<Session>();
        }
-   }
+   
    ```
 
 1. Create a `SessionAttendee.cs` class with the following code:
 
    ```csharp
-   namespace ConferencePlanner.GraphQL.Data
+   namespace ConferencePlanner.Data
+   
+   public class SessionAttendee
    {
-       public class SessionAttendee
-       {
-           public int SessionId { get; set; }
+        public int SessionId { get; set; }
 
-           public Session? Session { get; set; }
+        public Session? Session { get; set; }
 
-           public int AttendeeId { get; set; }
+        public int AttendeeId { get; set; }
 
-           public Attendee? Attendee { get; set; }
-       }
-   }
+        public Attendee? Attendee { get; set; }
+    }
+   
    ```
 
 1. Create a `SessionSpeaker.cs` class with the following code:
 
    ```csharp
-   namespace ConferencePlanner.GraphQL.Data
-   {
+   namespace ConferencePlanner.Data
+   
        public class SessionSpeaker
        {
            public int SessionId { get; set; }
@@ -342,7 +342,7 @@ In order to expand our GraphQL server model further we've got several more data 
    using System.Collections.Generic;
    using System.ComponentModel.DataAnnotations;
 
-   namespace ConferencePlanner.GraphQL.Data
+   namespace ConferencePlanner.Data
    {
        public class Speaker
        {
@@ -418,13 +418,13 @@ Now, that we have all of our models in we need to create another migration and u
 1. Next, generate a new migration for the database.
 
     ```console
-    dotnet ef migrations add Refactoring --project GraphQL
+    dotnet ef migrations add Refactoring --project GraphQL.csproj
     ```
 
 1. Last, update the database with the new migration.
 
     ```console
-    dotnet ef database update --project GraphQL
+    dotnet ef database update --project GraphQL.csproj
     ```
 
 After having everything in let us have a look at our schema and see if something changed.
@@ -432,7 +432,7 @@ After having everything in let us have a look at our schema and see if something
 1. Start, your server.
 
     ```console
-    dotnet run --project GraphQL
+    dotnet run --project GraphQL.csproj
     ```
 
 1. Open Banana Cake Pop and refresh the schema.
@@ -462,7 +462,7 @@ After having everything in let us have a look at our schema and see if something
     using GreenDonut;
     using HotChocolate.DataLoader;
 
-    namespace ConferencePlanner.GraphQL.DataLoader
+    namespace ConferencePlanner.DataLoader
     {
         public class SpeakerByIdDataLoader : BatchDataLoader<int, Speaker>
         {
@@ -492,10 +492,10 @@ After having everything in let us have a look at our schema and see if something
     }
     ```
 
-1. Now, register your `DataLoader` with the schema like the following in the `Startup.cs`:
+1. Now, register your `DataLoader` with the schema like the following in the `Program.cs` file:
 
     ```csharp
-    services
+    builder.Services
         .AddGraphQLServer()
         .AddQueryType<Query>()
         .AddMutationType<Mutation>()
@@ -543,7 +543,7 @@ After having everything in let us have a look at our schema and see if something
 1. Let us have a look at the new schema with Banana Cake Pop. For this start your server and refresh Banana Cake Pop.
 
    ```console
-   dotnet run --project GraphQL
+   dotnet run --project GraphQL.csproj
    ```
 
    ![Connect to GraphQL server with Banana Cake Pop](images/11-bcp-schema-updated.png)
@@ -617,7 +617,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
 1. Register the new `DataLoader` with the schema.
 
     ```csharp
-    services
+    builder.Services
         .AddGraphQLServer()
         .AddQueryType<Query>()
         .AddMutationType<Mutation>()
@@ -634,15 +634,10 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
 1. Create a new class `SpeakerType` in the directory types with the following code:
 
     ```csharp
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
+    using ConferencePlanner2.Data;
+    using ConferencePlanner2.DataLoader;
+    using ConferencePlanner2.Extensions;
     using Microsoft.EntityFrameworkCore;
-    using ConferencePlanner.GraphQL.Data;
-    using ConferencePlanner.GraphQL.DataLoader;
-    using HotChocolate;
-    using HotChocolate.Types;
 
     namespace ConferencePlanner.GraphQL.Types
     {
@@ -661,7 +656,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
             {
                 public async Task<IEnumerable<Session>> GetSessionsAsync(
                     Speaker speaker,
-                    [ScopedService] ApplicationDbContext dbContext,
+                    [Service] ApplicationDbContext dbContext,
                     SessionByIdDataLoader sessionById,
                     CancellationToken cancellationToken)
                 {
@@ -682,10 +677,10 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
    > Also, we are binding a new resolver to this field which also rewrites the result type.
    > The new field `sessions` now returns `[Session]`.
 
-1. Register the type with the schema builder in the `Startup.cs`:
+1. Register the type with the schema builder in `Program.cs`:
 
     ```csharp
-    services
+    builder.Services
         .AddGraphQLServer()
         .AddQueryType<Query>()
         .AddMutationType<Mutation>()
@@ -709,7 +704,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
 1. Start your GraphQL server again.
 
    ```console
-   dotnet run --project GraphQL
+   dotnet run --project GraphQL.csproj
    ```
 
 1. Go back to Banana Cake Pop, refresh the schema and execute the following query:
