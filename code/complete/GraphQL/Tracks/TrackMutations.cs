@@ -6,7 +6,7 @@ using HotChocolate.Types;
 
 namespace ConferencePlanner.GraphQL.Tracks
 {
-    [ExtendObjectType(Name = "Mutation")]
+    [ExtendObjectType(OperationTypeNames.Mutation)]
     public class TrackMutations
     {
         [UseApplicationDbContext]
@@ -29,7 +29,13 @@ namespace ConferencePlanner.GraphQL.Tracks
             [ScopedService] ApplicationDbContext context,
             CancellationToken cancellationToken)
         {
-            Track track = await context.Tracks.FindAsync(input.Id);
+            var track = await context.Tracks.FindAsync(input.Id, cancellationToken);
+
+            if (track is null)
+            {
+                throw new GraphQLException("Track not found.");
+            }
+            
             track.Name = input.Name;
 
             await context.SaveChangesAsync(cancellationToken);

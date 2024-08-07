@@ -1,0 +1,14 @@
+# syntax=docker/dockerfile:1
+FROM mcr.microsoft.com/dotnet/sdk:6.0.100-alpine3.14-amd64 AS build-env
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers
+COPY ./ ./
+RUN dotnet restore
+RUN dotnet publish -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.0-alpine3.14-amd64
+WORKDIR /app
+COPY --from=build-env /app/out .
+ENTRYPOINT ["dotnet", "GraphQL.dll"]

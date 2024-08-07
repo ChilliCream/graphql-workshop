@@ -1,4 +1,11 @@
-
+- [Create a new GraphQL server project](#create-a-new-graphql-server-project)
+  - [Register the DB Context Service](#register-the-db-context-service)
+  - [Configuring EF Migrations](#configuring-ef-migrations)
+    - [Option 1 - Visual Studio: Package Manager Console](#option-1---visual-studio-package-manager-console)
+    - [Option 2 - Command line](#option-2---command-line)
+  - [Adding GraphQL](#adding-graphql)
+  - [Adding Mutations](#adding-mutations)
+  - [Summary](#summary)
 # Create a new GraphQL server project
 
 1. Create a new project for our GraphQL Server.
@@ -31,8 +38,9 @@
     }
     ```
 
-1. Add a reference to the NuGet package package `Microsoft.EntityFrameworkCore.Sqlite` version `5.0.0`.
+1. Add a reference to the NuGet package package `Microsoft.EntityFrameworkCore.Sqlite` version `5.0.0` and also Microsoft.EntityFrameworkCore.Sqlite.Design.
    1. `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Sqlite --version 5.0.0`
+   2. ` dotnet add GraphQL package  Microsoft.EntityFrameworkCore.Sqlite.Design`
 1. Next we'll create a new Entity Framework DbContext. Create a new `ApplicationDbContext` class in the `Data` folder using the following code:
 
     ```csharp
@@ -57,7 +65,6 @@
 1. Add the following code to the top of the `ConfigureServices()` method in `Startup.cs`:
 
     ```csharp
-    services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Data Source=conferences.db"));
     ```
 
     > This code registers the `ApplicationDbContext` service so it can be injected into resolvers.
@@ -87,7 +94,7 @@
    dotnet tool install dotnet-ef --version 5.0.0 --local
    ```
 
-2. Open a command prompt and navigate to the project directory. (The directory containing the `Startup.cs` file).
+2. Open a command prompt and navigate to the project directory. (The directory containing the solution `ConferencePlanner.sln` file).
 
 3. Run the following commands in the command prompt:
 
@@ -202,11 +209,13 @@ Commands Explained
 
     ![Start GraphQL server](images/1-start-server.png)
 
-1. Start Banana Cake Pop and connect to our server.
+1. Start [Banana Cake Pop](https://chillicream.com/docs/bananacakepop) or use it built-in your browser at [http://localhost:5000/graphql/](http://localhost:5000/graphql/) and connect to our server (usually at [http://localhost:5000/graphql](http://localhost:5000/graphql)).   
+   **Note**: `<address>/graphql/` might **not** show mutations, make sure you use `<address>/graphql` (without trailing slash). 
 
     ![Connect to GraphQL server with Banana Cake Pop](images/2-bcp-connect-to-server.png)
 
-1. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.
+1. Click in the schema explorer and click on the `speakers` field in order to check the return type of the `speakers` field.   
+   **Note**: You might have to reload the schema, you can do so by clicking the refresh-button in the upper-right corner. 
 
     ![Explore GraphQL schema with Banana Cake Pop](images/3-bcp-schema-explorer.png)
 
@@ -214,13 +223,13 @@ Commands Explained
 
 So, far we have added the Query root type to our schema, which allows us to query speakers. However, at this point, there is no way to add or modify any data. In this section, we are going to add the root Mutation type to add new speakers to our database.
 
-> For mutations we are using the [relay mutation pattern](https://web.archive.org/web/20201228203911/https://relay.dev/docs/en/graphql-server-specification.html#mutations) which is commonly used in GraphQL.
+> For mutations we are using the [relay mutation pattern](https://relay.dev/docs/v10.1.3/graphql-server-specification/#mutations) which is commonly used in GraphQL.
 
-A mutation consists of three components, the input, the payload and the mutation itself. In our case we want to create a mutation called `addSpeaker`, by convention, mutations are named as verbs, their inputs are the name with "Input" appended at the end, and they return an object that is the name with "Payload" appended.
+A mutation consists of three components, the **input**, the **payload** and the **mutation** itself. In our case we want to create a mutation called `addSpeaker`, by convention, mutations are named as verbs, their inputs are the name with "Input" appended at the end, and they return an object that is the name with "Payload" appended.
 
 So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `AddSpeakerPayload`.
 
-1. Add a class `AddSpeakerInput` to your project with the following code:
+1. Add a file `AddSpeakerInput.cs` to your project with the following code:
 
     ```csharp
     namespace ConferencePlanner.GraphQL

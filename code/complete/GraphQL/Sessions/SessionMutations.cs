@@ -8,7 +8,7 @@ using HotChocolate.Types;
 
 namespace ConferencePlanner.GraphQL.Sessions
 {
-    [ExtendObjectType(Name = "Mutation")]
+    [ExtendObjectType(OperationTypeNames.Mutation)]
     public class SessionMutations
     {
         [UseApplicationDbContext]
@@ -61,8 +61,7 @@ namespace ConferencePlanner.GraphQL.Sessions
                     new UserError("endTime has to be larger than startTime.", "END_TIME_INVALID"));
             }
 
-            Session session = await context.Sessions.FindAsync(input.SessionId);
-            int? initialTrackId = session.TrackId;
+            var session = await context.Sessions.FindAsync(input.SessionId);
 
             if (session is null)
             {
@@ -89,7 +88,7 @@ namespace ConferencePlanner.GraphQL.Sessions
             [ScopedService] ApplicationDbContext context,
             [Service]ITopicEventSender eventSender)
         {
-            Session session = await context.Sessions.FindAsync(input.SessionId);
+            var session = await context.Sessions.FindAsync(input.SessionId);
 
             if (session is null)
             {

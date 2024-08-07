@@ -1,18 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>ConferencePlanner.GraphQL</RootNamespace>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
-    
-    <PackageReference Include="HotChocolate.AspNetCore" Version="11.0.0" />
-    <PackageReference Include="HotChocolate.Data" Version="11.0.0" />
-    <PackageReference Include="HotChocolate.PersistedQueries.FileSystem" Version="11.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0">
+    <PackageReference Include="HotChocolate.AspNetCore" Version="12.7.0-preview.40" />
+    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="12.7.0-preview.40" />
+    <PackageReference Include="HotChocolate.PersistedQueries.FileSystem" Version="12.7.0-preview.40" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

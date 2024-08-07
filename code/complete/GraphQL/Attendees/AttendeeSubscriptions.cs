@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Data;
@@ -11,22 +10,20 @@ using HotChocolate.Types.Relay;
 
 namespace ConferencePlanner.GraphQL.Attendees
 {
-    [ExtendObjectType(Name = "Subscription")]
+    [ExtendObjectType(OperationTypeNames.Subscription)]
     public class AttendeeSubscriptions
     {
         [Subscribe(With = nameof(SubscribeToOnAttendeeCheckedInAsync))]
         public SessionAttendeeCheckIn OnAttendeeCheckedIn(
             [ID(nameof(Session))] int sessionId,
-            [EventMessage] int attendeeId,
-            SessionByIdDataLoader sessionById,
-            CancellationToken cancellationToken) =>
-            new SessionAttendeeCheckIn(attendeeId, sessionId);
+            [EventMessage] int attendeeId) 
+            => new(attendeeId, sessionId);
 
         public async ValueTask<ISourceStream<int>> SubscribeToOnAttendeeCheckedInAsync(
             int sessionId,
             [Service] ITopicEventReceiver eventReceiver,
-            CancellationToken cancellationToken) =>
-            await eventReceiver.SubscribeAsync<string, int>(
+            CancellationToken cancellationToken) 
+            => await eventReceiver.SubscribeAsync<string, int>(
                 "OnAttendeeCheckedIn_" + sessionId, cancellationToken);
     }
 }

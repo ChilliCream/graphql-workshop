@@ -49,7 +49,7 @@ namespace ConferencePlanner.GraphQL.Sessions
                 .Where(s => s.Id == Session.Id)
                 .Include(s => s.SessionSpeakers)
                 .SelectMany(s => s.SessionSpeakers.Select(t => t.SpeakerId))
-                .ToArrayAsync();
+                .ToArrayAsync(cancellationToken);
 
             return await speakerById.LoadAsync(speakerIds, cancellationToken);
         }

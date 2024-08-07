@@ -1,3 +1,11 @@
+- [Adding real-time functionality with subscriptions](#adding-real-time-functionality-with-subscriptions)
+  - [Refactor GraphQL API](#refactor-graphql-api)
+    - [Add `registerAttendee` Mutation](#add-registerattendee-mutation)
+    - [Add `checkInAttendee` Mutation](#add-checkinattendee-mutation)
+  - [Add `onSessionScheduled` Subscription](#add-onsessionscheduled-subscription)
+  - [Add `onAttendeeCheckedIn` subscription](#add-onattendeecheckedin-subscription)
+  - [Summary](#summary)
+
 # Adding real-time functionality with subscriptions
 
 For the last few parts of our journey through GraphQL, we have dealt with queries and mutations. In many APIs, this is all people need or want, but GraphQL also offers us real-time capabilities where we can formulate what data we want to receive when a specific event happens.
@@ -490,7 +498,6 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
         }
 
         Session session = await context.Sessions.FindAsync(input.SessionId);
-        int? initialTrackId = session.TrackId;
 
         if (session is null)
         {
@@ -514,7 +521,7 @@ With the base in, we now can focus on putting subscriptions on our GraphQL serve
 
    > Our improved resolver now injects `[Service]ITopicEventSender eventSender`. This gives us access to send messages to the underlying pub/sub-system.
 
-   > After `await context.SaveChangesAsync();` we are add sending in a new message.
+   > After `await context.SaveChangesAsync();` we are sending in a new message.
 
    ```csharp
    await eventSender.SendAsync(
@@ -685,7 +692,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to a dynami
             public Task<Session> GetSessionAsync(
                 SessionByIdDataLoader sessionById,
                 CancellationToken cancellationToken) =>
-                sessionById.LoadAsync(AttendeeId, cancellationToken);
+                sessionById.LoadAsync(SessionId, cancellationToken);
         }
     }
     ```
@@ -711,9 +718,7 @@ The `onSessionScheduled` was quite simple since we did not subscribe to a dynami
             [Subscribe(With = nameof(SubscribeToOnAttendeeCheckedInAsync))]
             public SessionAttendeeCheckIn OnAttendeeCheckedIn(
                 [ID(nameof(Session))] int sessionId,
-                [EventMessage] int attendeeId,
-                SessionByIdDataLoader sessionById,
-                CancellationToken cancellationToken) =>
+                [EventMessage] int attendeeId) =>
                 new SessionAttendeeCheckIn(attendeeId, sessionId);
 
             public async ValueTask<ISourceStream<int>> SubscribeToOnAttendeeCheckedInAsync(

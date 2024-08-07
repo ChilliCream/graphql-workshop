@@ -10,11 +10,11 @@ namespace ConferencePlanner.GraphQL.Imports
     {
         public static IRequestExecutorBuilder EnsureDatabaseIsCreated(
             this IRequestExecutorBuilder builder) =>
-            builder.ConfigureSchemaAsync(async (services, builder, ct) =>
+            builder.ConfigureSchemaAsync(async (services, _, ct) =>
             {
                 IDbContextFactory<ApplicationDbContext> factory =
                     services.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
-                using ApplicationDbContext dbContext = factory.CreateDbContext();
+                await using ApplicationDbContext dbContext = factory.CreateDbContext();
 
                 if (await dbContext.Database.EnsureCreatedAsync(ct))
                 {

@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Common;
@@ -7,7 +8,7 @@ using HotChocolate.Types;
 
 namespace ConferencePlanner.GraphQL.Speakers
 {
-    [ExtendObjectType(Name = "Mutation")]
+    [ExtendObjectType(OperationTypeNames.Mutation)]
     public class SpeakerMutations
     {
         [UseApplicationDbContext]
@@ -67,6 +68,35 @@ namespace ConferencePlanner.GraphQL.Speakers
             await context.SaveChangesAsync(cancellationToken);
 
             return new ModifySpeakerPayload(speaker);
+        }
+
+        [UseApplicationDbContext]
+        public async Task<UploadSpeakerPhotoPayload> UploadSpeakerPhotoAsync(
+            UploadSpeakerPhotoInput input,
+            [ScopedService] ApplicationDbContext context,
+            CancellationToken cancellationToken)
+        {
+            Speaker? speaker = await context.Speakers.FindAsync(input.Id);
+
+            if (speaker is null)
+            {
+                return new UploadSpeakerPhotoPayload(
+                    new UserError("Speaker with id not found.", "SPEAKER_NOT_FOUND"));
+            }
+
+/*
+            if (input.Photo.Length < 1024_0000)
+            {
+                using (Stream inputStream = input.Photo.OpenReadStream())
+                {
+                    using(Stream outputStream = File.)
+
+                    await File.WriteAllBytesAsync(speaker.Id + ".png", );
+                }
+            }
+*/
+
+            return new UploadSpeakerPhotoPayload(speaker);
         }
     }
 }
