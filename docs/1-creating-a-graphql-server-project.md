@@ -223,7 +223,7 @@ Commands Explained
 
 So, far we have added the Query root type to our schema, which allows us to query speakers. However, at this point, there is no way to add or modify any data. In this section, we are going to add the root Mutation type to add new speakers to our database.
 
-> For mutations we are using the [relay mutation pattern](https://relay.dev/docs/en/graphql-server-specification.html#mutations) which is commonly used in GraphQL.
+> For mutations we are using the [relay mutation pattern](https://relay.dev/docs/v10.1.3/graphql-server-specification/#mutations) which is commonly used in GraphQL.
 
 A mutation consists of three components, the **input**, the **payload** and the **mutation** itself. In our case we want to create a mutation called `addSpeaker`, by convention, mutations are named as verbs, their inputs are the name with "Input" appended at the end, and they return an object that is the name with "Payload" appended.
 
