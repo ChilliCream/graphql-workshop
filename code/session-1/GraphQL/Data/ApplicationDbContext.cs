@@ -1,14 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 
-    namespace ConferencePlanner.GraphQL.Data
-    {
-        public class ApplicationDbContext : DbContext
-        {
-            public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-                : base(options)
-            {
-            }
+namespace ConferencePlanner.GraphQL.Data;
 
-            public DbSet<Speaker> Speakers { get; set; }
-        }
-    }
+public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    : DbContext(options)
+{
+    public DbSet<Speaker> Speakers { get; set; }
+}
