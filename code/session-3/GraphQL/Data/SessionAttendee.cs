@@ -1,13 +1,12 @@
-namespace ConferencePlanner.GraphQL.Data
+namespace ConferencePlanner.GraphQL.Data;
+
+public sealed class SessionAttendee
 {
-    public class SessionAttendee
-    {
-        public int SessionId { get; set; }
+    public int SessionId { get; set; }
 
-        public Session? Session { get; set; }
+    public Session? Session { get; set; }
 
-        public int AttendeeId { get; set; }
+    public int AttendeeId { get; set; }
 
-        public Attendee? Attendee { get; set; }
-    }
+    public Attendee? Attendee { get; set; }
 }
