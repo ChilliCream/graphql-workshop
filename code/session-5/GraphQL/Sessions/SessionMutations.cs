@@ -1,80 +1,73 @@
-using System.Threading;
-using System.Threading.Tasks;
-using ConferencePlanner.GraphQL.Common;
 using ConferencePlanner.GraphQL.Data;
-using HotChocolate;
-using HotChocolate.Types;
 
-namespace ConferencePlanner.GraphQL.Sessions
+namespace ConferencePlanner.GraphQL.Sessions;
+
+[MutationType]
+public static class SessionMutations
 {
-    [ExtendObjectType(Name = "Mutation")]
-    public class SessionMutations
+    [Error<TitleEmptyException>]
+    [Error<NoSpeakerException>]
+    public static async Task<Session> AddSessionAsync(
+        AddSessionInput input,
+        ApplicationDbContext dbContext,
+        CancellationToken cancellationToken)
     {
-        [UseApplicationDbContext]
-        public async Task<AddSessionPayload> AddSessionAsync(
-            AddSessionInput input,
-            [ScopedService] ApplicationDbContext context,
-            CancellationToken cancellationToken)
+        if (string.IsNullOrEmpty(input.Title))
         {
-            if (string.IsNullOrEmpty(input.Title))
-            {
-                return new AddSessionPayload(
-                    new UserError("The title cannot be empty.", "TITLE_EMPTY"));
-            }
-
-            if (input.SpeakerIds.Count == 0)
-            {
-                return new AddSessionPayload(
-                    new UserError("No speaker assigned.", "NO_SPEAKER"));
-            }
-
-            var session = new Session
-            {
-                Title = input.Title,
-                Abstract = input.Abstract,
-            };
-
-            foreach (int speakerId in input.SpeakerIds)
-            {
-                session.SessionSpeakers.Add(new SessionSpeaker
-                {
-                    SpeakerId = speakerId
-                });
-            }
-
-            context.Sessions.Add(session);
-            await context.SaveChangesAsync(cancellationToken);
-
-            return new AddSessionPayload(session);
+            throw new TitleEmptyException();
         }
 
-        [UseApplicationDbContext]
-        public async Task<ScheduleSessionPayload> ScheduleSessionAsync(
-            ScheduleSessionInput input,
-            [ScopedService] ApplicationDbContext context)
+        if (input.SpeakerIds.Count == 0)
         {
-            if (input.EndTime < input.StartTime)
-            {
-                return new ScheduleSessionPayload(
-                    new UserError("endTime has to be larger than startTime.", "END_TIME_INVALID"));
-            }
-
-            Session session = await context.Sessions.FindAsync(input.SessionId);
-            int? initialTrackId = session.TrackId;
-
-            if (session is null)
-            {
-                return new ScheduleSessionPayload(
-                    new UserError("Session not found.", "SESSION_NOT_FOUND"));
-            }
-
-            session.TrackId = input.TrackId;
-            session.StartTime = input.StartTime;
-            session.EndTime = input.EndTime;
-
-            await context.SaveChangesAsync();
-
-            return new ScheduleSessionPayload(session);
+            throw new NoSpeakerException();
         }
+
+        var session = new Session
+        {
+            Title = input.Title,
+            Abstract = input.Abstract
+        };
+
+        foreach (var speakerId in input.SpeakerIds)
+        {
+            session.SessionSpeakers.Add(new SessionSpeaker
+            {
+                SpeakerId = speakerId
+            });
+        }
+
+        dbContext.Sessions.Add(session);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return session;
+    }
+
+    [Error<EndTimeInvalidException>]
+    [Error<SessionNotFoundException>]
+    public static async Task<Session> ScheduleSessionAsync(
+        ScheduleSessionInput input,
+        ApplicationDbContext dbContext,
+        CancellationToken cancellationToken)
+    {
+        if (input.EndTime < input.StartTime)
+        {
+            throw new EndTimeInvalidException();
+        }
+
+        var session = await dbContext.Sessions.FindAsync([input.SessionId], cancellationToken);
+
+        if (session is null)
+        {
+            throw new SessionNotFoundException();
+        }
+
+        session.TrackId = input.TrackId;
+        session.StartTime = input.StartTime;
+        session.EndTime = input.EndTime;
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return session;
     }
 }

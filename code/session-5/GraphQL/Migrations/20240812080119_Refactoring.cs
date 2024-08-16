@@ -1,22 +1,27 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace GraphQL.Migrations
+#nullable disable
+
+namespace ConferencePlanner.GraphQL.Migrations
 {
+    /// <inheritdoc />
     public partial class Refactoring : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
                 name: "Attendees",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    FirstName = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    LastName = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    UserName = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    EmailAddress = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FirstName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Username = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    EmailAddress = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -27,9 +32,9 @@ namespace GraphQL.Migrations
                 name: "Tracks",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,13 +45,13 @@ namespace GraphQL.Migrations
                 name: "Sessions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    Abstract = table.Column<string>(type: "TEXT", maxLength: 4000, nullable: true),
-                    StartTime = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
-                    EndTime = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
-                    TrackId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Abstract = table.Column<string>(type: "character varying(4000)", maxLength: 4000, nullable: true),
+                    StartTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    EndTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    TrackId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -55,16 +60,15 @@ namespace GraphQL.Migrations
                         name: "FK_Sessions_Tracks_TrackId",
                         column: x => x.TrackId,
                         principalTable: "Tracks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "SessionAttendee",
                 columns: table => new
                 {
-                    SessionId = table.Column<int>(type: "INTEGER", nullable: false),
-                    AttendeeId = table.Column<int>(type: "INTEGER", nullable: false)
+                    SessionId = table.Column<int>(type: "integer", nullable: false),
+                    AttendeeId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,8 +91,8 @@ namespace GraphQL.Migrations
                 name: "SessionSpeaker",
                 columns: table => new
                 {
-                    SessionId = table.Column<int>(type: "INTEGER", nullable: false),
-                    SpeakerId = table.Column<int>(type: "INTEGER", nullable: false)
+                    SessionId = table.Column<int>(type: "integer", nullable: false),
+                    SpeakerId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -108,9 +112,9 @@ namespace GraphQL.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Attendees_UserName",
+                name: "IX_Attendees_Username",
                 table: "Attendees",
-                column: "UserName",
+                column: "Username",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -129,6 +133,7 @@ namespace GraphQL.Migrations
                 column: "SpeakerId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
