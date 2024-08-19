@@ -1,68 +1,56 @@
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using ConferencePlanner.GraphQL.Common;
 using ConferencePlanner.GraphQL.Data;
-using HotChocolate;
-using HotChocolate.Types;
 using HotChocolate.Subscriptions;
+using Microsoft.EntityFrameworkCore;
 
-namespace ConferencePlanner.GraphQL.Attendees
+namespace ConferencePlanner.GraphQL.Attendees;
+
+[MutationType]
+public static class AttendeeMutations
 {
-    [ExtendObjectType(Name = "Mutation")]
-    public class AttendeeMutations
+    public static async Task<Attendee> RegisterAttendeeAsync(
+        RegisterAttendeeInput input,
+        ApplicationDbContext dbContext,
+        CancellationToken cancellationToken)
     {
-        [UseApplicationDbContext]
-        public async Task<RegisterAttendeePayload> RegisterAttendeeAsync(
-            RegisterAttendeeInput input,
-            [ScopedService] ApplicationDbContext context,
-            CancellationToken cancellationToken)
+        var attendee = new Attendee
         {
-            var attendee = new Attendee
-            {
-                FirstName = input.FirstName,
-                LastName = input.LastName,
-                UserName = input.UserName,
-                EmailAddress = input.EmailAddress
-            };
+            FirstName = input.FirstName,
+            LastName = input.LastName,
+            Username = input.Username,
+            EmailAddress = input.EmailAddress
+        };
 
-            context.Attendees.Add(attendee);
+        dbContext.Attendees.Add(attendee);
 
-            await context.SaveChangesAsync(cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
-            return new RegisterAttendeePayload(attendee);
+        return attendee;
+    }
+
+    public static async Task<Attendee> CheckInAttendeeAsync(
+        CheckInAttendeeInput input,
+        ApplicationDbContext dbContext,
+        ITopicEventSender eventSender,
+        CancellationToken cancellationToken)
+    {
+        var attendee = await dbContext.Attendees.FirstOrDefaultAsync(
+            a => a.Id == input.AttendeeId,
+            cancellationToken);
+
+        if (attendee is null)
+        {
+            throw new AttendeeNotFoundException();
         }
 
-        [UseApplicationDbContext]
-        public async Task<CheckInAttendeePayload> CheckInAttendeeAsync(
-            CheckInAttendeeInput input,
-            [ScopedService] ApplicationDbContext context,
-            [Service] ITopicEventSender eventSender,
-            CancellationToken cancellationToken)
-        {
-            Attendee attendee = await context.Attendees.FirstOrDefaultAsync(
-                t => t.Id == input.AttendeeId, cancellationToken);
+        attendee.SessionsAttendees.Add(new SessionAttendee { SessionId = input.SessionId });
 
-            if (attendee is null)
-            {
-                return new CheckInAttendeePayload(
-                    new UserError("Attendee not found.", "ATTENDEE_NOT_FOUND"));
-            }
+        await dbContext.SaveChangesAsync(cancellationToken);
 
-            attendee.SessionsAttendees.Add(
-                new SessionAttendee
-                {
-                    SessionId = input.SessionId
-                });
+        await eventSender.SendAsync(
+            $"OnAttendeeCheckedIn_{input.SessionId}",
+            input.AttendeeId,
+            cancellationToken);
 
-            await context.SaveChangesAsync(cancellationToken);
-
-            await eventSender.SendAsync(
-                "OnAttendeeCheckedIn_" + input.SessionId,
-                input.AttendeeId,
-                cancellationToken);
-
-            return new CheckInAttendeePayload(attendee, input.SessionId);
-        }
+        return attendee;
     }
 }

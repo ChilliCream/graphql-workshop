@@ -1,38 +1,33 @@
-   using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
-   namespace ConferencePlanner.GraphQL.Data
-   {
-       public class ApplicationDbContext : DbContext
-       {
-           public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-               : base(options)
-           {
-           }
+namespace ConferencePlanner.GraphQL.Data;
 
-           protected override void OnModelCreating(ModelBuilder modelBuilder)
-           {
-               modelBuilder
-                   .Entity<Attendee>()
-                   .HasIndex(a => a.UserName)
-                   .IsUnique();
+public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    : DbContext(options)
+{
+    public DbSet<Attendee> Attendees { get; set; }
 
-               // Many-to-many: Session <-> Attendee
-               modelBuilder
-                   .Entity<SessionAttendee>()
-                   .HasKey(ca => new { ca.SessionId, ca.AttendeeId });
+    public DbSet<Session> Sessions { get; set; }
 
-               // Many-to-many: Speaker <-> Session
-               modelBuilder
-                   .Entity<SessionSpeaker>()
-                   .HasKey(ss => new { ss.SessionId, ss.SpeakerId });
-           }
+    public DbSet<Speaker> Speakers { get; set; }
 
-           public DbSet<Session> Sessions { get; set; } = default!;
+    public DbSet<Track> Tracks { get; set; } = default!;
 
-           public DbSet<Track> Tracks { get; set; } = default!;
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder
+            .Entity<Attendee>()
+            .HasIndex(a => a.Username)
+            .IsUnique();
 
-           public DbSet<Speaker> Speakers { get; set; } = default!;
+        // Many-to-many: Session <-> Attendee
+        modelBuilder
+            .Entity<SessionAttendee>()
+            .HasKey(sa => new { sa.SessionId, sa.AttendeeId });
 
-           public DbSet<Attendee> Attendees { get; set; } = default!;
-       }
-   }
+        // Many-to-many: Speaker <-> Session
+        modelBuilder
+            .Entity<SessionSpeaker>()
+            .HasKey(ss => new { ss.SessionId, ss.SpeakerId });
+    }
+}
