@@ -1,21 +1,17 @@
-using System.Threading;
-using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Data;
-using ConferencePlanner.GraphQL.DataLoader;
-using HotChocolate;
-using HotChocolate.Types;
 
-namespace ConferencePlanner.GraphQL.Sessions
+namespace ConferencePlanner.GraphQL.Sessions;
+
+[SubscriptionType]
+public static class SessionSubscriptions
 {
-    [ExtendObjectType(Name = "Subscription")]
-    public class SessionSubscriptions
+    [Subscribe]
+    [Topic]
+    public static async Task<Session> OnSessionScheduledAsync(
+        [EventMessage] int sessionId,
+        SessionByIdDataLoader sessionById,
+        CancellationToken cancellationToken)
     {
-        [Subscribe]
-        [Topic]
-        public Task<Session> OnSessionScheduledAsync(
-            [EventMessage] int sessionId,
-            SessionByIdDataLoader sessionById,
-            CancellationToken cancellationToken) =>
-            sessionById.LoadAsync(sessionId, cancellationToken);
+        return await sessionById.LoadAsync(sessionId, cancellationToken);
     }
 }

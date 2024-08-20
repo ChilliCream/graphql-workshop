@@ -12,4 +12,5 @@ nlte
 Npgsql
 nstartsWith
 staib
+Testcontainers
 xunit

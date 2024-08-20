@@ -1,85 +1,82 @@
-using System;
-using System.Threading.Tasks;
+using ConferencePlanner.GraphQL.Data;
+using CookieCrumble;
+using HotChocolate.Execution;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using ConferencePlanner.GraphQL;
-using ConferencePlanner.GraphQL.Attendees;
-using ConferencePlanner.GraphQL.Data;
-using ConferencePlanner.GraphQL.Sessions;
-using ConferencePlanner.GraphQL.Speakers;
-using ConferencePlanner.GraphQL.Tracks;
-using ConferencePlanner.GraphQL.Types;
-using HotChocolate;
-using HotChocolate.Execution;
-using Snapshooter.Xunit;
-using Xunit;
+using StackExchange.Redis;
+using Testcontainers.PostgreSql;
+using Testcontainers.Redis;
 
-namespace GraphQL.Tests
+namespace GraphQL.Tests;
+
+public sealed class AttendeeTests : IAsyncLifetime
 {
-    public class AttendeeTests
+    private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
+        .WithImage("postgres:16.3")
+        .Build();
+
+    private readonly RedisContainer _redisContainer = new RedisBuilder()
+        .WithImage("redis:7.4")
+        .Build();
+
+    private IRequestExecutor _requestExecutor = null!;
+
+    public async Task InitializeAsync()
     {
-        [Fact]
-        public async Task Attendee_Schema_Changed()
-        {
-            // arrange
-            // act
-            ISchema schema = await new ServiceCollection()
-                .AddPooledDbContextFactory<ApplicationDbContext>(
-                    options => options.UseInMemoryDatabase("Data Source=conferences.db"))
-                .AddGraphQL()
-                .AddQueryType(d => d.Name("Query"))
-                    .AddTypeExtension<AttendeeQueries>()
-                .AddMutationType(d => d.Name("Mutation"))
-                    .AddTypeExtension<AttendeeMutations>()
-                .AddType<AttendeeType>()
-                .AddType<SessionType>()
-                .AddType<SpeakerType>()
-                .AddType<TrackType>()
-                .EnableRelaySupport()
-                .BuildSchemaAsync();
+        // Start test containers.
+        await Task.WhenAll(_postgreSqlContainer.StartAsync(), _redisContainer.StartAsync());
 
-            // assert
-            schema.Print().MatchSnapshot();
-        }
+        // Build request executor.
+        _requestExecutor = await new ServiceCollection()
+            .AddDbContext<ApplicationDbContext>(
+                options => options.UseNpgsql(_postgreSqlContainer.GetConnectionString()))
+            .AddGraphQLServer()
+            .AddGlobalObjectIdentification()
+            .AddMutationConventions()
+            .AddFiltering()
+            .AddSorting()
+            .AddRedisSubscriptions(
+                _ => ConnectionMultiplexer.Connect(_redisContainer.GetConnectionString()))
+            .AddGraphQLTypes()
+            .BuildRequestExecutorAsync();
 
-        [Fact]
-        public async Task RegisterAttendee()
-        {
-            // arrange
-            IRequestExecutor executor = await new ServiceCollection()
-                .AddPooledDbContextFactory<ApplicationDbContext>(
-                    options => options.UseInMemoryDatabase("Data Source=conferences.db"))
-                .AddGraphQL()
-               .AddQueryType(d => d.Name("Query"))
-                   .AddTypeExtension<AttendeeQueries>()
-               .AddMutationType(d => d.Name("Mutation"))
-                   .AddTypeExtension<AttendeeMutations>()
-               .AddType<AttendeeType>()
-               .AddType<SessionType>()
-               .AddType<SpeakerType>()
-               .AddType<TrackType>()
-               .EnableRelaySupport()
-               .BuildRequestExecutorAsync();
+        // Create database.
+        var dbContext = _requestExecutor.Services
+            .GetApplicationServices()
+            .GetRequiredService<ApplicationDbContext>();
 
-            // act
-            IExecutionResult result = await executor.ExecuteAsync(@"
-                mutation RegisterAttendee {
-                    registerAttendee(
-                        input: {
-                            emailAddress: ""michael@chillicream.com""
-                                firstName: ""michael""
-                                lastName: ""staib""
-                                userName: ""michael3""
-                            })
-                    {
-                        attendee {
-                            id
-                        }
+        await dbContext.Database.EnsureCreatedAsync();
+    }
+
+    [Fact]
+    public async Task RegisterAttendee()
+    {
+        // Arrange & act
+        var result = await _requestExecutor.ExecuteAsync(
+            """
+            mutation RegisterAttendee {
+                registerAttendee(
+                    input: {
+                        firstName: "Michael"
+                        lastName: "Staib"
+                        username: "michael"
+                        emailAddress: "michael@chillicream.com"
                     }
-                }");
+                ) {
+                    attendee {
+                        id
+                    }
+                }
+            }
+            """);
 
-            // assert
-            result.ToJson().MatchSnapshot();
-        }
+        // Assert
+        result.MatchSnapshot(extension: ".json");
+    }
+
+    public async Task DisposeAsync()
+    {
+        await _postgreSqlContainer.DisposeAsync();
+        await _redisContainer.DisposeAsync();
     }
 }
