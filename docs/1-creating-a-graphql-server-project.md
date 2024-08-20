@@ -40,16 +40,16 @@
 
     public sealed class Speaker
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
 
         [StringLength(200)]
-        public required string Name { get; set; }
+        public required string Name { get; init; }
 
         [StringLength(4000)]
-        public string? Bio { get; set; }
+        public string? Bio { get; init; }
 
         [StringLength(1000)]
-        public string? Website { get; set; }
+        public string? Website { get; init; }
     }
     ```
 
@@ -69,7 +69,7 @@
     public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : DbContext(options)
     {
-        public DbSet<Speaker> Speakers { get; set; }
+        public DbSet<Speaker> Speakers { get; init; }
     }
     ```
 

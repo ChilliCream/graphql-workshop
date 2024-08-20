@@ -18,21 +18,21 @@ In order to expand our GraphQL server model further we've have several more data
 
     public sealed class Attendee
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
 
         [StringLength(200)]
-        public required string FirstName { get; set; }
+        public required string FirstName { get; init; }
 
         [StringLength(200)]
-        public required string LastName { get; set; }
+        public required string LastName { get; init; }
 
         [StringLength(200)]
-        public required string Username { get; set; }
+        public required string Username { get; init; }
 
         [StringLength(256)]
-        public string? EmailAddress { get; set; }
+        public string? EmailAddress { get; init; }
 
-        public ICollection<SessionAttendee> SessionsAttendees { get; set; } =
+        public ICollection<SessionAttendee> SessionsAttendees { get; init; } =
             new List<SessionAttendee>();
     }
     ```
@@ -46,13 +46,13 @@ In order to expand our GraphQL server model further we've have several more data
 
     public sealed class Session
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
 
         [StringLength(200)]
-        public required string Title { get; set; }
+        public required string Title { get; init; }
 
         [StringLength(4000)]
-        public string? Abstract { get; set; }
+        public string? Abstract { get; init; }
 
         public DateTimeOffset? StartTime { get; set; }
 
@@ -65,13 +65,13 @@ In order to expand our GraphQL server model further we've have several more data
 
         public int? TrackId { get; set; }
 
-        public ICollection<SessionSpeaker> SessionSpeakers { get; set; } =
+        public ICollection<SessionSpeaker> SessionSpeakers { get; init; } =
             new List<SessionSpeaker>();
 
-        public ICollection<SessionAttendee> SessionAttendees { get; set; } =
+        public ICollection<SessionAttendee> SessionAttendees { get; init; } =
             new List<SessionAttendee>();
 
-        public Track? Track { get; set; }
+        public Track? Track { get; init; }
     }
     ```
 
@@ -84,12 +84,12 @@ In order to expand our GraphQL server model further we've have several more data
 
     public sealed class Track
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
 
         [StringLength(200)]
         public required string Name { get; set; }
 
-        public ICollection<Session> Sessions { get; set; } =
+        public ICollection<Session> Sessions { get; init; } =
             new List<Session>();
     }
     ```
@@ -101,13 +101,13 @@ In order to expand our GraphQL server model further we've have several more data
 
     public sealed class SessionAttendee
     {
-        public int SessionId { get; set; }
+        public int SessionId { get; init; }
 
-        public Session? Session { get; set; }
+        public Session? Session { get; init; }
 
-        public int AttendeeId { get; set; }
+        public int AttendeeId { get; init; }
 
-        public Attendee? Attendee { get; set; }
+        public Attendee? Attendee { get; init; }
     }
     ```
 
@@ -118,20 +118,20 @@ In order to expand our GraphQL server model further we've have several more data
 
     public sealed class SessionSpeaker
     {
-        public int SessionId { get; set; }
+        public int SessionId { get; init; }
 
-        public Session? Session { get; set; }
+        public Session? Session { get; init; }
 
-        public int SpeakerId { get; set; }
+        public int SpeakerId { get; init; }
 
-        public Speaker? Speaker { get; set; }
+        public Speaker? Speaker { get; init; }
     }
     ```
 
 1. Next, modify the `Speaker` class and add the following property to it:
 
     ```csharp
-    public ICollection<SessionSpeaker> SessionSpeakers { get; set; } =
+    public ICollection<SessionSpeaker> SessionSpeakers { get; init; } =
         new List<SessionSpeaker>();
     ```
 
@@ -144,18 +144,18 @@ In order to expand our GraphQL server model further we've have several more data
 
     public sealed class Speaker
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
 
         [StringLength(200)]
-        public required string Name { get; set; }
+        public required string Name { get; init; }
 
         [StringLength(4000)]
-        public string? Bio { get; set; }
+        public string? Bio { get; init; }
 
         [StringLength(1000)]
-        public string? Website { get; set; }
+        public string? Website { get; init; }
 
-        public ICollection<SessionSpeaker> SessionSpeakers { get; set; } =
+        public ICollection<SessionSpeaker> SessionSpeakers { get; init; } =
             new List<SessionSpeaker>();
     }
     ```
@@ -170,13 +170,13 @@ In order to expand our GraphQL server model further we've have several more data
     public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : DbContext(options)
     {
-        public DbSet<Attendee> Attendees { get; set; }
+        public DbSet<Attendee> Attendees { get; init; }
 
-        public DbSet<Session> Sessions { get; set; }
+        public DbSet<Session> Sessions { get; init; }
 
-        public DbSet<Speaker> Speakers { get; set; }
+        public DbSet<Speaker> Speakers { get; init; }
 
-        public DbSet<Track> Tracks { get; set; } = default!;
+        public DbSet<Track> Tracks { get; init; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

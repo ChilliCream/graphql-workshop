@@ -5,13 +5,13 @@ namespace ConferencePlanner.GraphQL.Data;
 public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : DbContext(options)
 {
-    public DbSet<Attendee> Attendees { get; set; }
+    public DbSet<Attendee> Attendees { get; init; }
 
-    public DbSet<Session> Sessions { get; set; }
+    public DbSet<Session> Sessions { get; init; }
 
-    public DbSet<Speaker> Speakers { get; set; }
+    public DbSet<Speaker> Speakers { get; init; }
 
-    public DbSet<Track> Tracks { get; set; } = default!;
+    public DbSet<Track> Tracks { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

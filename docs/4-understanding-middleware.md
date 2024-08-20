@@ -153,7 +153,7 @@ To use middleware on plain C# types, we can wrap them in so-called descriptor at
     public sealed class Foo
     {
         [UseUpperCase]
-        public string Bar { get; set; }
+        public required string Bar { get; init; }
     }
     ```
 
