@@ -441,4 +441,4 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
 
 In this session, we've added DataLoaders to our GraphQL API and learned what DataLoaders are. We've also looked at a new way to extend our GraphQL types with type extensions, which lets us change the shape of types that we don't want to annotate with GraphQL attributes.
 
-[**<< Session #2 - Controlling nullability**](2-controlling-nullability.md) | [**Session #4 - GraphQL schema design approaches >>**](4-schema-design.md)
+[**<< Session #1 - Creating a new GraphQL server project**](1-creating-a-graphql-server-project.md) | [**Session #3 - GraphQL schema design approaches >>**](3-schema-design.md)

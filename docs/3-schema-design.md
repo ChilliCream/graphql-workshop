@@ -848,4 +848,4 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
 
 We've covered quite a lot in this section. We've learned that GraphQL is designed for efficiency and that many of the schema design concepts are designed around this core principle of GraphQL. We looked at how mutations should be structured, and that we should aim to design GraphQL schemas not around a database schema, but instead around our business model. With GraphQL we have such strong capabilities to express our business model that we should look beyond simple CRUD. Expressively design your schema so that each mutation conveys very clearly what it does. Allow your consumers to fetch single entities or multiple entities without forcing them to use aliases.
 
-[**<< Session #3 - Understanding DataLoader**](3-understanding-data-loader.md) | [**Session #5 - Understanding middleware >>**](5-understanding-middleware.md)
+[**<< Session #2 - Understanding DataLoader**](2-understanding-data-loader.md) | [**Session #4 - Understanding middleware >>**](4-understanding-middleware.md)

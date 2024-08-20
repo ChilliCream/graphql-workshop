@@ -7,6 +7,8 @@ builder.Services
     .AddDbContext<ApplicationDbContext>(
         options => options.UseNpgsql("Host=127.0.0.1;Username=graphql_workshop;Password=secret"))
     .AddGraphQLServer()
+    .AddGlobalObjectIdentification()
+    .AddMutationConventions()
     .AddGraphQLTypes();
 
 var app = builder.Build();

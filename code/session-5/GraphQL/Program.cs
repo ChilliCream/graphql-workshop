@@ -9,6 +9,8 @@ builder.Services
     .AddGraphQLServer()
     .AddGlobalObjectIdentification()
     .AddMutationConventions()
+    .AddFiltering()
+    .AddSorting()
     .AddGraphQLTypes();
 
 var app = builder.Build();

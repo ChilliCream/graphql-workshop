@@ -1,16 +1,16 @@
 using ConferencePlanner.GraphQL.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Sessions;
 
 [QueryType]
 public static class SessionQueries
 {
-    [UsePaging]
-    [UseFiltering]
-    [UseSorting]
-    public static IQueryable<Session> GetSessions(ApplicationDbContext dbContext)
+    public static async Task<IEnumerable<Session>> GetSessionsAsync(
+        ApplicationDbContext dbContext,
+        CancellationToken cancellationToken)
     {
-        return dbContext.Sessions.OrderBy(s => s.Title);
+        return await dbContext.Sessions.ToListAsync(cancellationToken);
     }
 
     [NodeResolver]

@@ -15,6 +15,7 @@ public static partial class TrackType
             .UseUpperCase();
     }
 
+    [UsePaging]
     public static async Task<IEnumerable<Session>> GetSessionsAsync(
         [Parent] Track track,
         ApplicationDbContext dbContext,

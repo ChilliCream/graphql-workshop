@@ -175,4 +175,4 @@ A schema change test will simply create a snapshot of your schema, and always fa
 
     To execute against a schema we can call `BuildRequestExecutorAsync` on the service collection to get an `IRequestExecutor`. After executing the mutation, we snapshot the result object, and as with the previous test, subsequent test runs will compare our snapshot file.
 
-[**<< Session #7 - Adding real-time functionality with subscriptions**](7-subscriptions.md)
+[**<< Session #6 - Adding real-time functionality with subscriptions**](6-subscriptions.md)

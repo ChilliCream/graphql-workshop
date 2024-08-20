@@ -26,13 +26,12 @@ The GraphQL schema can be found [here](code/complete/schema.graphql).
 
 ## Sessions
 
-| Session                                                    | Topics                                                |
-|------------------------------------------------------------|-------------------------------------------------------|
-| [Session #1](docs/1-creating-a-graphql-server-project.md)  | Creating a new GraphQL server project.                |
-| [Session #2](docs/2-controlling-nullability.md)            | Controlling nullability.                              |
-| [Session #3](docs/3-understanding-data-loader.md)          | Understanding DataLoader.                             |
-| [Session #4](docs/4-schema-design.md)                      | GraphQL schema design approaches.                     |
-| [Session #5](docs/5-understanding-middleware.md)           | Understanding middleware.                             |
-| [Session #6](docs/6-adding-complex-filter-capabilities.md) | Adding complex filter capabilities.                   |
-| [Session #7](docs/7-subscriptions.md)                      | Adding real-time functionality with subscriptions.    |
-| [Session #8](docs/8-testing-the-graphql-server.md)         | Testing the GraphQL server.                           |
+| Session                                                    | Topics                                             |
+|------------------------------------------------------------|----------------------------------------------------|
+| [Session #1](docs/1-creating-a-graphql-server-project.md)  | Creating a new GraphQL server project.             |
+| [Session #2](docs/2-understanding-data-loader.md)          | Understanding DataLoader.                          |
+| [Session #3](docs/3-schema-design.md)                      | GraphQL schema design approaches.                  |
+| [Session #4](docs/4-understanding-middleware.md)           | Understanding middleware.                          |
+| [Session #5](docs/5-adding-complex-filter-capabilities.md) | Adding complex filter capabilities.                |
+| [Session #6](docs/6-subscriptions.md)                      | Adding real-time functionality with subscriptions. |
+| [Session #7](docs/7-testing-the-graphql-server.md)         | Testing the GraphQL server.                        |

@@ -6,10 +6,11 @@ namespace ConferencePlanner.GraphQL.Speakers;
 [QueryType]
 public static class SpeakerQueries
 {
-    [UsePaging]
-    public static IQueryable<Speaker> GetSpeakers(ApplicationDbContext dbContext)
+    public static async Task<IEnumerable<Speaker>> GetSpeakersAsync(
+        ApplicationDbContext dbContext,
+        CancellationToken cancellationToken)
     {
-        return dbContext.Speakers.OrderBy(s => s.Name);
+        return await dbContext.Speakers.ToListAsync(cancellationToken);
     }
 
     [NodeResolver]

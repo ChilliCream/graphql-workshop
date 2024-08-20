@@ -14,6 +14,15 @@ services:
       - type: volume
         source: postgres-data
         target: /var/lib/postgresql/data
+  graphql-workshop-redis:
+    container_name: graphql-workshop-redis
+    image: redis:7.4
+    networks: [graphql-workshop]
+    ports: ["6379:6379"]
+    volumes:
+      - type: volume
+        source: redis-data
+        target: /data
 
 networks:
   graphql-workshop:
@@ -21,3 +30,4 @@ networks:
 
 volumes:
   postgres-data:
+  redis-data:

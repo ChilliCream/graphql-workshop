@@ -570,6 +570,6 @@ The `onSessionScheduled` subscription was quite simple since we didn't subscribe
 
 In this session, we've learned how we can use GraphQL subscriptions to provide real-time events. GraphQL makes it easy to work with real-time data since we can specify what data we want to receive when an event occurs in our system.
 
-[**<< Session #6 - Adding complex filter capabilities**](6-adding-complex-filter-capabilities.md) | [**Session #8 - Testing the GraphQL server >>**](8-testing-the-graphql-server.md)
+[**<< Session #5 - Adding complex filter capabilities**](5-adding-complex-filter-capabilities.md) | [**Session #7 - Testing the GraphQL server >>**](7-testing-the-graphql-server.md)
 
 <!-- spellchecker:ignore U2Vzc2lvbjox -->

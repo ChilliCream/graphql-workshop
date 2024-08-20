@@ -172,4 +172,4 @@ That also means that the order of middleware attributes is important, since they
 
 In this session, we've looked at what field middleware are, and how we can use them to add additional processing logic to our field resolver pipeline.
 
-[**<< Session #4 - GraphQL schema design**](4-schema-design.md) | [**Session #6 - Adding complex filter capabilities >>**](6-adding-complex-filter-capabilities.md)
+[**<< Session #3 - GraphQL schema design**](3-schema-design.md) | [**Session #5 - Adding complex filter capabilities >>**](5-adding-complex-filter-capabilities.md)
