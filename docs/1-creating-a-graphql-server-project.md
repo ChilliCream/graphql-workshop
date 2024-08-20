@@ -1,14 +1,13 @@
 # Creating a new GraphQL server project
 
-- [Creating a new GraphQL server project](#creating-a-new-graphql-server-project)
-  - [Registering the DB Context Service](#registering-the-db-context-service)
-  - [Configuring EF Migrations](#configuring-ef-migrations)
-    - [Option 1 - Command line](#option-1---command-line)
-    - [Option 2 - Visual Studio: Package Manager Console](#option-2---visual-studio-package-manager-console)
-  - [Adding GraphQL](#adding-graphql)
-  - [Adding a Query](#adding-a-query)
-  - [Adding a Mutation](#adding-a-mutation)
-  - [Summary](#summary)
+- [Registering the DB Context Service](#registering-the-db-context-service)
+- [Configuring EF Migrations](#configuring-ef-migrations)
+  - [Option 1 - Command line](#option-1---command-line)
+  - [Option 2 - Visual Studio: Package Manager Console](#option-2---visual-studio-package-manager-console)
+- [Adding GraphQL](#adding-graphql)
+- [Adding a Query](#adding-a-query)
+- [Adding a Mutation](#adding-a-mutation)
+- [Summary](#summary)
 
 1. To begin, create a new project for our GraphQL server:
     - `dotnet new sln --name ConferencePlanner`

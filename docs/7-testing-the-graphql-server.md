@@ -1,8 +1,7 @@
 # Testing the GraphQL server
 
-- [Testing the GraphQL server](#testing-the-graphql-server)
-  - [Adding a schema change test](#adding-a-schema-change-test)
-  - [Adding a simple query test](#adding-a-simple-query-test)
+- [Adding a schema change test](#adding-a-schema-change-test)
+- [Adding a simple query test](#adding-a-simple-query-test)
 
 ## Adding a schema change test
 

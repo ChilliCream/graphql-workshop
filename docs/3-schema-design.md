@@ -1,17 +1,16 @@
 # GraphQL schema design approaches
 
-- [GraphQL schema design approaches](#graphql-schema-design-approaches)
-  - [Reorganizing types](#reorganizing-types)
-    - [Reorganizing query types](#reorganizing-query-types)
-    - [Reorganizing mutation types](#reorganizing-mutation-types)
-    - [Reorganizing object types](#reorganizing-object-types)
-    - [Reorganizing DataLoaders](#reorganizing-dataloaders)
-  - [Enabling Mutation Conventions](#enabling-mutation-conventions)
-  - [Enabling Global Object Identification](#enabling-global-object-identification)
-  - [Building out the schema](#building-out-the-schema)
-    - [Thinking beyond CRUD](#thinking-beyond-crud)
-    - [Offering plural versions of fields and being precise about field names](#offering-plural-versions-of-fields-and-being-precise-about-field-names)
-  - [Summary](#summary)
+- [Reorganizing types](#reorganizing-types)
+  - [Reorganizing query types](#reorganizing-query-types)
+  - [Reorganizing mutation types](#reorganizing-mutation-types)
+  - [Reorganizing object types](#reorganizing-object-types)
+  - [Reorganizing DataLoaders](#reorganizing-dataloaders)
+- [Enabling Mutation Conventions](#enabling-mutation-conventions)
+- [Enabling Global Object Identification](#enabling-global-object-identification)
+- [Building out the schema](#building-out-the-schema)
+  - [Thinking beyond CRUD](#thinking-beyond-crud)
+  - [Offering plural versions of fields and being precise about field names](#offering-plural-versions-of-fields-and-being-precise-about-field-names)
+- [Summary](#summary)
 
 In GraphQL, most APIs are designed in [Relay](https://relay.dev/) style. Relay is Facebook's GraphQL client for React and represents Facebook's opinionated view on GraphQL. The GraphQL community adopted the [Relay server specification](https://relay.dev/docs/guides/graphql-server-specification/) since it provides a battle-tested way of exposing GraphQL at massive scale.
 

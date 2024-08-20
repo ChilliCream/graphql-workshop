@@ -1,10 +1,9 @@
 # Understanding DataLoader
 
-- [Understanding DataLoader](#understanding-dataloader)
-  - [Adding the remaining data models](#adding-the-remaining-data-models)
-  - [Adding a DataLoader](#adding-a-dataloader)
-  - [Type extensions](#type-extensions)
-  - [Summary](#summary)
+- [Adding the remaining data models](#adding-the-remaining-data-models)
+- [Adding a DataLoader](#adding-a-dataloader)
+- [Type extensions](#type-extensions)
+- [Summary](#summary)
 
 ## Adding the remaining data models
 

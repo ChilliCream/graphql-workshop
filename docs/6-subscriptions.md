@@ -1,12 +1,11 @@
 # Adding real-time functionality with subscriptions
 
-- [Adding real-time functionality with subscriptions](#adding-real-time-functionality-with-subscriptions)
-  - [Adding to our GraphQL API](#adding-to-our-graphql-api)
-    - [Adding a `registerAttendee` mutation](#adding-a-registerattendee-mutation)
-    - [Adding a `checkInAttendee` mutation](#adding-a-checkinattendee-mutation)
-  - [Adding an `onSessionScheduled` subscription](#adding-an-onsessionscheduled-subscription)
-  - [Adding an `onAttendeeCheckedIn` subscription](#adding-an-onattendeecheckedin-subscription)
-  - [Summary](#summary)
+- [Adding to our GraphQL API](#adding-to-our-graphql-api)
+  - [Adding a `registerAttendee` mutation](#adding-a-registerattendee-mutation)
+  - [Adding a `checkInAttendee` mutation](#adding-a-checkinattendee-mutation)
+- [Adding an `onSessionScheduled` subscription](#adding-an-onsessionscheduled-subscription)
+- [Adding an `onAttendeeCheckedIn` subscription](#adding-an-onattendeecheckedin-subscription)
+- [Summary](#summary)
 
 For the last few parts of our journey through GraphQL, we've dealt with queries and mutations. In many APIs, this is all that people need or want, but GraphQL also offers us real-time capabilities where we can formulate what data we want to receive when a specific event occurs.
 
