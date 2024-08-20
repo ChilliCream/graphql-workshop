@@ -22,7 +22,7 @@ In this workshop, you'll learn by building a full-featured GraphQL Server with A
 
 **GraphQL Schema**:
 
-The GraphQL schema can be found [here](code/complete/schema.graphql).
+The GraphQL schema can be found [here](code/session-7/GraphQL.Tests/__snapshots__/SchemaTests.SchemaChanged.graphql).
 
 ## Sessions
 
