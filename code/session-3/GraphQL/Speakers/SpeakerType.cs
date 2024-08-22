@@ -24,6 +24,6 @@ public static partial class SpeakerType
             .SelectMany(s => s.SessionSpeakers.Select(ss => ss.SessionId))
             .ToArrayAsync(cancellationToken);
 
-        return await sessionById.LoadAsync(sessionIds, cancellationToken);
+        return await sessionById.LoadRequiredAsync(sessionIds, cancellationToken);
     }
 }

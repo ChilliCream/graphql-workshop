@@ -27,6 +27,6 @@ public static partial class TrackType
             .Select(s => s.Id)
             .ToArrayAsync(cancellationToken);
 
-        return await sessionById.LoadAsync(sessionIds, cancellationToken);
+        return await sessionById.LoadRequiredAsync(sessionIds, cancellationToken);
     }
 }

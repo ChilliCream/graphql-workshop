@@ -32,6 +32,6 @@ public static partial class AttendeeType
             .SelectMany(a => a.SessionsAttendees.Select(sa => sa.SessionId))
             .ToArrayAsync(cancellationToken);
 
-        return await sessionById.LoadAsync(sessionIds, cancellationToken);
+        return await sessionById.LoadRequiredAsync(sessionIds, cancellationToken);
     }
 }

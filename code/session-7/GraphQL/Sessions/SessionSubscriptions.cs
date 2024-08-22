@@ -12,6 +12,6 @@ public static class SessionSubscriptions
         SessionByIdDataLoader sessionById,
         CancellationToken cancellationToken)
     {
-        return await sessionById.LoadAsync(sessionId, cancellationToken);
+        return await sessionById.LoadRequiredAsync(sessionId, cancellationToken);
     }
 }

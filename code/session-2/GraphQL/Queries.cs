@@ -14,7 +14,7 @@ public static class Queries
     }
 
     [Query]
-    public static async Task<Speaker> GetSpeakerAsync(
+    public static async Task<Speaker?> GetSpeakerAsync(
         int id,
         SpeakerByIdDataLoader speakerById,
         CancellationToken cancellationToken)

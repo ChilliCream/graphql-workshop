@@ -55,7 +55,7 @@ First, we will restructure our GraphQL server so that it will better scale once 
             return await dbContext.Speakers.ToListAsync(cancellationToken);
         }
 
-        public static async Task<Speaker> GetSpeakerAsync(
+        public static async Task<Speaker?> GetSpeakerAsync(
             int id,
             SpeakerByIdDataLoader speakerById,
             CancellationToken cancellationToken)
@@ -358,7 +358,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
                 .SelectMany(a => a.SessionsAttendees.Select(sa => sa.SessionId))
                 .ToArrayAsync(cancellationToken);
 
-            return await sessionById.LoadAsync(sessionIds, cancellationToken);
+            return await sessionById.LoadRequiredAsync(sessionIds, cancellationToken);
         }
     }
     ```
@@ -406,7 +406,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
                 .SelectMany(s => s.SessionSpeakers.Select(ss => ss.SpeakerId))
                 .ToArrayAsync(cancellationToken);
 
-            return await speakerById.LoadAsync(speakerIds, cancellationToken);
+            return await speakerById.LoadRequiredAsync(speakerIds, cancellationToken);
         }
 
         public static async Task<IEnumerable<Attendee>> GetAttendeesAsync(
@@ -421,7 +421,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
                 .SelectMany(s => s.SessionAttendees.Select(sa => sa.AttendeeId))
                 .ToArrayAsync(cancellationToken);
 
-            return await attendeeById.LoadAsync(attendeeIds, cancellationToken);
+            return await attendeeById.LoadRequiredAsync(attendeeIds, cancellationToken);
         }
 
         public static async Task<Track?> GetTrackAsync(
@@ -462,7 +462,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
                 .Select(s => s.Id)
                 .ToArrayAsync(cancellationToken);
 
-            return await sessionById.LoadAsync(sessionIds, cancellationToken);
+            return await sessionById.LoadRequiredAsync(sessionIds, cancellationToken);
         }
     }
     ```
@@ -739,7 +739,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
         SpeakerByIdDataLoader speakerById,
         CancellationToken cancellationToken)
     {
-        return await speakerById.LoadAsync(ids, cancellationToken);
+        return await speakerById.LoadRequiredAsync(ids, cancellationToken);
     }
     ```
 
@@ -764,7 +764,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
         }
 
         [NodeResolver]
-        public static async Task<Session> GetSessionByIdAsync(
+        public static async Task<Session?> GetSessionByIdAsync(
             int id,
             SessionByIdDataLoader sessionById,
             CancellationToken cancellationToken)
@@ -777,7 +777,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
             SessionByIdDataLoader sessionById,
             CancellationToken cancellationToken)
         {
-            return await sessionById.LoadAsync(ids, cancellationToken);
+            return await sessionById.LoadRequiredAsync(ids, cancellationToken);
         }
     }
     ```
@@ -801,7 +801,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
         }
 
         [NodeResolver]
-        public static async Task<Track> GetTrackByIdAsync(
+        public static async Task<Track?> GetTrackByIdAsync(
             int id,
             TrackByIdDataLoader trackById,
             CancellationToken cancellationToken)
@@ -814,7 +814,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
             TrackByIdDataLoader trackById,
             CancellationToken cancellationToken)
         {
-            return await trackById.LoadAsync(ids, cancellationToken);
+            return await trackById.LoadRequiredAsync(ids, cancellationToken);
         }
 
         public static async Task<Track> GetTrackByNameAsync(

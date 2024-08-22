@@ -34,7 +34,7 @@ Before we can start with introducing our new subscriptions, we need to first bri
         }
 
         [NodeResolver]
-        public static async Task<Attendee> GetAttendeeByIdAsync(
+        public static async Task<Attendee?> GetAttendeeByIdAsync(
             int id,
             AttendeeByIdDataLoader attendeeById,
             CancellationToken cancellationToken)
@@ -47,7 +47,7 @@ Before we can start with introducing our new subscriptions, we need to first bri
             AttendeeByIdDataLoader attendeeById,
             CancellationToken cancellationToken)
         {
-            return await attendeeById.LoadAsync(ids, cancellationToken);
+            return await attendeeById.LoadRequiredAsync(ids, cancellationToken);
         }
     }
     ```
@@ -181,8 +181,8 @@ With the base in, we can now focus on putting subscriptions in our GraphQL serve
     +  redis-data:
     ```
 
-1. Add a reference to the NuGet package `HotChocolate.Subscriptions.Redis` version `14.0.0-p.144`:
-    - `dotnet add GraphQL package HotChocolate.Subscriptions.Redis --version 14.0.0-p.144`
+1. Add a reference to the NuGet package `HotChocolate.Subscriptions.Redis` version `14.0.0-p.150`:
+    - `dotnet add GraphQL package HotChocolate.Subscriptions.Redis --version 14.0.0-p.150`
 
 1. Head over to `Program.cs` and add `app.UseWebSockets()` to the request pipeline. Middleware order is also important with ASP.NET Core, so this middleware needs to come before the GraphQL middleware:
 
@@ -218,7 +218,7 @@ With the base in, we can now focus on putting subscriptions in our GraphQL serve
             SessionByIdDataLoader sessionById,
             CancellationToken cancellationToken)
         {
-            return await sessionById.LoadAsync(sessionId, cancellationToken);
+            return await sessionById.LoadRequiredAsync(sessionId, cancellationToken);
         }
     }
     ```
@@ -424,14 +424,14 @@ The `onSessionScheduled` subscription was quite simple since we didn't subscribe
             AttendeeByIdDataLoader attendeeById,
             CancellationToken cancellationToken)
         {
-            return await attendeeById.LoadAsync(AttendeeId, cancellationToken);
+            return await attendeeById.LoadRequiredAsync(AttendeeId, cancellationToken);
         }
 
         public async Task<Session> GetSessionAsync(
             SessionByIdDataLoader sessionById,
             CancellationToken cancellationToken)
         {
-            return await sessionById.LoadAsync(SessionId, cancellationToken);
+            return await sessionById.LoadRequiredAsync(SessionId, cancellationToken);
         }
     }
     ```

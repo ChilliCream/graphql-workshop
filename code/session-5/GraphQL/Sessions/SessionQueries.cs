@@ -14,7 +14,7 @@ public static class SessionQueries
     }
 
     [NodeResolver]
-    public static async Task<Session> GetSessionByIdAsync(
+    public static async Task<Session?> GetSessionByIdAsync(
         int id,
         SessionByIdDataLoader sessionById,
         CancellationToken cancellationToken)
@@ -27,6 +27,6 @@ public static class SessionQueries
         SessionByIdDataLoader sessionById,
         CancellationToken cancellationToken)
     {
-        return await sessionById.LoadAsync(ids, cancellationToken);
+        return await sessionById.LoadRequiredAsync(ids, cancellationToken);
     }
 }

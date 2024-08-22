@@ -32,7 +32,7 @@ public static partial class SessionType
             .SelectMany(s => s.SessionSpeakers.Select(ss => ss.SpeakerId))
             .ToArrayAsync(cancellationToken);
 
-        return await speakerById.LoadAsync(speakerIds, cancellationToken);
+        return await speakerById.LoadRequiredAsync(speakerIds, cancellationToken);
     }
 
     public static async Task<IEnumerable<Attendee>> GetAttendeesAsync(
@@ -47,7 +47,7 @@ public static partial class SessionType
             .SelectMany(s => s.SessionAttendees.Select(sa => sa.AttendeeId))
             .ToArrayAsync(cancellationToken);
 
-        return await attendeeById.LoadAsync(attendeeIds, cancellationToken);
+        return await attendeeById.LoadRequiredAsync(attendeeIds, cancellationToken);
     }
 
     public static async Task<Track?> GetTrackAsync(

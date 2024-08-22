@@ -13,7 +13,7 @@ public static class TrackQueries
     }
 
     [NodeResolver]
-    public static async Task<Track> GetTrackByIdAsync(
+    public static async Task<Track?> GetTrackByIdAsync(
         int id,
         TrackByIdDataLoader trackById,
         CancellationToken cancellationToken)
@@ -26,7 +26,7 @@ public static class TrackQueries
         TrackByIdDataLoader trackById,
         CancellationToken cancellationToken)
     {
-        return await trackById.LoadAsync(ids, cancellationToken);
+        return await trackById.LoadRequiredAsync(ids, cancellationToken);
     }
 
     public static async Task<Track> GetTrackByNameAsync(

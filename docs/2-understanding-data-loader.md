@@ -268,7 +268,7 @@ While we could write DataLoaders as individual classes, there is also a source g
 
     ```csharp
     [Query]
-    public static async Task<Speaker> GetSpeakerAsync(
+    public static async Task<Speaker?> GetSpeakerAsync(
         int id,
         SpeakerByIdDataLoader speakerById,
         CancellationToken cancellationToken)
@@ -296,7 +296,7 @@ While we could write DataLoaders as individual classes, there is also a source g
         }
 
         [Query]
-        public static async Task<Speaker> GetSpeakerAsync(
+        public static async Task<Speaker?> GetSpeakerAsync(
             int id,
             SpeakerByIdDataLoader speakerById,
             CancellationToken cancellationToken)
@@ -396,7 +396,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
                 .SelectMany(s => s.SessionSpeakers.Select(ss => ss.SessionId))
                 .ToArrayAsync(cancellationToken);
 
-            return await sessionById.LoadAsync(sessionIds, cancellationToken);
+            return await sessionById.LoadRequiredAsync(sessionIds, cancellationToken);
         }
     }
     ```

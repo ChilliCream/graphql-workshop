@@ -12,7 +12,7 @@ public static class AttendeeQueries
     }
 
     [NodeResolver]
-    public static async Task<Attendee> GetAttendeeByIdAsync(
+    public static async Task<Attendee?> GetAttendeeByIdAsync(
         int id,
         AttendeeByIdDataLoader attendeeById,
         CancellationToken cancellationToken)
@@ -25,6 +25,6 @@ public static class AttendeeQueries
         AttendeeByIdDataLoader attendeeById,
         CancellationToken cancellationToken)
     {
-        return await attendeeById.LoadAsync(ids, cancellationToken);
+        return await attendeeById.LoadRequiredAsync(ids, cancellationToken);
     }
 }
