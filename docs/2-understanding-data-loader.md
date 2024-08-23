@@ -379,11 +379,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
     [ObjectType<Speaker>]
     public static partial class SpeakerType
     {
-        static partial void Configure(IObjectTypeDescriptor<Speaker> descriptor)
-        {
-            descriptor.Ignore(s => s.SessionSpeakers);
-        }
-
+        [BindMember(nameof(Speaker.SessionSpeakers))]
         public static async Task<IEnumerable<Session>> GetSessionsAsync(
             [Parent] Speaker speaker,
             ApplicationDbContext dbContext,
@@ -401,7 +397,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
     }
     ```
 
-    In this type extension, we hide the `sessionSpeakers` field (property `SessionSpeakers`) using the `Ignore` method on the descriptor. We then add a new field named `sessions` (method `GetSessionsAsync`) that exposes the sessions associated with the speaker.
+    In this type extension, we replace the existing `sessionSpeakers` field (property `SessionSpeakers`), with a new field named `sessions` (method `GetSessionsAsync`), using the `[BindMember]` attribute. The new field exposes the sessions associated with the speaker.
 
 1. The new GraphQL representation of our speaker type is now:
 

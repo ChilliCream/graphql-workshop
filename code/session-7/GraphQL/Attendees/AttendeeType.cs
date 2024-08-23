@@ -16,10 +16,9 @@ public static partial class AttendeeType
                 async (ctx, id)
                     => await ctx.DataLoader<AttendeeByIdDataLoader>()
                         .LoadAsync(id, ctx.RequestAborted));
-
-        descriptor.Ignore(a => a.SessionsAttendees);
     }
 
+    [BindMember(nameof(Attendee.SessionsAttendees))]
     public static async Task<IEnumerable<Session>> GetSessionsAsync(
         [Parent] Attendee attendee,
         ApplicationDbContext dbContext,

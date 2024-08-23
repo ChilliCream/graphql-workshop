@@ -6,11 +6,7 @@ namespace ConferencePlanner.GraphQL.Types;
 [ObjectType<Speaker>]
 public static partial class SpeakerType
 {
-    static partial void Configure(IObjectTypeDescriptor<Speaker> descriptor)
-    {
-        descriptor.Ignore(s => s.SessionSpeakers);
-    }
-
+    [BindMember(nameof(Speaker.SessionSpeakers))]
     public static async Task<IEnumerable<Session>> GetSessionsAsync(
         [Parent] Speaker speaker,
         ApplicationDbContext dbContext,

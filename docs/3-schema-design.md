@@ -342,10 +342,9 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
                     async (ctx, id)
                         => await ctx.DataLoader<AttendeeByIdDataLoader>()
                             .LoadAsync(id, ctx.RequestAborted));
-
-            descriptor.Ignore(a => a.SessionsAttendees);
         }
 
+        [BindMember(nameof(Attendee.SessionsAttendees))]
         public static async Task<IEnumerable<Session>> GetSessionsAsync(
             [Parent] Attendee attendee,
             ApplicationDbContext dbContext,
@@ -386,14 +385,11 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
         static partial void Configure(IObjectTypeDescriptor<Session> descriptor)
         {
             descriptor
-                .Ignore(s => s.SessionSpeakers)
-                .Ignore(s => s.SessionAttendees);
-
-            descriptor
                 .Field(s => s.TrackId)
                 .ID();
         }
 
+        [BindMember(nameof(Session.SessionSpeakers))]
         public static async Task<IEnumerable<Speaker>> GetSpeakersAsync(
             [Parent] Session session,
             ApplicationDbContext dbContext,
@@ -409,6 +405,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
             return await speakerById.LoadRequiredAsync(speakerIds, cancellationToken);
         }
 
+        [BindMember(nameof(Session.SessionAttendees))]
         public static async Task<IEnumerable<Attendee>> GetAttendeesAsync(
             [Parent] Session session,
             ApplicationDbContext dbContext,

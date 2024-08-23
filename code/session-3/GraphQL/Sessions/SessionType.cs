@@ -12,14 +12,11 @@ public static partial class SessionType
     static partial void Configure(IObjectTypeDescriptor<Session> descriptor)
     {
         descriptor
-            .Ignore(s => s.SessionSpeakers)
-            .Ignore(s => s.SessionAttendees);
-
-        descriptor
             .Field(s => s.TrackId)
             .ID();
     }
 
+    [BindMember(nameof(Session.SessionSpeakers))]
     public static async Task<IEnumerable<Speaker>> GetSpeakersAsync(
         [Parent] Session session,
         ApplicationDbContext dbContext,
@@ -35,6 +32,7 @@ public static partial class SessionType
         return await speakerById.LoadRequiredAsync(speakerIds, cancellationToken);
     }
 
+    [BindMember(nameof(Session.SessionAttendees))]
     public static async Task<IEnumerable<Attendee>> GetAttendeesAsync(
         [Parent] Session session,
         ApplicationDbContext dbContext,
