@@ -816,24 +816,6 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
         {
             return await trackById.LoadRequiredAsync(ids, cancellationToken);
         }
-
-        public static async Task<Track> GetTrackByNameAsync(
-            string name,
-            ApplicationDbContext dbContext,
-            CancellationToken cancellationToken)
-        {
-            return await dbContext.Tracks.FirstAsync(t => t.Name == name, cancellationToken);
-        }
-
-        public static async Task<IEnumerable<Track>> GetTracksByNameAsync(
-            string[] names,
-            ApplicationDbContext dbContext,
-            CancellationToken cancellationToken)
-        {
-            return await dbContext.Tracks
-                .Where(t => names.Contains(t.Name))
-                .ToListAsync(cancellationToken);
-        }
     }
     ```
 

@@ -104,8 +104,6 @@ type Query {
   tracks("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): TracksConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ]) @cost(weight: "10")
   trackById(id: ID!): Track @cost(weight: "10")
   tracksById(ids: [ID!]!): [Track!]! @cost(weight: "10")
-  trackByName(name: String!): Track! @cost(weight: "10")
-  tracksByName(names: [String!]!): [Track!]! @cost(weight: "10")
 }
 
 type RegisterAttendeePayload {
