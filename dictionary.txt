@@ -1,6 +1,7 @@
 aspnet
 ASPNETCORE
 Autoincrement
+autonumber
 buildtransitive
 contentfiles
 deprioritization

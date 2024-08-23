@@ -31,7 +31,7 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
 
     The resolver pipeline for our field now looks like the following:
 
-    ![Paging Middleware Flow](images/22-pagination.png)
+    ![Paging Middleware Flow](images/22-pagination.svg)
 
 1. Start your GraphQL server:
 
@@ -148,7 +148,7 @@ Exposing rich filters to a public API can lead to unpredictable performance impl
 
 Filtering, like paging, is a middleware that can be applied on `IQueryable`. As mentioned in the middleware session, order is important with middleware. This means that our paging middleware has to execute last.
 
-![Filter Middleware Flow](images/20-middleware-flow.png)
+![Filter Middleware Flow](images/20-middleware-flow.svg)
 
 1. Add a reference to the NuGet package package `HotChocolate.Data` version `14.0.0-p.150`:
     - `dotnet add GraphQL package HotChocolate.Data --version 14.0.0-p.150`
