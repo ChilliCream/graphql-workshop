@@ -519,7 +519,7 @@ The `onSessionScheduled` subscription was quite simple since we didn't subscribe
     mutation CheckInAttendee {
       checkInAttendee(
         input: {
-          attendeeId: "QXR0ZW5kZWU6Mg=="
+          attendeeId: "QXR0ZW5kZWU6MQ=="
           sessionId: "U2Vzc2lvbjox"
         }
       ) {

@@ -118,7 +118,7 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
 
     ```graphql
     query GetTrackWithSessions {
-      trackById(id: "VHJhY2sKaTI=") {
+      trackById(id: "VHJhY2s6MQ==") {
         id
         sessions(first: 1) {
           nodes {
