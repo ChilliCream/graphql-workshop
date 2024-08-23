@@ -1,5 +1,4 @@
 using ConferencePlanner.GraphQL.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Speakers;
 

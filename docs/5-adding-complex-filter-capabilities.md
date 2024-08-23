@@ -20,7 +20,14 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
     }
     ```
 
-    > The new resolver will return an `IQueryable` instead of executing the database query. The `IQueryable` is like a query builder. By applying the `UsePaging` middleware, we are rewriting the database query to only fetch the items that we need for our dataset.
+    And remove the unused using directive:
+
+    ```diff
+      using ConferencePlanner.GraphQL.Data;
+    - using Microsoft.EntityFrameworkCore;
+    ```
+
+    The new resolver will return an `IQueryable` instead of executing the database query. The `IQueryable` is like a query builder. By applying the `UsePaging` middleware, we are rewriting the database query to only fetch the items that we need for our dataset.
 
     The resolver pipeline for our field now looks like the following:
 
@@ -94,6 +101,8 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
     }
     ```
 
+    And remove the unused using directive.
+
 1. Next, go to the `SessionQueries.cs` file in the `Sessions` directory, and replace the `GetSessionsAsync` resolver with the following code:
 
     ```csharp
@@ -104,7 +113,7 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
     }
     ```
 
-    You can also remove the unused using directive (`using Microsoft.EntityFrameworkCore`).
+    And remove the unused using directive.
 
     We have now replaced all the root level list fields and are now using our pagination middleware. There are still more lists left where we should apply pagination if we want to really have a refined schema. Let's change the API a bit more to incorporate this.
 
