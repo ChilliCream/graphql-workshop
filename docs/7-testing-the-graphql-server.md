@@ -34,8 +34,8 @@ A schema change test will simply create a snapshot of your schema, and always fa
     </PackageReference>
     ```
 
-1. Add a reference to the NuGet package `CookieCrumble` version `14.0.0-p.150`:
-    - `dotnet add GraphQL.Tests package CookieCrumble --version 14.0.0-p.150`
+1. Add a reference to the NuGet package `CookieCrumble` version `14.0.0-rc.0`:
+    - `dotnet add GraphQL.Tests package CookieCrumble --version 14.0.0-rc.0`
 
 1. Add a reference to the GraphQL server:
     - `dotnet add GraphQL.Tests reference GraphQL`

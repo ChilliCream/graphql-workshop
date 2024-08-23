@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="14.0.0-p.150" />
-    <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="14.0.0-p.150" />
-    <PackageReference Include="HotChocolate.Types.Analyzers" Version="14.0.0-p.150" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="14.0.0-rc.0" />
+    <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="14.0.0-rc.0" />
+    <PackageReference Include="HotChocolate.Types.Analyzers" Version="14.0.0-rc.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
