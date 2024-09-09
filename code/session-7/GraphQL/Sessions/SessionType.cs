@@ -1,8 +1,5 @@
-using ConferencePlanner.GraphQL.Attendees;
 using ConferencePlanner.GraphQL.Data;
-using ConferencePlanner.GraphQL.Speakers;
 using ConferencePlanner.GraphQL.Tracks;
-using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Sessions;
 
@@ -19,33 +16,19 @@ public static partial class SessionType
     [BindMember(nameof(Session.SessionSpeakers))]
     public static async Task<IEnumerable<Speaker>> GetSpeakersAsync(
         [Parent] Session session,
-        ApplicationDbContext dbContext,
-        SpeakerByIdDataLoader speakerById,
+        SpeakersBySessionIdDataLoader speakersBySessionId,
         CancellationToken cancellationToken)
     {
-        var speakerIds = await dbContext.Sessions
-            .Where(s => s.Id == session.Id)
-            .Include(s => s.SessionSpeakers)
-            .SelectMany(s => s.SessionSpeakers.Select(ss => ss.SpeakerId))
-            .ToArrayAsync(cancellationToken);
-
-        return await speakerById.LoadRequiredAsync(speakerIds, cancellationToken);
+        return await speakersBySessionId.LoadRequiredAsync(session.Id, cancellationToken);
     }
 
     [BindMember(nameof(Session.SessionAttendees))]
     public static async Task<IEnumerable<Attendee>> GetAttendeesAsync(
         [Parent] Session session,
-        ApplicationDbContext dbContext,
-        AttendeeByIdDataLoader attendeeById,
+        AttendeesBySessionIdDataLoader attendeesBySessionId,
         CancellationToken cancellationToken)
     {
-        var attendeeIds = await dbContext.Sessions
-            .Where(s => s.Id == session.Id)
-            .Include(s => s.SessionAttendees)
-            .SelectMany(s => s.SessionAttendees.Select(sa => sa.AttendeeId))
-            .ToArrayAsync(cancellationToken);
-
-        return await attendeeById.LoadRequiredAsync(attendeeIds, cancellationToken);
+        return await attendeesBySessionId.LoadRequiredAsync(session.Id, cancellationToken);
     }
 
     public static async Task<Track?> GetTrackAsync(

@@ -17,13 +17,17 @@ public static class DataLoaders
     }
 
     [DataLoader]
-    public static async Task<IReadOnlyDictionary<int, Session>> SessionByIdAsync(
-        IReadOnlyList<int> ids,
+    public static async Task<IReadOnlyDictionary<int, Session[]>> SessionsBySpeakerIdAsync(
+        IReadOnlyList<int> speakerIds,
         ApplicationDbContext dbContext,
         CancellationToken cancellationToken)
     {
-        return await dbContext.Sessions
-            .Where(s => ids.Contains(s.Id))
-            .ToDictionaryAsync(s => s.Id, cancellationToken);
+        return await dbContext.Speakers
+            .Where(s => speakerIds.Contains(s.Id))
+            .Select(s => new { s.Id, Sessions = s.SessionSpeakers.Select(ss => ss.Session) })
+            .ToDictionaryAsync(
+                s => s.Id,
+                s => s.Sessions.ToArray(),
+                cancellationToken);
     }
 }

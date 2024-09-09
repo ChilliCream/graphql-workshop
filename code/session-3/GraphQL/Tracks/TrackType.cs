@@ -1,6 +1,4 @@
 using ConferencePlanner.GraphQL.Data;
-using ConferencePlanner.GraphQL.Sessions;
-using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Tracks;
 
@@ -9,15 +7,9 @@ public static partial class TrackType
 {
     public static async Task<IEnumerable<Session>> GetSessionsAsync(
         [Parent] Track track,
-        ApplicationDbContext dbContext,
-        SessionByIdDataLoader sessionById,
+        SessionsByTrackIdDataLoader sessionsByTrackId,
         CancellationToken cancellationToken)
     {
-        var sessionIds = await dbContext.Sessions
-            .Where(s => s.TrackId == track.Id)
-            .Select(s => s.Id)
-            .ToArrayAsync(cancellationToken);
-
-        return await sessionById.LoadRequiredAsync(sessionIds, cancellationToken);
+        return await sessionsByTrackId.LoadRequiredAsync(track.Id, cancellationToken);
     }
 }

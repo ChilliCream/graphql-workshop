@@ -136,69 +136,22 @@ First, we will restructure our GraphQL server so that it will better scale once 
 
 ### Reorganizing DataLoaders
 
-1. Add a new static class named `SpeakerDataLoaders` to the `Speakers` directory, and move the `SpeakerByIdAsync` DataLoader method from `DataLoaders.cs`:
-
-    ```csharp
-    using ConferencePlanner.GraphQL.Data;
-    using Microsoft.EntityFrameworkCore;
-
-    namespace ConferencePlanner.GraphQL.Speakers;
-
-    public static class SpeakerDataLoaders
-    {
-        [DataLoader]
-        public static async Task<IReadOnlyDictionary<int, Speaker>> SpeakerByIdAsync(
-            IReadOnlyList<int> ids,
-            ApplicationDbContext dbContext,
-            CancellationToken cancellationToken)
-        {
-            return await dbContext.Speakers
-                .Where(s => ids.Contains(s.Id))
-                .ToDictionaryAsync(s => s.Id, cancellationToken);
-        }
-    }
-    ```
-
-1. Create a new directory named `Sessions`:
+1. Move the `DataLoaders.cs` file to the `Speakers` directory and rename it to `SpeakerDataLoaders.cs`:
 
     ```shell
-    mkdir GraphQL/Sessions
+    mv GraphQL/DataLoaders.cs GraphQL/Speakers/SpeakerDataLoaders.cs
     ```
 
-1. Add a new static class named `SessionDataLoaders` to the `Sessions` directory, and move the `SessionByIdAsync` DataLoader method from `DataLoaders.cs`:
-
-    ```csharp
-    using ConferencePlanner.GraphQL.Data;
-    using Microsoft.EntityFrameworkCore;
-
-    namespace ConferencePlanner.GraphQL.Sessions;
-
-    public static class SessionDataLoaders
-    {
-        [DataLoader]
-        public static async Task<IReadOnlyDictionary<int, Session>> SessionByIdAsync(
-            IReadOnlyList<int> ids,
-            ApplicationDbContext dbContext,
-            CancellationToken cancellationToken)
-        {
-            return await dbContext.Sessions
-                .Where(s => ids.Contains(s.Id))
-                .ToDictionaryAsync(s => s.Id, cancellationToken);
-        }
-    }
-    ```
-
-    We also need to add an additional `using` directive to `SpeakerType.cs`:
+1. Now, update the namespace and class name:
 
     ```diff
-      using ConferencePlanner.GraphQL.Data;
-    + using ConferencePlanner.GraphQL.Sessions;
+    - namespace ConferencePlanner.GraphQL;
+    + namespace ConferencePlanner.GraphQL.Speakers;
     ```
 
-1. Delete the empty `DataLoaders.cs` file:
-
-    ```shell
-    rm GraphQL/DataLoaders.cs
+    ```diff
+    - public static class DataLoaders
+    + public static class SpeakerDataLoaders
     ```
 
 ## Enabling Mutation Conventions
@@ -273,7 +226,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
     mkdir GraphQL/Attendees
     ```
 
-1. Add a new static class named `AttendeeDataLoaders` to the `Attendees` directory, with an `AttendeeByIdAsync` DataLoader:
+1. Add a new static class named `AttendeeDataLoaders` to the `Attendees` directory, with `AttendeeByIdAsync` and `SessionsByAttendeeIdAsync` DataLoaders:
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
@@ -293,10 +246,84 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
                 .Where(a => ids.Contains(a.Id))
                 .ToDictionaryAsync(a => a.Id, cancellationToken);
         }
+
+        [DataLoader]
+        public static async Task<IReadOnlyDictionary<int, Session[]>> SessionsByAttendeeIdAsync(
+            IReadOnlyList<int> attendeeIds,
+            ApplicationDbContext dbContext,
+            CancellationToken cancellationToken)
+        {
+            return await dbContext.Attendees
+                .Where(a => attendeeIds.Contains(a.Id))
+                .Select(a => new { a.Id, Sessions = a.SessionsAttendees.Select(sa => sa.Session) })
+                .ToDictionaryAsync(
+                    a => a.Id,
+                    a => a.Sessions.ToArray(),
+                    cancellationToken);
+        }
     }
     ```
 
-1. Add a new static class named `TrackDataLoaders` to the `Tracks` directory, with a `TrackByIdAsync` DataLoader:
+1. Create a new directory named `Sessions`:
+
+    ```shell
+    mkdir GraphQL/Sessions
+    ```
+
+1. Add a new static class named `SessionDataLoaders` to the `Sessions` directory, with `SessionByIdAsync`, `SpeakersBySessionIdAsync`, and `AttendeesBySessionIdAsync` DataLoaders:
+
+    ```csharp
+    using ConferencePlanner.GraphQL.Data;
+    using Microsoft.EntityFrameworkCore;
+
+    namespace ConferencePlanner.GraphQL.Sessions;
+
+    public static class SessionDataLoaders
+    {
+        [DataLoader]
+        public static async Task<IReadOnlyDictionary<int, Session>> SessionByIdAsync(
+            IReadOnlyList<int> ids,
+            ApplicationDbContext dbContext,
+            CancellationToken cancellationToken)
+        {
+            return await dbContext.Sessions
+                .Where(s => ids.Contains(s.Id))
+                .ToDictionaryAsync(s => s.Id, cancellationToken);
+        }
+    }
+
+    [DataLoader]
+    public static async Task<IReadOnlyDictionary<int, Speaker[]>> SpeakersBySessionIdAsync(
+        IReadOnlyList<int> sessionIds,
+        ApplicationDbContext dbContext,
+        CancellationToken cancellationToken)
+    {
+        return await dbContext.Sessions
+            .Where(s => sessionIds.Contains(s.Id))
+            .Select(s => new { s.Id, Speakers = s.SessionSpeakers.Select(ss => ss.Speaker) })
+            .ToDictionaryAsync(
+                s => s.Id,
+                s => s.Speakers.ToArray(),
+                cancellationToken);
+    }
+
+    [DataLoader]
+    public static async Task<IReadOnlyDictionary<int, Attendee[]>> AttendeesBySessionIdAsync(
+        IReadOnlyList<int> sessionIds,
+        ApplicationDbContext dbContext,
+        CancellationToken cancellationToken)
+    {
+        return await dbContext.Sessions
+            .Where(s => sessionIds.Contains(s.Id))
+            .Select(s => new { s.Id, Attendees = s.SessionAttendees.Select(sa => sa.Attendee) })
+            .ToDictionaryAsync(
+                s => s.Id,
+                s => s.Attendees.ToArray(),
+                cancellationToken);
+    }
+    ```
+
+1. Add a new static class named `TrackDataLoaders` to the `Tracks` directory, with `TrackByIdAsync` and `SessionsByTrackIdAsync` DataLoaders:
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
@@ -316,6 +343,21 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
                 .Where(t => ids.Contains(t.Id))
                 .ToDictionaryAsync(t => t.Id, cancellationToken);
         }
+
+        [DataLoader]
+        public static async Task<IReadOnlyDictionary<int, Session[]>> SessionsByTrackIdAsync(
+            IReadOnlyList<int> trackIds,
+            ApplicationDbContext dbContext,
+            CancellationToken cancellationToken)
+        {
+            return await dbContext.Tracks
+                .Where(t => trackIds.Contains(t.Id))
+                .Select(t => new { t.Id, t.Sessions })
+                .ToDictionaryAsync(
+                    t => t.Id,
+                    t => t.Sessions.ToArray(),
+                    cancellationToken);
+        }
     }
     ```
 
@@ -325,8 +367,6 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using ConferencePlanner.GraphQL.Sessions;
-    using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Attendees;
 
@@ -347,17 +387,10 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
         [BindMember(nameof(Attendee.SessionsAttendees))]
         public static async Task<IEnumerable<Session>> GetSessionsAsync(
             [Parent] Attendee attendee,
-            ApplicationDbContext dbContext,
-            SessionByIdDataLoader sessionById,
+            SessionsByAttendeeIdDataLoader sessionsByAttendeeId,
             CancellationToken cancellationToken)
         {
-            var sessionIds = await dbContext.Attendees
-                .Where(a => a.Id == attendee.Id)
-                .Include(a => a.SessionsAttendees)
-                .SelectMany(a => a.SessionsAttendees.Select(sa => sa.SessionId))
-                .ToArrayAsync(cancellationToken);
-
-            return await sessionById.LoadRequiredAsync(sessionIds, cancellationToken);
+            return await sessionsByAttendeeId.LoadRequiredAsync(attendee.Id, cancellationToken);
         }
     }
     ```
@@ -371,11 +404,8 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
     `GraphQL/Sessions/SessionType.cs`
 
     ```csharp
-    using ConferencePlanner.GraphQL.Attendees;
     using ConferencePlanner.GraphQL.Data;
-    using ConferencePlanner.GraphQL.Speakers;
     using ConferencePlanner.GraphQL.Tracks;
-    using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Sessions;
 
@@ -392,33 +422,19 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
         [BindMember(nameof(Session.SessionSpeakers))]
         public static async Task<IEnumerable<Speaker>> GetSpeakersAsync(
             [Parent] Session session,
-            ApplicationDbContext dbContext,
-            SpeakerByIdDataLoader speakerById,
+            SpeakersBySessionIdDataLoader speakersBySessionId,
             CancellationToken cancellationToken)
         {
-            var speakerIds = await dbContext.Sessions
-                .Where(s => s.Id == session.Id)
-                .Include(s => s.SessionSpeakers)
-                .SelectMany(s => s.SessionSpeakers.Select(ss => ss.SpeakerId))
-                .ToArrayAsync(cancellationToken);
-
-            return await speakerById.LoadRequiredAsync(speakerIds, cancellationToken);
+            return await speakersBySessionId.LoadRequiredAsync(session.Id, cancellationToken);
         }
 
         [BindMember(nameof(Session.SessionAttendees))]
         public static async Task<IEnumerable<Attendee>> GetAttendeesAsync(
             [Parent] Session session,
-            ApplicationDbContext dbContext,
-            AttendeeByIdDataLoader attendeeById,
+            AttendeesBySessionIdDataLoader attendeesBySessionId,
             CancellationToken cancellationToken)
         {
-            var attendeeIds = await dbContext.Sessions
-                .Where(s => s.Id == session.Id)
-                .Include(s => s.SessionAttendees)
-                .SelectMany(s => s.SessionAttendees.Select(sa => sa.AttendeeId))
-                .ToArrayAsync(cancellationToken);
-
-            return await attendeeById.LoadRequiredAsync(attendeeIds, cancellationToken);
+            return await attendeesBySessionId.LoadRequiredAsync(session.Id, cancellationToken);
         }
 
         public static async Task<Track?> GetTrackAsync(
@@ -440,8 +456,6 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using ConferencePlanner.GraphQL.Sessions;
-    using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Tracks;
 
@@ -450,16 +464,10 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
     {
         public static async Task<IEnumerable<Session>> GetSessionsAsync(
             [Parent] Track track,
-            ApplicationDbContext dbContext,
-            SessionByIdDataLoader sessionById,
+            SessionsByTrackIdDataLoader sessionsByTrackId,
             CancellationToken cancellationToken)
         {
-            var sessionIds = await dbContext.Sessions
-                .Where(s => s.TrackId == track.Id)
-                .Select(s => s.Id)
-                .ToArrayAsync(cancellationToken);
-
-            return await sessionById.LoadRequiredAsync(sessionIds, cancellationToken);
+            return await sessionsByTrackId.LoadRequiredAsync(track.Id, cancellationToken);
         }
     }
     ```

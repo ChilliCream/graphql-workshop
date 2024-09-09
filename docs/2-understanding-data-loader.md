@@ -103,11 +103,11 @@ In order to expand our GraphQL server model further we've have several more data
     {
         public int SessionId { get; init; }
 
-        public Session? Session { get; init; }
+        public Session Session { get; init; } = null!;
 
         public int AttendeeId { get; init; }
 
-        public Attendee? Attendee { get; init; }
+        public Attendee Attendee { get; init; } = null!;
     }
     ```
 
@@ -120,11 +120,11 @@ In order to expand our GraphQL server model further we've have several more data
     {
         public int SessionId { get; init; }
 
-        public Session? Session { get; init; }
+        public Session Session { get; init; } = null!;
 
         public int SpeakerId { get; init; }
 
-        public Speaker? Speaker { get; init; }
+        public Speaker Speaker { get; init; } = null!;
     }
     ```
 
@@ -347,18 +347,22 @@ But if we, for instance, have some parts of the API not under our control and wa
 
 In our specific case, we want to make the GraphQL API nicer and remove the relationship objects like `SessionSpeaker`.
 
-1. First let's add a new DataLoader in order to efficiently fetch sessions. Add the following method to the `DataLoaders` class:
+1. First let's add a new DataLoader in order to efficiently fetch sessions by speaker ID. Add the following method to the `DataLoaders` class:
 
     ```csharp
     [DataLoader]
-    public static async Task<IReadOnlyDictionary<int, Session>> SessionByIdAsync(
-        IReadOnlyList<int> ids,
+    public static async Task<IReadOnlyDictionary<int, Session[]>> SessionsBySpeakerIdAsync(
+        IReadOnlyList<int> speakerIds,
         ApplicationDbContext dbContext,
         CancellationToken cancellationToken)
     {
-        return await dbContext.Sessions
-            .Where(s => ids.Contains(s.Id))
-            .ToDictionaryAsync(s => s.Id, cancellationToken);
+        return await dbContext.Speakers
+            .Where(s => speakerIds.Contains(s.Id))
+            .Select(s => new { s.Id, Sessions = s.SessionSpeakers.Select(ss => ss.Session) })
+            .ToDictionaryAsync(
+                s => s.Id,
+                s => s.Sessions.ToArray(),
+                cancellationToken);
     }
     ```
 
@@ -372,7 +376,6 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Types;
 
@@ -382,17 +385,10 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
         [BindMember(nameof(Speaker.SessionSpeakers))]
         public static async Task<IEnumerable<Session>> GetSessionsAsync(
             [Parent] Speaker speaker,
-            ApplicationDbContext dbContext,
-            SessionByIdDataLoader sessionById,
+            SessionsBySpeakerIdDataLoader sessionsBySpeakerId,
             CancellationToken cancellationToken)
         {
-            var sessionIds = await dbContext.Speakers
-                .Where(s => s.Id == speaker.Id)
-                .Include(s => s.SessionSpeakers)
-                .SelectMany(s => s.SessionSpeakers.Select(ss => ss.SessionId))
-                .ToArrayAsync(cancellationToken);
-
-            return await sessionById.LoadRequiredAsync(sessionIds, cancellationToken);
+            return await sessionsBySpeakerId.LoadRequiredAsync(speaker.Id, cancellationToken);
         }
     }
     ```
