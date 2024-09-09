@@ -9,7 +9,7 @@ public static class SessionSubscriptions
     [Topic]
     public static async Task<Session> OnSessionScheduledAsync(
         [EventMessage] int sessionId,
-        SessionByIdDataLoader sessionById,
+        ISessionByIdDataLoader sessionById,
         CancellationToken cancellationToken)
     {
         return await sessionById.LoadRequiredAsync(sessionId, cancellationToken);

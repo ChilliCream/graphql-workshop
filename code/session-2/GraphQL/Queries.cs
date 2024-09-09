@@ -16,7 +16,7 @@ public static class Queries
     [Query]
     public static async Task<Speaker?> GetSpeakerAsync(
         int id,
-        SpeakerByIdDataLoader speakerById,
+        ISpeakerByIdDataLoader speakerById,
         CancellationToken cancellationToken)
     {
         return await speakerById.LoadAsync(id, cancellationToken);

@@ -23,14 +23,14 @@ public sealed class SessionAttendeeCheckIn(int attendeeId, int sessionId)
     }
 
     public async Task<Attendee> GetAttendeeAsync(
-        AttendeeByIdDataLoader attendeeById,
+        IAttendeeByIdDataLoader attendeeById,
         CancellationToken cancellationToken)
     {
         return await attendeeById.LoadRequiredAsync(AttendeeId, cancellationToken);
     }
 
     public async Task<Session> GetSessionAsync(
-        SessionByIdDataLoader sessionById,
+        ISessionByIdDataLoader sessionById,
         CancellationToken cancellationToken)
     {
         return await sessionById.LoadRequiredAsync(SessionId, cancellationToken);

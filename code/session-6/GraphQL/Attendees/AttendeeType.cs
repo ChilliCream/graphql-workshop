@@ -12,14 +12,14 @@ public static partial class AttendeeType
             .IdField(a => a.Id)
             .ResolveNode(
                 async (ctx, id)
-                    => await ctx.DataLoader<AttendeeByIdDataLoader>()
+                    => await ctx.DataLoader<IAttendeeByIdDataLoader>()
                         .LoadAsync(id, ctx.RequestAborted));
     }
 
     [BindMember(nameof(Attendee.SessionsAttendees))]
     public static async Task<IEnumerable<Session>> GetSessionsAsync(
         [Parent] Attendee attendee,
-        SessionsByAttendeeIdDataLoader sessionsByAttendeeId,
+        ISessionsByAttendeeIdDataLoader sessionsByAttendeeId,
         CancellationToken cancellationToken)
     {
         return await sessionsByAttendeeId.LoadRequiredAsync(attendee.Id, cancellationToken);

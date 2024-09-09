@@ -14,7 +14,7 @@ public static class AttendeeQueries
     [NodeResolver]
     public static async Task<Attendee?> GetAttendeeByIdAsync(
         int id,
-        AttendeeByIdDataLoader attendeeById,
+        IAttendeeByIdDataLoader attendeeById,
         CancellationToken cancellationToken)
     {
         return await attendeeById.LoadAsync(id, cancellationToken);
@@ -22,7 +22,7 @@ public static class AttendeeQueries
 
     public static async Task<IEnumerable<Attendee>> GetAttendeesByIdAsync(
         [ID<Attendee>] int[] ids,
-        AttendeeByIdDataLoader attendeeById,
+        IAttendeeByIdDataLoader attendeeById,
         CancellationToken cancellationToken)
     {
         return await attendeeById.LoadRequiredAsync(ids, cancellationToken);

@@ -270,7 +270,7 @@ While we could write DataLoaders as individual classes, there is also a source g
     [Query]
     public static async Task<Speaker?> GetSpeakerAsync(
         int id,
-        SpeakerByIdDataLoader speakerById,
+        ISpeakerByIdDataLoader speakerById,
         CancellationToken cancellationToken)
     {
         return await speakerById.LoadAsync(id, cancellationToken);
@@ -298,7 +298,7 @@ While we could write DataLoaders as individual classes, there is also a source g
         [Query]
         public static async Task<Speaker?> GetSpeakerAsync(
             int id,
-            SpeakerByIdDataLoader speakerById,
+            ISpeakerByIdDataLoader speakerById,
             CancellationToken cancellationToken)
         {
             return await speakerById.LoadAsync(id, cancellationToken);
@@ -385,7 +385,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
         [BindMember(nameof(Speaker.SessionSpeakers))]
         public static async Task<IEnumerable<Session>> GetSessionsAsync(
             [Parent] Speaker speaker,
-            SessionsBySpeakerIdDataLoader sessionsBySpeakerId,
+            ISessionsBySpeakerIdDataLoader sessionsBySpeakerId,
             CancellationToken cancellationToken)
         {
             return await sessionsBySpeakerId.LoadRequiredAsync(speaker.Id, cancellationToken);

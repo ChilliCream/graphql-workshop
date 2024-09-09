@@ -16,7 +16,7 @@ public static class SpeakerQueries
     [NodeResolver]
     public static async Task<Speaker?> GetSpeakerByIdAsync(
         int id,
-        SpeakerByIdDataLoader speakerById,
+        ISpeakerByIdDataLoader speakerById,
         CancellationToken cancellationToken)
     {
         return await speakerById.LoadAsync(id, cancellationToken);
@@ -24,7 +24,7 @@ public static class SpeakerQueries
 
     public static async Task<IEnumerable<Speaker>> GetSpeakersByIdAsync(
         [ID<Speaker>] int[] ids,
-        SpeakerByIdDataLoader speakerById,
+        ISpeakerByIdDataLoader speakerById,
         CancellationToken cancellationToken)
     {
         return await speakerById.LoadRequiredAsync(ids, cancellationToken);

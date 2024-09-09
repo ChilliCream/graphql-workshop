@@ -36,7 +36,7 @@ Before we can start with introducing our new subscriptions, we need to first bri
         [NodeResolver]
         public static async Task<Attendee?> GetAttendeeByIdAsync(
             int id,
-            AttendeeByIdDataLoader attendeeById,
+            IAttendeeByIdDataLoader attendeeById,
             CancellationToken cancellationToken)
         {
             return await attendeeById.LoadAsync(id, cancellationToken);
@@ -44,7 +44,7 @@ Before we can start with introducing our new subscriptions, we need to first bri
 
         public static async Task<IEnumerable<Attendee>> GetAttendeesByIdAsync(
             [ID<Attendee>] int[] ids,
-            AttendeeByIdDataLoader attendeeById,
+            IAttendeeByIdDataLoader attendeeById,
             CancellationToken cancellationToken)
         {
             return await attendeeById.LoadRequiredAsync(ids, cancellationToken);
@@ -215,7 +215,7 @@ With the base in, we can now focus on putting subscriptions in our GraphQL serve
         [Topic]
         public static async Task<Session> OnSessionScheduledAsync(
             [EventMessage] int sessionId,
-            SessionByIdDataLoader sessionById,
+            ISessionByIdDataLoader sessionById,
             CancellationToken cancellationToken)
         {
             return await sessionById.LoadRequiredAsync(sessionId, cancellationToken);
@@ -421,14 +421,14 @@ The `onSessionScheduled` subscription was quite simple since we didn't subscribe
         }
 
         public async Task<Attendee> GetAttendeeAsync(
-            AttendeeByIdDataLoader attendeeById,
+            IAttendeeByIdDataLoader attendeeById,
             CancellationToken cancellationToken)
         {
             return await attendeeById.LoadRequiredAsync(AttendeeId, cancellationToken);
         }
 
         public async Task<Session> GetSessionAsync(
-            SessionByIdDataLoader sessionById,
+            ISessionByIdDataLoader sessionById,
             CancellationToken cancellationToken)
         {
             return await sessionById.LoadRequiredAsync(SessionId, cancellationToken);

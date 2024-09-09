@@ -57,7 +57,7 @@ First, we will restructure our GraphQL server so that it will better scale once 
 
         public static async Task<Speaker?> GetSpeakerAsync(
             int id,
-            SpeakerByIdDataLoader speakerById,
+            ISpeakerByIdDataLoader speakerById,
             CancellationToken cancellationToken)
         {
             return await speakerById.LoadAsync(id, cancellationToken);
@@ -380,14 +380,14 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
                 .IdField(a => a.Id)
                 .ResolveNode(
                     async (ctx, id)
-                        => await ctx.DataLoader<AttendeeByIdDataLoader>()
+                        => await ctx.DataLoader<IAttendeeByIdDataLoader>()
                             .LoadAsync(id, ctx.RequestAborted));
         }
 
         [BindMember(nameof(Attendee.SessionsAttendees))]
         public static async Task<IEnumerable<Session>> GetSessionsAsync(
             [Parent] Attendee attendee,
-            SessionsByAttendeeIdDataLoader sessionsByAttendeeId,
+            ISessionsByAttendeeIdDataLoader sessionsByAttendeeId,
             CancellationToken cancellationToken)
         {
             return await sessionsByAttendeeId.LoadRequiredAsync(attendee.Id, cancellationToken);
@@ -422,7 +422,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
         [BindMember(nameof(Session.SessionSpeakers))]
         public static async Task<IEnumerable<Speaker>> GetSpeakersAsync(
             [Parent] Session session,
-            SpeakersBySessionIdDataLoader speakersBySessionId,
+            ISpeakersBySessionIdDataLoader speakersBySessionId,
             CancellationToken cancellationToken)
         {
             return await speakersBySessionId.LoadRequiredAsync(session.Id, cancellationToken);
@@ -431,7 +431,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
         [BindMember(nameof(Session.SessionAttendees))]
         public static async Task<IEnumerable<Attendee>> GetAttendeesAsync(
             [Parent] Session session,
-            AttendeesBySessionIdDataLoader attendeesBySessionId,
+            IAttendeesBySessionIdDataLoader attendeesBySessionId,
             CancellationToken cancellationToken)
         {
             return await attendeesBySessionId.LoadRequiredAsync(session.Id, cancellationToken);
@@ -439,7 +439,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
 
         public static async Task<Track?> GetTrackAsync(
             [Parent] Session session,
-            TrackByIdDataLoader trackById,
+            ITrackByIdDataLoader trackById,
             CancellationToken cancellationToken)
         {
             if (session.TrackId is null)
@@ -464,7 +464,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
     {
         public static async Task<IEnumerable<Session>> GetSessionsAsync(
             [Parent] Track track,
-            SessionsByTrackIdDataLoader sessionsByTrackId,
+            ISessionsByTrackIdDataLoader sessionsByTrackId,
             CancellationToken cancellationToken)
         {
             return await sessionsByTrackId.LoadRequiredAsync(track.Id, cancellationToken);
@@ -741,7 +741,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
     ```csharp
     public static async Task<IEnumerable<Speaker>> GetSpeakersByIdAsync(
         [ID<Speaker>] int[] ids,
-        SpeakerByIdDataLoader speakerById,
+        ISpeakerByIdDataLoader speakerById,
         CancellationToken cancellationToken)
     {
         return await speakerById.LoadRequiredAsync(ids, cancellationToken);
@@ -771,7 +771,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
         [NodeResolver]
         public static async Task<Session?> GetSessionByIdAsync(
             int id,
-            SessionByIdDataLoader sessionById,
+            ISessionByIdDataLoader sessionById,
             CancellationToken cancellationToken)
         {
             return await sessionById.LoadAsync(id, cancellationToken);
@@ -779,7 +779,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
 
         public static async Task<IEnumerable<Session>> GetSessionsByIdAsync(
             [ID<Session>] int[] ids,
-            SessionByIdDataLoader sessionById,
+            ISessionByIdDataLoader sessionById,
             CancellationToken cancellationToken)
         {
             return await sessionById.LoadRequiredAsync(ids, cancellationToken);
@@ -808,7 +808,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
         [NodeResolver]
         public static async Task<Track?> GetTrackByIdAsync(
             int id,
-            TrackByIdDataLoader trackById,
+            ITrackByIdDataLoader trackById,
             CancellationToken cancellationToken)
         {
             return await trackById.LoadAsync(id, cancellationToken);
@@ -816,7 +816,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
 
         public static async Task<IEnumerable<Track>> GetTracksByIdAsync(
             [ID<Track>] int[] ids,
-            TrackByIdDataLoader trackById,
+            ITrackByIdDataLoader trackById,
             CancellationToken cancellationToken)
         {
             return await trackById.LoadRequiredAsync(ids, cancellationToken);

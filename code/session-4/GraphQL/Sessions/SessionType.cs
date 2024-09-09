@@ -16,7 +16,7 @@ public static partial class SessionType
     [BindMember(nameof(Session.SessionSpeakers))]
     public static async Task<IEnumerable<Speaker>> GetSpeakersAsync(
         [Parent] Session session,
-        SpeakersBySessionIdDataLoader speakersBySessionId,
+        ISpeakersBySessionIdDataLoader speakersBySessionId,
         CancellationToken cancellationToken)
     {
         return await speakersBySessionId.LoadRequiredAsync(session.Id, cancellationToken);
@@ -25,7 +25,7 @@ public static partial class SessionType
     [BindMember(nameof(Session.SessionAttendees))]
     public static async Task<IEnumerable<Attendee>> GetAttendeesAsync(
         [Parent] Session session,
-        AttendeesBySessionIdDataLoader attendeesBySessionId,
+        IAttendeesBySessionIdDataLoader attendeesBySessionId,
         CancellationToken cancellationToken)
     {
         return await attendeesBySessionId.LoadRequiredAsync(session.Id, cancellationToken);
@@ -33,7 +33,7 @@ public static partial class SessionType
 
     public static async Task<Track?> GetTrackAsync(
         [Parent] Session session,
-        TrackByIdDataLoader trackById,
+        ITrackByIdDataLoader trackById,
         CancellationToken cancellationToken)
     {
         if (session.TrackId is null)

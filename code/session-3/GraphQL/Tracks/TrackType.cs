@@ -7,7 +7,7 @@ public static partial class TrackType
 {
     public static async Task<IEnumerable<Session>> GetSessionsAsync(
         [Parent] Track track,
-        SessionsByTrackIdDataLoader sessionsByTrackId,
+        ISessionsByTrackIdDataLoader sessionsByTrackId,
         CancellationToken cancellationToken)
     {
         return await sessionsByTrackId.LoadRequiredAsync(track.Id, cancellationToken);
