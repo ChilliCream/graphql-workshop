@@ -12,6 +12,7 @@ public static class TrackDataLoaders
         CancellationToken cancellationToken)
     {
         return await dbContext.Tracks
+            .AsNoTracking()
             .Where(t => ids.Contains(t.Id))
             .ToDictionaryAsync(t => t.Id, cancellationToken);
     }
@@ -23,6 +24,7 @@ public static class TrackDataLoaders
         CancellationToken cancellationToken)
     {
         return await dbContext.Tracks
+            .AsNoTracking()
             .Where(t => trackIds.Contains(t.Id))
             .Select(t => new { t.Id, t.Sessions })
             .ToDictionaryAsync(

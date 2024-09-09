@@ -16,7 +16,7 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
     [UsePaging]
     public static IQueryable<Track> GetTracks(ApplicationDbContext dbContext)
     {
-        return dbContext.Tracks.OrderBy(t => t.Name);
+        return dbContext.Tracks.AsNoTracking().OrderBy(t => t.Name);
     }
     ```
 
@@ -97,7 +97,7 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
     [UsePaging]
     public static IQueryable<Speaker> GetSpeakers(ApplicationDbContext dbContext)
     {
-        return dbContext.Speakers.OrderBy(s => s.Name);
+        return dbContext.Speakers.AsNoTracking().OrderBy(s => s.Name);
     }
     ```
 
@@ -109,7 +109,7 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
     [UsePaging]
     public static IQueryable<Session> GetSessions(ApplicationDbContext dbContext)
     {
-        return dbContext.Sessions.OrderBy(s => s.Title);
+        return dbContext.Sessions.AsNoTracking().OrderBy(s => s.Title);
     }
     ```
 
@@ -172,7 +172,7 @@ Filtering, like paging, is a middleware that can be applied on `IQueryable`. As 
     [UseSorting]
     public static IQueryable<Session> GetSessions(ApplicationDbContext dbContext)
     {
-        return dbContext.Sessions.OrderBy(s => s.Title);
+        return dbContext.Sessions.AsNoTracking().OrderBy(s => s.Title);
     }
     ```
 

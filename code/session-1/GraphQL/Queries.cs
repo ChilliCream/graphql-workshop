@@ -10,6 +10,6 @@ public static class Queries
         ApplicationDbContext dbContext,
         CancellationToken cancellationToken)
     {
-        return await dbContext.Speakers.ToListAsync(cancellationToken);
+        return await dbContext.Speakers.AsNoTracking().ToListAsync(cancellationToken);
     }
 }

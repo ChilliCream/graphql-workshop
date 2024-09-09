@@ -256,6 +256,7 @@ While we could write DataLoaders as individual classes, there is also a source g
             CancellationToken cancellationToken)
         {
             return await dbContext.Speakers
+                .AsNoTracking()
                 .Where(s => ids.Contains(s.Id))
                 .ToDictionaryAsync(s => s.Id, cancellationToken);
         }
@@ -292,7 +293,7 @@ While we could write DataLoaders as individual classes, there is also a source g
             ApplicationDbContext dbContext,
             CancellationToken cancellationToken)
         {
-            return await dbContext.Speakers.ToListAsync(cancellationToken);
+            return await dbContext.Speakers.AsNoTracking().ToListAsync(cancellationToken);
         }
 
         [Query]
@@ -357,6 +358,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
         CancellationToken cancellationToken)
     {
         return await dbContext.Speakers
+            .AsNoTracking()
             .Where(s => speakerIds.Contains(s.Id))
             .Select(s => new { s.Id, Sessions = s.SessionSpeakers.Select(ss => ss.Session) })
             .ToDictionaryAsync(

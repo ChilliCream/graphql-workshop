@@ -1,4 +1,5 @@
 using ConferencePlanner.GraphQL.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Sessions;
 
@@ -10,7 +11,7 @@ public static class SessionQueries
     [UseSorting]
     public static IQueryable<Session> GetSessions(ApplicationDbContext dbContext)
     {
-        return dbContext.Sessions.OrderBy(s => s.Title);
+        return dbContext.Sessions.AsNoTracking().OrderBy(s => s.Title);
     }
 
     [NodeResolver]

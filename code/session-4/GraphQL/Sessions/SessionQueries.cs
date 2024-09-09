@@ -10,7 +10,7 @@ public static class SessionQueries
         ApplicationDbContext dbContext,
         CancellationToken cancellationToken)
     {
-        return await dbContext.Sessions.ToListAsync(cancellationToken);
+        return await dbContext.Sessions.AsNoTracking().ToListAsync(cancellationToken);
     }
 
     [NodeResolver]

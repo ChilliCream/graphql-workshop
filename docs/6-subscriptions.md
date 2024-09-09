@@ -21,6 +21,7 @@ Before we can start with introducing our new subscriptions, we need to first bri
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
+    using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Attendees;
 
@@ -30,7 +31,7 @@ Before we can start with introducing our new subscriptions, we need to first bri
         [UsePaging]
         public static IQueryable<Attendee> GetAttendees(ApplicationDbContext dbContext)
         {
-            return dbContext.Attendees.OrderBy(a => a.Username);
+            return dbContext.Attendees.AsNoTracking().OrderBy(a => a.Username);
         }
 
         [NodeResolver]
@@ -415,6 +416,7 @@ The `onSessionScheduled` subscription was quite simple since we didn't subscribe
             CancellationToken cancellationToken)
         {
             return await dbContext.Sessions
+                .AsNoTracking()
                 .Where(s => s.Id == SessionId)
                 .SelectMany(s => s.SessionAttendees)
                 .CountAsync(cancellationToken);

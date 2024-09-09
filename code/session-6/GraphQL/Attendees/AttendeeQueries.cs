@@ -1,4 +1,5 @@
 using ConferencePlanner.GraphQL.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Attendees;
 
@@ -8,7 +9,7 @@ public static class AttendeeQueries
     [UsePaging]
     public static IQueryable<Attendee> GetAttendees(ApplicationDbContext dbContext)
     {
-        return dbContext.Attendees.OrderBy(a => a.Username);
+        return dbContext.Attendees.AsNoTracking().OrderBy(a => a.Username);
     }
 
     [NodeResolver]

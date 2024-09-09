@@ -12,6 +12,7 @@ public static class AttendeeDataLoaders
         CancellationToken cancellationToken)
     {
         return await dbContext.Attendees
+            .AsNoTracking()
             .Where(a => ids.Contains(a.Id))
             .ToDictionaryAsync(a => a.Id, cancellationToken);
     }
@@ -23,6 +24,7 @@ public static class AttendeeDataLoaders
         CancellationToken cancellationToken)
     {
         return await dbContext.Attendees
+            .AsNoTracking()
             .Where(a => attendeeIds.Contains(a.Id))
             .Select(a => new { a.Id, Sessions = a.SessionsAttendees.Select(sa => sa.Session) })
             .ToDictionaryAsync(

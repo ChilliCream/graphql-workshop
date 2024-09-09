@@ -1,4 +1,5 @@
 using ConferencePlanner.GraphQL.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Tracks;
 
@@ -8,7 +9,7 @@ public static class TrackQueries
     [UsePaging]
     public static IQueryable<Track> GetTracks(ApplicationDbContext dbContext)
     {
-        return dbContext.Tracks.OrderBy(t => t.Name);
+        return dbContext.Tracks.AsNoTracking().OrderBy(t => t.Name);
     }
 
     [NodeResolver]

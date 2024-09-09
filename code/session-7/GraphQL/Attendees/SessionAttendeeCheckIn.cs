@@ -17,6 +17,7 @@ public sealed class SessionAttendeeCheckIn(int attendeeId, int sessionId)
         CancellationToken cancellationToken)
     {
         return await dbContext.Sessions
+            .AsNoTracking()
             .Where(s => s.Id == SessionId)
             .SelectMany(s => s.SessionAttendees)
             .CountAsync(cancellationToken);

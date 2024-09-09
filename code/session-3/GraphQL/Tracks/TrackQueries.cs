@@ -10,7 +10,7 @@ public static class TrackQueries
         ApplicationDbContext dbContext,
         CancellationToken cancellationToken)
     {
-        return await dbContext.Tracks.ToListAsync(cancellationToken);
+        return await dbContext.Tracks.AsNoTracking().ToListAsync(cancellationToken);
     }
 
     [NodeResolver]

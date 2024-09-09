@@ -237,7 +237,7 @@ Commands Explained
             ApplicationDbContext dbContext,
             CancellationToken cancellationToken)
         {
-            return await dbContext.Speakers.ToListAsync(cancellationToken);
+            return await dbContext.Speakers.AsNoTracking().ToListAsync(cancellationToken);
         }
     }
     ```

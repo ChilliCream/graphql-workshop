@@ -52,7 +52,7 @@ First, we will restructure our GraphQL server so that it will better scale once 
             ApplicationDbContext dbContext,
             CancellationToken cancellationToken)
         {
-            return await dbContext.Speakers.ToListAsync(cancellationToken);
+            return await dbContext.Speakers.AsNoTracking().ToListAsync(cancellationToken);
         }
 
         public static async Task<Speaker?> GetSpeakerAsync(
@@ -243,6 +243,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
             CancellationToken cancellationToken)
         {
             return await dbContext.Attendees
+                .AsNoTracking()
                 .Where(a => ids.Contains(a.Id))
                 .ToDictionaryAsync(a => a.Id, cancellationToken);
         }
@@ -254,6 +255,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
             CancellationToken cancellationToken)
         {
             return await dbContext.Attendees
+                .AsNoTracking()
                 .Where(a => attendeeIds.Contains(a.Id))
                 .Select(a => new { a.Id, Sessions = a.SessionsAttendees.Select(sa => sa.Session) })
                 .ToDictionaryAsync(
@@ -287,6 +289,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
             CancellationToken cancellationToken)
         {
             return await dbContext.Sessions
+                .AsNoTracking()
                 .Where(s => ids.Contains(s.Id))
                 .ToDictionaryAsync(s => s.Id, cancellationToken);
         }
@@ -299,6 +302,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
         CancellationToken cancellationToken)
     {
         return await dbContext.Sessions
+            .AsNoTracking()
             .Where(s => sessionIds.Contains(s.Id))
             .Select(s => new { s.Id, Speakers = s.SessionSpeakers.Select(ss => ss.Speaker) })
             .ToDictionaryAsync(
@@ -314,6 +318,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
         CancellationToken cancellationToken)
     {
         return await dbContext.Sessions
+            .AsNoTracking()
             .Where(s => sessionIds.Contains(s.Id))
             .Select(s => new { s.Id, Attendees = s.SessionAttendees.Select(sa => sa.Attendee) })
             .ToDictionaryAsync(
@@ -340,6 +345,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
             CancellationToken cancellationToken)
         {
             return await dbContext.Tracks
+                .AsNoTracking()
                 .Where(t => ids.Contains(t.Id))
                 .ToDictionaryAsync(t => t.Id, cancellationToken);
         }
@@ -351,6 +357,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
             CancellationToken cancellationToken)
         {
             return await dbContext.Tracks
+                .AsNoTracking()
                 .Where(t => trackIds.Contains(t.Id))
                 .Select(t => new { t.Id, t.Sessions })
                 .ToDictionaryAsync(
@@ -765,7 +772,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
             ApplicationDbContext dbContext,
             CancellationToken cancellationToken)
         {
-            return await dbContext.Sessions.ToListAsync(cancellationToken);
+            return await dbContext.Sessions.AsNoTracking().ToListAsync(cancellationToken);
         }
 
         [NodeResolver]
@@ -802,7 +809,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
             ApplicationDbContext dbContext,
             CancellationToken cancellationToken)
         {
-            return await dbContext.Tracks.ToListAsync(cancellationToken);
+            return await dbContext.Tracks.AsNoTracking().ToListAsync(cancellationToken);
         }
 
         [NodeResolver]
