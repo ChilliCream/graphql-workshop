@@ -180,16 +180,13 @@ Commands Explained
     - `HotChocolate.Types.Analyzers` version `14.0.0-rc.1`
       - `dotnet add GraphQL package HotChocolate.Types.Analyzers --version 14.0.0-rc.1`
 
-1. Set up GraphQL and register our types by adding the following code below `AddDbContext` in `Program.cs`:
+1. Set up GraphQL by adding the following code below `AddDbContext` in `Program.cs`:
 
     ```csharp
-    .AddGraphQLServer()
-    .AddGraphQLTypes();
+    .AddGraphQLServer();
     ```
 
-    > The above code adds a GraphQL server configuration to the dependency injection container, and registers all types in the assembly using a source generator (`HotChocolate.Types.Analyzers`).
-    >
-    > Note: The name of the `AddGraphQLTypes` method is based on the assembly name by default, but can be changed using the `[Module]` assembly attribute.
+    The above code adds a GraphQL server configuration to the dependency injection container.
 
 1. Next we need to configure the GraphQL middleware so that the server knows how to execute GraphQL requests. For this, add the following code below `var app` in `Program.cs`:
 
@@ -241,6 +238,16 @@ Commands Explained
         }
     }
     ```
+
+1. Register our types by adding the following code below `AddGraphQLServer` in `Program.cs`:
+
+    ```csharp
+    .AddGraphQLTypes();
+    ```
+
+    This registers all types in the assembly using a source generator (`HotChocolate.Types.Analyzers`).
+
+    > Note: The name of the `AddGraphQLTypes` method is based on the assembly name by default, but can be changed using the `[Module]` assembly attribute.
 
 1. Start the server:
     - `dotnet run --project GraphQL`
