@@ -150,8 +150,8 @@ Filtering, like paging, is a middleware that can be applied on `IQueryable`. As 
 
 ![Filter Middleware Flow](images/20-middleware-flow.svg)
 
-1. Add a reference to the NuGet package package `HotChocolate.Data` version `14.0.0-rc.1`:
-    - `dotnet add GraphQL package HotChocolate.Data --version 14.0.0-rc.1`
+1. Add a reference to the NuGet package package `HotChocolate.Data` version `14.0.0-rc.2`:
+    - `dotnet add GraphQL package HotChocolate.Data --version 14.0.0-rc.2`
 
 1. Add filtering and sorting conventions to the schema configuration in `Program.cs`:
 
