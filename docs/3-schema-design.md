@@ -423,7 +423,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
         {
             descriptor
                 .Field(s => s.TrackId)
-                .ID();
+                .ID(nameof(Track));
         }
 
         [BindMember(nameof(Session.SessionSpeakers))]

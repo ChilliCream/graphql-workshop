@@ -10,7 +10,7 @@ public static partial class SessionType
     {
         descriptor
             .Field(s => s.TrackId)
-            .ID();
+            .ID(nameof(Track));
     }
 
     [BindMember(nameof(Session.SessionSpeakers))]
