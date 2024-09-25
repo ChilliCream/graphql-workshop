@@ -9,6 +9,8 @@ builder.Services
     .AddGraphQLServer()
     .AddGlobalObjectIdentification()
     .AddMutationConventions()
+    .AddDbContextCursorPagingProvider()
+    .AddPagingArguments()
     .AddFiltering()
     .AddSorting()
     .AddGraphQLTypes();

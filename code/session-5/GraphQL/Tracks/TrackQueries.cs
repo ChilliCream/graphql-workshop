@@ -9,7 +9,7 @@ public static class TrackQueries
     [UsePaging]
     public static IQueryable<Track> GetTracks(ApplicationDbContext dbContext)
     {
-        return dbContext.Tracks.AsNoTracking().OrderBy(t => t.Name);
+        return dbContext.Tracks.AsNoTracking().OrderBy(t => t.Name).ThenBy(t => t.Id);
     }
 
     [NodeResolver]

@@ -9,7 +9,7 @@ public static class SpeakerQueries
     [UsePaging]
     public static IQueryable<Speaker> GetSpeakers(ApplicationDbContext dbContext)
     {
-        return dbContext.Speakers.AsNoTracking().OrderBy(s => s.Name);
+        return dbContext.Speakers.AsNoTracking().OrderBy(s => s.Name).ThenBy(s => s.Id);
     }
 
     [NodeResolver]

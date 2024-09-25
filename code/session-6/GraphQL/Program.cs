@@ -10,6 +10,8 @@ builder.Services
     .AddGraphQLServer()
     .AddGlobalObjectIdentification()
     .AddMutationConventions()
+    .AddDbContextCursorPagingProvider()
+    .AddPagingArguments()
     .AddFiltering()
     .AddSorting()
     .AddRedisSubscriptions(_ => ConnectionMultiplexer.Connect("127.0.0.1:6379"))

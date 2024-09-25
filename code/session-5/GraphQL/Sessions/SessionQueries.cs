@@ -11,7 +11,7 @@ public static class SessionQueries
     [UseSorting]
     public static IQueryable<Session> GetSessions(ApplicationDbContext dbContext)
     {
-        return dbContext.Sessions.AsNoTracking().OrderBy(s => s.Title);
+        return dbContext.Sessions.AsNoTracking().OrderBy(s => s.Title).ThenBy(s => s.Id);
     }
 
     [NodeResolver]

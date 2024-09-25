@@ -61,6 +61,8 @@ A schema change test will simply create a snapshot of your schema, and always fa
                 .AddGraphQLServer()
                 .AddGlobalObjectIdentification()
                 .AddMutationConventions()
+                .AddDbContextCursorPagingProvider()
+                .AddPagingArguments()
                 .AddFiltering()
                 .AddSorting()
                 .AddInMemorySubscriptions()
@@ -121,6 +123,8 @@ A schema change test will simply create a snapshot of your schema, and always fa
                 .AddGraphQLServer()
                 .AddGlobalObjectIdentification()
                 .AddMutationConventions()
+                .AddDbContextCursorPagingProvider()
+                .AddPagingArguments()
                 .AddFiltering()
                 .AddSorting()
                 .AddRedisSubscriptions(

@@ -10,24 +10,32 @@ So far, our GraphQL server only exposes plain lists that would, at some point, g
 
 Let's start by implementing the 2nd Relay server specification by adding Relay-compliant paging to our lists. In general, you should avoid plain lists wherever lists grow or are very large. Relay describes cursor-based paging where you can navigate between edges through their cursors. Cursor-based paging is ideal whenever you implement infinite scrolling solutions. In contrast to offset pagination, you cannot jump to a specific page, but you can jump to a particular cursor and navigate from there.
 
+1. Add a reference to the NuGet package `HotChocolate.Data.EntityFramework` version `14.0.0-p.165`:
+    - `dotnet add GraphQL package HotChocolate.Data.EntityFramework --version 14.0.0-p.165`
+
+1. Add the cursor paging provider to the schema configuration in `Program.cs`:
+
+    ```diff
+      .AddMutationConventions()
+    + .AddDbContextCursorPagingProvider()
+      .AddGraphQLTypes();
+    ```
+
+    This will add a cursor paging provider that uses native [keyset pagination](https://use-the-index-luke.com/no-offset).
+
 1. Head over to the `Tracks` directory and replace the `GetTracksAsync` resolver in the `TrackQueries.cs` file with the following code:
 
     ```csharp
     [UsePaging]
     public static IQueryable<Track> GetTracks(ApplicationDbContext dbContext)
     {
-        return dbContext.Tracks.AsNoTracking().OrderBy(t => t.Name);
+        return dbContext.Tracks.AsNoTracking().OrderBy(t => t.Name).ThenBy(t => t.Id);
     }
     ```
 
-    And remove the unused using directive:
-
-    ```diff
-      using ConferencePlanner.GraphQL.Data;
-    - using Microsoft.EntityFrameworkCore;
-    ```
-
     The new resolver will return an `IQueryable` instead of executing the database query. The `IQueryable` is like a query builder. By applying the `UsePaging` middleware, we are rewriting the database query to only fetch the items that we need for our dataset.
+
+    > Note: In order to use keyset pagination, we must always include a unique column in the ORDER BY clause (in this case, we also order by the primary key `Id`).
 
     The resolver pipeline for our field now looks like the following:
 
@@ -65,7 +73,7 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
     }
     ```
 
-    ![Query speaker names](images/25-bcp-get-first-track.webp)
+    ![Query first track](images/25-bcp-get-first-track.webp)
 
 1. Take the cursor from this item and add a second argument `after`, with the value of the cursor:
 
@@ -89,7 +97,7 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
     }
     ```
 
-    ![Query speaker names](images/26-bcp-get-next-track.webp)
+    ![Query next track](images/26-bcp-get-next-track.webp)
 
 1. Head over to the `SpeakerQueries.cs` file which is located in the `Speakers` directory, and replace the `GetSpeakersAsync` resolver with the following code:
 
@@ -97,11 +105,9 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
     [UsePaging]
     public static IQueryable<Speaker> GetSpeakers(ApplicationDbContext dbContext)
     {
-        return dbContext.Speakers.AsNoTracking().OrderBy(s => s.Name);
+        return dbContext.Speakers.AsNoTracking().OrderBy(s => s.Name).ThenBy(s => s.Id);
     }
     ```
-
-    And remove the unused using directive.
 
 1. Next, go to the `SessionQueries.cs` file in the `Sessions` directory, and replace the `GetSessionsAsync` resolver with the following code:
 
@@ -109,15 +115,74 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
     [UsePaging]
     public static IQueryable<Session> GetSessions(ApplicationDbContext dbContext)
     {
-        return dbContext.Sessions.AsNoTracking().OrderBy(s => s.Title);
+        return dbContext.Sessions.AsNoTracking().OrderBy(s => s.Title).ThenBy(s => s.Id);
     }
     ```
 
-    And remove the unused using directive.
-
     We have now replaced all the root level list fields and are now using our pagination middleware. There are still more lists left where we should apply pagination if we want to really have a refined schema. Let's change the API a bit more to incorporate this.
 
-1. Next, open the `TrackType.cs` file in the `Tracks` directory, and add the `[UsePaging]` attribute to the `GetSessionsAsync` method.
+1. Add a reference to the NuGet package `HotChocolate.Pagination.EntityFramework` version `14.0.0-p.165`:
+    - `dotnet add GraphQL package HotChocolate.Pagination.EntityFramework --version 14.0.0-p.165`
+
+1. Add paging arguments to the schema configuration in `Program.cs`:
+
+    ```diff
+      .AddDbContextCursorPagingProvider()
+    + .AddPagingArguments()
+      .AddGraphQLTypes();
+    ```
+
+    This will make paging arguments available to resolver methods.
+
+1. Next, open the `TrackType.cs` file in the `Tracks` directory, and replace the `GetSessionsAsync` method with the following code:
+
+    ```csharp
+    [UsePaging]
+    public static async Task<Connection<Session>> GetSessionsAsync(
+        [Parent] Track track,
+        ISessionsByTrackIdDataLoader sessionsByTrackId,
+        PagingArguments pagingArguments,
+        CancellationToken cancellationToken)
+    {
+        return await sessionsByTrackId
+            .WithPagingArguments(pagingArguments)
+            .LoadAsync(track.Id, cancellationToken)
+            .ToConnectionAsync();
+    }
+    ```
+
+    ```diff
+      using ConferencePlanner.GraphQL.Extensions;
+    + using HotChocolate.Pagination;
+    + using HotChocolate.Types.Pagination;
+    ```
+
+    Here, we apply the `[UsePaging]` attribute, and forward the paging arguments to the DataLoader. We also convert the returned `Page<T>` to a `Connection<T>`.
+
+1. Next, open the `TrackDataLoaders.cs` file in the `Tracks` directory, and replace the `SessionsByTrackIdAsync` method with the following code:
+
+    ```csharp
+    [DataLoader]
+    public static async Task<IReadOnlyDictionary<int, Page<Session>>> SessionsByTrackIdAsync(
+        IReadOnlyList<int> trackIds,
+        ApplicationDbContext dbContext,
+        PagingArguments pagingArguments,
+        CancellationToken cancellationToken)
+    {
+        return await dbContext.Sessions
+            .AsNoTracking()
+            .Where(s => s.TrackId != null && trackIds.Contains((int)s.TrackId))
+            .OrderBy(s => s.Id)
+            .ToBatchPageAsync(s => (int)s.TrackId!, pagingArguments, cancellationToken);
+    }
+    ```
+
+    ```diff
+      using ConferencePlanner.GraphQL.Data;
+    + using HotChocolate.Pagination;
+    ```
+
+    Here, we use the `ToBatchPageAsync` method to return a page of sessions for each track ID.
 
 1. Now go back to Banana Cake Pop and refresh the schema.
 
@@ -138,9 +203,7 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
     }
     ```
 
-    ![Query speaker names](images/28-bcp-get-track-with-sessions.webp)
-
-    > There is one caveat in our implementation with the `TrackType`. Since we are using a DataLoader within our resolver and first fetch the list of IDs, we'll essentially always fetch everything and slice in memory. In an actual project this can be split into two actions by moving the `DataLoader` part into a middleware and first paging on the ID queryable. Also, one could implement a special `IPagingHandler` that uses the DataLoader and applies paging logic.
+    ![Query track with sessions](images/28-bcp-get-track-with-sessions.webp)
 
 ## Adding filter capabilities to the top-level field `sessions`
 
@@ -150,13 +213,13 @@ Filtering, like paging, is a middleware that can be applied on `IQueryable`. As 
 
 ![Filter Middleware Flow](images/20-middleware-flow.svg)
 
-1. Add a reference to the NuGet package package `HotChocolate.Data` version `14.0.0-p.165`:
+1. Add a reference to the NuGet package `HotChocolate.Data` version `14.0.0-p.165`:
     - `dotnet add GraphQL package HotChocolate.Data --version 14.0.0-p.165`
 
 1. Add filtering and sorting conventions to the schema configuration in `Program.cs`:
 
     ```diff
-      .AddMutationConventions()
+      .AddPagingArguments()
     + .AddFiltering()
     + .AddSorting()
       .AddGraphQLTypes();
@@ -172,7 +235,7 @@ Filtering, like paging, is a middleware that can be applied on `IQueryable`. As 
     [UseSorting]
     public static IQueryable<Session> GetSessions(ApplicationDbContext dbContext)
     {
-        return dbContext.Sessions.AsNoTracking().OrderBy(s => s.Title);
+        return dbContext.Sessions.AsNoTracking().OrderBy(s => s.Title).ThenBy(s => s.Id);
     }
     ```
 

@@ -16,6 +16,8 @@ public sealed class SchemaTests
             .AddGraphQLServer()
             .AddGlobalObjectIdentification()
             .AddMutationConventions()
+            .AddDbContextCursorPagingProvider()
+            .AddPagingArguments()
             .AddFiltering()
             .AddSorting()
             .AddInMemorySubscriptions()

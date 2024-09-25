@@ -33,6 +33,8 @@ public sealed class AttendeeTests : IAsyncLifetime
             .AddGraphQLServer()
             .AddGlobalObjectIdentification()
             .AddMutationConventions()
+            .AddDbContextCursorPagingProvider()
+            .AddPagingArguments()
             .AddFiltering()
             .AddSorting()
             .AddRedisSubscriptions(
