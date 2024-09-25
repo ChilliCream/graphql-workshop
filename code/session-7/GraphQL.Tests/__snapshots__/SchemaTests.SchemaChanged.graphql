@@ -15,7 +15,7 @@ interface Node {
 
 type AddSessionPayload {
   session: Session
-  errors: [AddSessionError!] @cost(weight: "10")
+  errors: [AddSessionError!]
 }
 
 type AddSpeakerPayload {
@@ -112,12 +112,12 @@ type RegisterAttendeePayload {
 
 type RenameTrackPayload {
   track: Track
-  errors: [RenameTrackError!] @cost(weight: "10")
+  errors: [RenameTrackError!]
 }
 
 type ScheduleSessionPayload {
   session: Session
-  errors: [ScheduleSessionError!] @cost(weight: "10")
+  errors: [ScheduleSessionError!]
 }
 
 type Session implements Node {
