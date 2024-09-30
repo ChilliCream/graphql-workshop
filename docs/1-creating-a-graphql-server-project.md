@@ -56,8 +56,8 @@
 1. Add a reference to the following NuGet packages:
     - `Microsoft.EntityFrameworkCore.Relational` version `8.0.8`.
       - `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Relational --version 8.0.8`
-    - `Npgsql.EntityFrameworkCore.PostgreSQL` version `8.0.4`.
-      - `dotnet add GraphQL package Npgsql.EntityFrameworkCore.PostgreSQL --version 8.0.4`
+    - `Npgsql.EntityFrameworkCore.PostgreSQL` version `8.0.8`.
+      - `dotnet add GraphQL package Npgsql.EntityFrameworkCore.PostgreSQL --version 8.0.8`
 
 1. Next, create a new Entity Framework Core DbContext class named `ApplicationDbContext` in the `Data` directory, using the following code:
 
@@ -173,12 +173,12 @@ Commands Explained
 ## Adding GraphQL
 
 1. Add a reference to the following NuGet packages:
-    - `HotChocolate.AspNetCore` version `14.0.0-p.165`.
-      - `dotnet add GraphQL package HotChocolate.AspNetCore --version 14.0.0-p.165`
-    - `HotChocolate.AspNetCore.CommandLine` version `14.0.0-p.165`
-      - `dotnet add GraphQL package HotChocolate.AspNetCore.CommandLine --version 14.0.0-p.165`
-    - `HotChocolate.Types.Analyzers` version `14.0.0-p.165`
-      - `dotnet add GraphQL package HotChocolate.Types.Analyzers --version 14.0.0-p.165`
+    - `HotChocolate.AspNetCore` version `14.0.0-p.174`.
+      - `dotnet add GraphQL package HotChocolate.AspNetCore --version 14.0.0-p.174`
+    - `HotChocolate.AspNetCore.CommandLine` version `14.0.0-p.174`
+      - `dotnet add GraphQL package HotChocolate.AspNetCore.CommandLine --version 14.0.0-p.174`
+    - `HotChocolate.Types.Analyzers` version `14.0.0-p.174`
+      - `dotnet add GraphQL package HotChocolate.Types.Analyzers --version 14.0.0-p.174`
 
 1. Set up GraphQL by adding the following code below `AddDbContext` in `Program.cs`:
 

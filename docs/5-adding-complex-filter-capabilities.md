@@ -10,8 +10,8 @@ So far, our GraphQL server only exposes plain lists that would, at some point, g
 
 Let's start by implementing the 2nd Relay server specification by adding Relay-compliant paging to our lists. In general, you should avoid plain lists wherever lists grow or are very large. Relay describes cursor-based paging where you can navigate between edges through their cursors. Cursor-based paging is ideal whenever you implement infinite scrolling solutions. In contrast to offset pagination, you cannot jump to a specific page, but you can jump to a particular cursor and navigate from there.
 
-1. Add a reference to the NuGet package `HotChocolate.Data.EntityFramework` version `14.0.0-p.165`:
-    - `dotnet add GraphQL package HotChocolate.Data.EntityFramework --version 14.0.0-p.165`
+1. Add a reference to the NuGet package `HotChocolate.Data.EntityFramework` version `14.0.0-p.174`:
+    - `dotnet add GraphQL package HotChocolate.Data.EntityFramework --version 14.0.0-p.174`
 
 1. Add the cursor paging provider to the schema configuration in `Program.cs`:
 
@@ -121,8 +121,8 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
 
     We have now replaced all the root level list fields and are now using our pagination middleware. There are still more lists left where we should apply pagination if we want to really have a refined schema. Let's change the API a bit more to incorporate this.
 
-1. Add a reference to the NuGet package `HotChocolate.Pagination.EntityFramework` version `14.0.0-p.165`:
-    - `dotnet add GraphQL package HotChocolate.Pagination.EntityFramework --version 14.0.0-p.165`
+1. Add a reference to the NuGet package `HotChocolate.Pagination.EntityFramework` version `14.0.0-p.174`:
+    - `dotnet add GraphQL package HotChocolate.Pagination.EntityFramework --version 14.0.0-p.174`
 
 1. Add paging arguments to the schema configuration in `Program.cs`:
 
@@ -213,8 +213,8 @@ Filtering, like paging, is a middleware that can be applied on `IQueryable`. As 
 
 ![Filter Middleware Flow](images/20-middleware-flow.svg)
 
-1. Add a reference to the NuGet package `HotChocolate.Data` version `14.0.0-p.165`:
-    - `dotnet add GraphQL package HotChocolate.Data --version 14.0.0-p.165`
+1. Add a reference to the NuGet package `HotChocolate.Data` version `14.0.0-p.174`:
+    - `dotnet add GraphQL package HotChocolate.Data --version 14.0.0-p.174`
 
 1. Add filtering and sorting conventions to the schema configuration in `Program.cs`:
 

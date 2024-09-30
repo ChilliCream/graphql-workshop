@@ -8,15 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="14.0.0-p.165" />
-    <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="14.0.0-p.165" />
-    <PackageReference Include="HotChocolate.Types.Analyzers" Version="14.0.0-p.165" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="14.0.0-p.174" />
+    <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="14.0.0-p.174" />
+    <PackageReference Include="HotChocolate.Types.Analyzers" Version="14.0.0-p.174" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.8" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8" />
   </ItemGroup>
 
 </Project>

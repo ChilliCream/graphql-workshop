@@ -27,15 +27,15 @@ A schema change test will simply create a snapshot of your schema, and always fa
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
-    <PackageReference Include="xunit" Version="2.9.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     ```
 
-1. Add a reference to the NuGet package `CookieCrumble` version `14.0.0-p.165`:
-    - `dotnet add GraphQL.Tests package CookieCrumble --version 14.0.0-p.165`
+1. Add a reference to the NuGet package `CookieCrumble` version `14.0.0-p.174`:
+    - `dotnet add GraphQL.Tests package CookieCrumble --version 14.0.0-p.174`
 
 1. Add a reference to the GraphQL server:
     - `dotnet add GraphQL.Tests reference GraphQL`
