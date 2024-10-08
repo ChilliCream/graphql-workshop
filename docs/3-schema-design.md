@@ -293,7 +293,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
                 .Where(s => ids.Contains(s.Id))
                 .ToDictionaryAsync(s => s.Id, cancellationToken);
         }
-    
+
         [DataLoader]
         public static async Task<IReadOnlyDictionary<int, Speaker[]>> SpeakersBySessionIdAsync(
             IReadOnlyList<int> sessionIds,
@@ -309,7 +309,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
                     s => s.Speakers.ToArray(),
                     cancellationToken);
         }
-    
+
         [DataLoader]
         public static async Task<IReadOnlyDictionary<int, Attendee[]>> AttendeesBySessionIdAsync(
             IReadOnlyList<int> sessionIds,
