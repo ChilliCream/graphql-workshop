@@ -1,4 +1,5 @@
 using ConferencePlanner.GraphQL.Data;
+using GreenDonut.Projections;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Tracks;
@@ -9,11 +10,13 @@ public static class TrackDataLoaders
     public static async Task<IReadOnlyDictionary<int, Track>> TrackByIdAsync(
         IReadOnlyList<int> ids,
         ApplicationDbContext dbContext,
+        ISelectorBuilder selector,
         CancellationToken cancellationToken)
     {
         return await dbContext.Tracks
             .AsNoTracking()
             .Where(t => ids.Contains(t.Id))
+            .Select(t => t.Id, selector)
             .ToDictionaryAsync(t => t.Id, cancellationToken);
     }
 
@@ -21,15 +24,13 @@ public static class TrackDataLoaders
     public static async Task<IReadOnlyDictionary<int, Session[]>> SessionsByTrackIdAsync(
         IReadOnlyList<int> trackIds,
         ApplicationDbContext dbContext,
+        ISelectorBuilder selector,
         CancellationToken cancellationToken)
     {
         return await dbContext.Tracks
             .AsNoTracking()
             .Where(t => trackIds.Contains(t.Id))
-            .Select(t => new { t.Id, t.Sessions })
-            .ToDictionaryAsync(
-                t => t.Id,
-                t => t.Sessions.ToArray(),
-                cancellationToken);
+            .Select(t => t.Id, t => t.Sessions, selector)
+            .ToDictionaryAsync(r => r.Key, r => r.Value.ToArray(), cancellationToken);
     }
 }
