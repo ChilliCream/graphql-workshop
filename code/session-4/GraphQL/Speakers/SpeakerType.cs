@@ -1,4 +1,6 @@
 using ConferencePlanner.GraphQL.Data;
+using GreenDonut.Projections;
+using HotChocolate.Execution.Processing;
 
 namespace ConferencePlanner.GraphQL.Speakers;
 
@@ -9,8 +11,11 @@ public static partial class SpeakerType
     public static async Task<IEnumerable<Session>> GetSessionsAsync(
         [Parent] Speaker speaker,
         ISessionsBySpeakerIdDataLoader sessionsBySpeakerId,
+        ISelection selection,
         CancellationToken cancellationToken)
     {
-        return await sessionsBySpeakerId.LoadRequiredAsync(speaker.Id, cancellationToken);
+        return await sessionsBySpeakerId
+            .Select(selection)
+            .LoadRequiredAsync(speaker.Id, cancellationToken);
     }
 }

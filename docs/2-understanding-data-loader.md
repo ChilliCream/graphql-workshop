@@ -239,10 +239,18 @@ The idea of a [DataLoader](https://github.com/graphql/dataloader) is to batch mu
 
 While we could write DataLoaders as individual classes, there is also a source generator to remove some of the boilerplate code.
 
+1. In order to use the experimental `ISelectorBuilder` for DataLoader projections in Hot Chocolate 14, we need to suppress warning `GD0001`. Add the following to the `GraphQL.csproj` file:
+
+    ```diff
+      <RootNamespace>ConferencePlanner.GraphQL</RootNamespace>
+    + <NoWarn>GD0001</NoWarn>
+    ```
+
 1. Add a new class named `DataLoaders` with the following code:
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
+    using GreenDonut.Projections;
     using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL;
@@ -253,11 +261,13 @@ While we could write DataLoaders as individual classes, there is also a source g
         public static async Task<IReadOnlyDictionary<int, Speaker>> SpeakerByIdAsync(
             IReadOnlyList<int> ids,
             ApplicationDbContext dbContext,
+            ISelectorBuilder selector,
             CancellationToken cancellationToken)
         {
             return await dbContext.Speakers
                 .AsNoTracking()
                 .Where(s => ids.Contains(s.Id))
+                .Select(s => s.Id, selector)
                 .ToDictionaryAsync(s => s.Id, cancellationToken);
         }
     }
@@ -272,9 +282,10 @@ While we could write DataLoaders as individual classes, there is also a source g
     public static async Task<Speaker?> GetSpeakerAsync(
         int id,
         ISpeakerByIdDataLoader speakerById,
+        ISelection selection,
         CancellationToken cancellationToken)
     {
-        return await speakerById.LoadAsync(id, cancellationToken);
+        return await speakerById.Select(selection).LoadAsync(id, cancellationToken);
     }
     ```
 
@@ -282,6 +293,8 @@ While we could write DataLoaders as individual classes, there is also a source g
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
+    using GreenDonut.Projections;
+    using HotChocolate.Execution.Processing;
     using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL;
@@ -300,9 +313,10 @@ While we could write DataLoaders as individual classes, there is also a source g
         public static async Task<Speaker?> GetSpeakerAsync(
             int id,
             ISpeakerByIdDataLoader speakerById,
+            ISelection selection,
             CancellationToken cancellationToken)
         {
-            return await speakerById.LoadAsync(id, cancellationToken);
+            return await speakerById.Select(selection).LoadAsync(id, cancellationToken);
         }
     }
     ```
@@ -330,14 +344,14 @@ While we could write DataLoaders as individual classes, there is also a source g
 
     ![Connect to GraphQL server with Nitro](images/12-bcp-speaker-query.webp)
 
-    If you look at the console output, you'll see that only a single SQL query is executed, instead of one for each speaker:
+    If you look at the console output, you'll see that only a single SQL query is executed, instead of one for each speaker, and that only the `Name` and `Id` columns are selected, instead of all columns in the table, by using DataLoader projections:
 
     ```console
     info: Microsoft.EntityFrameworkCore.Database.Command[20101]
-      Executed DbCommand (1ms) [Parameters=[@__keys_0='?' (DbType = Object)], CommandType='Text', CommandTimeout='30']
-      SELECT s."Id", s."Bio", s."Name", s."Website"
-      FROM "Speakers" AS s
-      WHERE s."Id" = ANY (@__keys_0)
+          Executed DbCommand (1ms) [Parameters=[@__ids_0='?' (DbType = Object)], CommandType='Text', CommandTimeout='30']
+          SELECT s."Name", s."Id"
+          FROM "Speakers" AS s
+          WHERE s."Id" = ANY (@__ids_0)
     ```
 
 ## Type extensions
@@ -355,16 +369,14 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
     public static async Task<IReadOnlyDictionary<int, Session[]>> SessionsBySpeakerIdAsync(
         IReadOnlyList<int> speakerIds,
         ApplicationDbContext dbContext,
+        ISelectorBuilder selector,
         CancellationToken cancellationToken)
     {
         return await dbContext.Speakers
             .AsNoTracking()
             .Where(s => speakerIds.Contains(s.Id))
-            .Select(s => new { s.Id, Sessions = s.SessionSpeakers.Select(ss => ss.Session) })
-            .ToDictionaryAsync(
-                s => s.Id,
-                s => s.Sessions.ToArray(),
-                cancellationToken);
+            .Select(s => s.Id, s => s.SessionSpeakers.Select(ss => ss.Session), selector)
+            .ToDictionaryAsync(r => r.Key, r => r.Value.ToArray(), cancellationToken);
     }
     ```
 
@@ -374,10 +386,12 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
     mkdir GraphQL/Types
     ```
 
-1. Create a new class named `SpeakerType` in the `Types` directory with the following code:
+1. Create a new class named `SpeakerType` in the `Types` directory, with the following code:
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
+    using GreenDonut.Projections;
+    using HotChocolate.Execution.Processing;
 
     namespace ConferencePlanner.GraphQL.Types;
 
@@ -388,9 +402,12 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
         public static async Task<IEnumerable<Session>> GetSessionsAsync(
             [Parent] Speaker speaker,
             ISessionsBySpeakerIdDataLoader sessionsBySpeakerId,
+            ISelection selection,
             CancellationToken cancellationToken)
         {
-            return await sessionsBySpeakerId.LoadRequiredAsync(speaker.Id, cancellationToken);
+            return await sessionsBySpeakerId
+                .Select(selection)
+                .LoadRequiredAsync(speaker.Id, cancellationToken);
         }
     }
     ```
@@ -409,6 +426,23 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
     }
     ```
 
+1. Next, create another class named `SessionType` in the `Types` directory, with the following code:
+
+    ```csharp
+    using ConferencePlanner.GraphQL.Data;
+
+    namespace ConferencePlanner.GraphQL.Types;
+
+    [ObjectType<Session>]
+    public static partial class SessionType
+    {
+        public static TimeSpan Duration([Parent("StartTime EndTime")] Session session)
+            => session.Duration;
+    }
+    ```
+
+    In this type extension, we add a resolver for the `duration` field of the `Session` type, so that we can specify its requirements using the `[Parent]` attribute. In this case, `StartTime` and `EndTime` are required in order to compute the `Duration` in the `Session` class.
+
 1. Start your GraphQL server again:
 
     ```shell
@@ -423,12 +457,13 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
         name
         sessions {
           title
+          duration
         }
       }
     }
     ```
 
-    > Since we do not have any data for sessions yet the server will return an empty list of sessions. Still, our server works already and we will soon be able to add more data.
+    Since we do not have any data for sessions yet the server will return an empty list of sessions. Still, our server works already and we will soon be able to add more data.
 
 ## Summary
 

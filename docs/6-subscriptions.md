@@ -21,6 +21,8 @@ Before we can start with introducing our new subscriptions, we need to first bri
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
+    using GreenDonut.Projections;
+    using HotChocolate.Execution.Processing;
     using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Attendees;
@@ -38,17 +40,19 @@ Before we can start with introducing our new subscriptions, we need to first bri
         public static async Task<Attendee?> GetAttendeeByIdAsync(
             int id,
             IAttendeeByIdDataLoader attendeeById,
+            ISelection selection,
             CancellationToken cancellationToken)
         {
-            return await attendeeById.LoadAsync(id, cancellationToken);
+            return await attendeeById.Select(selection).LoadAsync(id, cancellationToken);
         }
 
         public static async Task<IEnumerable<Attendee>> GetAttendeesByIdAsync(
             [ID<Attendee>] int[] ids,
             IAttendeeByIdDataLoader attendeeById,
+            ISelection selection,
             CancellationToken cancellationToken)
         {
-            return await attendeeById.LoadRequiredAsync(ids, cancellationToken);
+            return await attendeeById.Select(selection).LoadRequiredAsync(ids, cancellationToken);
         }
     }
     ```
