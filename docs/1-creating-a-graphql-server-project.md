@@ -54,8 +54,8 @@
     ```
 
 1. Add a reference to the following NuGet packages:
-    - `Microsoft.EntityFrameworkCore.Relational` version `8.0.8`.
-      - `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Relational --version 8.0.8`
+    - `Microsoft.EntityFrameworkCore.Relational` version `8.0.10`.
+      - `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Relational --version 8.0.10`
     - `Npgsql.EntityFrameworkCore.PostgreSQL` version `8.0.8`.
       - `dotnet add GraphQL package Npgsql.EntityFrameworkCore.PostgreSQL --version 8.0.8`
 
@@ -124,8 +124,8 @@ app.Run();
 
 ## Configuring EF Migrations
 
-1. Add a reference to the NuGet package `Microsoft.EntityFrameworkCore.Design` version `8.0.8`:
-    - `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Design --version 8.0.8`
+1. Add a reference to the NuGet package `Microsoft.EntityFrameworkCore.Design` version `8.0.10`:
+    - `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Design --version 8.0.10`
 
 1. Start the database server using Docker Compose:
 
@@ -173,12 +173,12 @@ Commands Explained
 ## Adding GraphQL
 
 1. Add a reference to the following NuGet packages:
-    - `HotChocolate.AspNetCore` version `14.0.0-p.187`.
-      - `dotnet add GraphQL package HotChocolate.AspNetCore --version 14.0.0-p.187`
-    - `HotChocolate.AspNetCore.CommandLine` version `14.0.0-p.187`
-      - `dotnet add GraphQL package HotChocolate.AspNetCore.CommandLine --version 14.0.0-p.187`
-    - `HotChocolate.Types.Analyzers` version `14.0.0-p.187`
-      - `dotnet add GraphQL package HotChocolate.Types.Analyzers --version 14.0.0-p.187`
+    - `HotChocolate.AspNetCore` version `14.0.0-rc.3`.
+      - `dotnet add GraphQL package HotChocolate.AspNetCore --version 14.0.0-rc.3`
+    - `HotChocolate.AspNetCore.CommandLine` version `14.0.0-rc.3`
+      - `dotnet add GraphQL package HotChocolate.AspNetCore.CommandLine --version 14.0.0-rc.3`
+    - `HotChocolate.Types.Analyzers` version `14.0.0-rc.3`
+      - `dotnet add GraphQL package HotChocolate.Types.Analyzers --version 14.0.0-rc.3`
 
 1. Set up GraphQL by adding the following code below `AddDbContext` in `Program.cs`:
 

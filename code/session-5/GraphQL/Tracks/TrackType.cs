@@ -1,5 +1,6 @@
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.Extensions;
+using GreenDonut.Projections;
 using HotChocolate.Pagination;
 using HotChocolate.Types.Pagination;
 
