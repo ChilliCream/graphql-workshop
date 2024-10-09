@@ -7,7 +7,7 @@
 
 ## Adding the remaining data models
 
-In order to expand our GraphQL server model further we have several more data models to add, and unfortunately it's a little mechanical. You can copy the following classes manually, or open the [session 3 solution](/code/session-3).
+In order to expand our GraphQL server model further we have several more data models to add, and unfortunately it's a little mechanical. You can copy the following classes manually, or open the [session 2 solution](/code/session-2).
 
 1. Create an `Attendee.cs` class in the `Data` directory with the following code:
 
