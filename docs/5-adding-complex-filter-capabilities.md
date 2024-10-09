@@ -47,9 +47,9 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
     dotnet run --project GraphQL
     ```
 
-1. Open Banana Cake Pop, refresh the schema, and select the `Schema Reference` tab to see how our API structure has changed.
+1. Open Nitro, refresh the schema, and select the `Schema Reference` tab to see how our API structure has changed.
 
-    ![Banana Cake Pop Tracks Field](images/24-bcp-schema.webp)
+    ![Nitro Tracks Field](images/24-bcp-schema.webp)
 
 1. Define a simple query to fetch the first track:
 
@@ -185,7 +185,7 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
 
     Here, we use the `ToBatchPageAsync` method to return a page of sessions for each track ID.
 
-1. Now go back to Banana Cake Pop and refresh the schema.
+1. Now go back to Nitro and refresh the schema.
 
     ![Inspect Track Sessions](images/27-bcp-schema.webp)
 
@@ -272,7 +272,7 @@ Filtering, like paging, is a middleware that can be applied on `IQueryable`. As 
     dotnet run --project GraphQL
     ```
 
-1. Open Banana Cake Pop, refresh the schema, and select the `Schema Reference` tab.
+1. Open Nitro, refresh the schema, and select the `Schema Reference` tab.
 
     ![Session Filter Type](images/29-bcp-filter-type.webp)
 

@@ -210,7 +210,7 @@ The first thing that we have to do here is to enable [Global Object Identificati
     dotnet run --project GraphQL
     ```
 
-1. Head to Banana Cake Pop and refresh the schema.
+1. Head to Nitro and refresh the schema.
 
     ![Explore Relay Node Field](images/13-bcp-node-field.webp)
 
@@ -831,7 +831,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
     }
     ```
 
-1. Start your GraphQL server and verify with Banana Cake Pop that you can use the new queries:
+1. Start your GraphQL server and verify with Nitro that you can use the new queries:
 
     ```shell
     dotnet run --project GraphQL

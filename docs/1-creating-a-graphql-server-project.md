@@ -254,13 +254,13 @@ Commands Explained
 
     ![Start GraphQL server](images/1-start-server.webp)
 
-1. Start [Banana Cake Pop](https://chillicream.com/products/bananacakepop/) or use it built into your browser at [http://localhost:5000/graphql/](http://localhost:5000/graphql/), and connect to our server.
+1. Start [Nitro](https://get-nitro.chillicream.com) or use it built into your browser at [http://localhost:5000/graphql/](http://localhost:5000/graphql/), and connect to our server.
 
-    ![Connect to GraphQL server with Banana Cake Pop](images/2-bcp-connect-to-server.webp)
+    ![Connect to GraphQL server with Nitro](images/2-bcp-connect-to-server.webp)
 
 1. Click the `Browse Schema` button, switch to the `Column View`, and navigate to `Query -> speakers` to view the return type of the `speakers` field.
 
-    ![Explore GraphQL schema with Banana Cake Pop](images/3-bcp-browse-schema.webp)
+    ![Explore GraphQL schema with Nitro](images/3-bcp-browse-schema.webp)
 
 ## Adding a Mutation
 
@@ -337,7 +337,7 @@ So, for our `addSpeaker` mutation, we create two types: `AddSpeakerInput` and `A
     dotnet run --project GraphQL
     ```
 
-1. Explore the changes to the schema with Banana Cake Pop. There should now be a mutation type and the `addSpeaker` mutation.
+1. Explore the changes to the schema with Nitro. There should now be a mutation type and the `addSpeaker` mutation.
 
     ![GraphQL type explorer](images/4-bcp-browse-schema-mutation.webp)
 

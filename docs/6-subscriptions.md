@@ -156,7 +156,7 @@ Now that we have the mutation in to register new attendees, let's move on to add
     dotnet run --project GraphQL
     ```
 
-1. Validate that you see your new queries and mutations with Banana Cake Pop.
+1. Validate that you see your new queries and mutations with Nitro.
 
 ## Adding an `onSessionScheduled` subscription
 
@@ -289,7 +289,7 @@ With the base in, we can now focus on putting subscriptions in our GraphQL serve
     dotnet run --project GraphQL
     ```
 
-1. Open Banana Cake Pop and refresh the schema.
+1. Open Nitro and refresh the schema.
 
 1. Open a new query tab and add the following subscription query:
 
@@ -306,7 +306,7 @@ With the base in, we can now focus on putting subscriptions in our GraphQL serve
 
     ![Subscription Waiting for Events](images/31-bcp-subscribe.webp)
 
-1. Open another tab in Banana Cake Pop and add the following document:
+1. Open another tab in Nitro and add the following document:
 
     ```graphql
     query GetSessionsAndTracks {
@@ -540,7 +540,7 @@ The `onSessionScheduled` subscription was quite simple since we didn't subscribe
 
     ![Execute RegisterAttendee](images/35-bcp-register-attendee.webp)
 
-1. Open another tab in Banana Cake Pop and add the following document:
+1. Open another tab in Nitro and add the following document:
 
     ```graphql
     subscription OnAttendeeCheckedIn {

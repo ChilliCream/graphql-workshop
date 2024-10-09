@@ -226,12 +226,12 @@ After having everything in let's have a look at our schema and see if something 
     dotnet run --project GraphQL
     ```
 
-1. Open Banana Cake Pop.
+1. Open Nitro.
 
 1. Head over to the `Schema Reference` tab and have a look at the speaker.
     - **Note**: You might have to reload the schema. You can do so by clicking the `Reload Schema` button in the upper right corner.
 
-    ![Connect to GraphQL server with Banana Cake Pop](images/10-bcp-schema-updated.webp)
+    ![Connect to GraphQL server with Nitro](images/10-bcp-schema-updated.webp)
 
 ## Adding a DataLoader
 
@@ -307,13 +307,13 @@ While we could write DataLoaders as individual classes, there is also a source g
     }
     ```
 
-1. Let's have a look at the new schema with Banana Cake Pop. For this, start your server and refresh Banana Cake Pop:
+1. Let's have a look at the new schema with Nitro. For this, start your server and refresh Nitro:
 
     ```shell
     dotnet run --project GraphQL
     ```
 
-    ![Connect to GraphQL server with Banana Cake Pop](images/11-bcp-schema-updated.webp)
+    ![Connect to GraphQL server with Nitro](images/11-bcp-schema-updated.webp)
 
 1. Now, test if the new field works correctly:
 
@@ -328,7 +328,7 @@ While we could write DataLoaders as individual classes, there is also a source g
     }
     ```
 
-    ![Connect to GraphQL server with Banana Cake Pop](images/12-bcp-speaker-query.webp)
+    ![Connect to GraphQL server with Nitro](images/12-bcp-speaker-query.webp)
 
     If you look at the console output, you'll see that only a single SQL query is executed, instead of one for each speaker:
 
@@ -415,7 +415,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
     dotnet run --project GraphQL
     ```
 
-1. Go back to Banana Cake Pop, refresh the schema, and execute the following query:
+1. Go back to Nitro, refresh the schema, and execute the following query:
 
     ```graphql
     query GetSpeakerWithSessions {
