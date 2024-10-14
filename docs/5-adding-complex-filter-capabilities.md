@@ -142,18 +142,19 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
         [Parent] Track track,
         ISessionsByTrackIdDataLoader sessionsByTrackId,
         PagingArguments pagingArguments,
+        ISelection selection,
         CancellationToken cancellationToken)
     {
         return await sessionsByTrackId
             .WithPagingArguments(pagingArguments)
+            .Select(selection)
             .LoadAsync(track.Id, cancellationToken)
             .ToConnectionAsync();
     }
     ```
 
     ```diff
-      using ConferencePlanner.GraphQL.Extensions;
-    + using GreenDonut.Projections;
+      using HotChocolate.Execution.Processing;
     + using HotChocolate.Pagination;
     + using HotChocolate.Types.Pagination;
     ```
@@ -167,6 +168,7 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
     public static async Task<IReadOnlyDictionary<int, Page<Session>>> SessionsByTrackIdAsync(
         IReadOnlyList<int> trackIds,
         ApplicationDbContext dbContext,
+        ISelectorBuilder selector,
         PagingArguments pagingArguments,
         CancellationToken cancellationToken)
     {
@@ -174,12 +176,13 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
             .AsNoTracking()
             .Where(s => s.TrackId != null && trackIds.Contains((int)s.TrackId))
             .OrderBy(s => s.Id)
+            .Select(s => s.TrackId, selector)
             .ToBatchPageAsync(s => (int)s.TrackId!, pagingArguments, cancellationToken);
     }
     ```
 
     ```diff
-      using ConferencePlanner.GraphQL.Data;
+      using GreenDonut.Projections;
     + using HotChocolate.Pagination;
     ```
 

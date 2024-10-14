@@ -1,4 +1,5 @@
 using ConferencePlanner.GraphQL.Data;
+using GreenDonut.Projections;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Attendees;
@@ -9,11 +10,13 @@ public static class AttendeeDataLoaders
     public static async Task<IReadOnlyDictionary<int, Attendee>> AttendeeByIdAsync(
         IReadOnlyList<int> ids,
         ApplicationDbContext dbContext,
+        ISelectorBuilder selector,
         CancellationToken cancellationToken)
     {
         return await dbContext.Attendees
             .AsNoTracking()
             .Where(a => ids.Contains(a.Id))
+            .Select(a => a.Id, selector)
             .ToDictionaryAsync(a => a.Id, cancellationToken);
     }
 
@@ -21,15 +24,13 @@ public static class AttendeeDataLoaders
     public static async Task<IReadOnlyDictionary<int, Session[]>> SessionsByAttendeeIdAsync(
         IReadOnlyList<int> attendeeIds,
         ApplicationDbContext dbContext,
+        ISelectorBuilder selector,
         CancellationToken cancellationToken)
     {
         return await dbContext.Attendees
             .AsNoTracking()
             .Where(a => attendeeIds.Contains(a.Id))
-            .Select(a => new { a.Id, Sessions = a.SessionsAttendees.Select(sa => sa.Session) })
-            .ToDictionaryAsync(
-                a => a.Id,
-                a => a.Sessions.ToArray(),
-                cancellationToken);
+            .Select(a => a.Id, a => a.SessionsAttendees.Select(sa => sa.Session), selector)
+            .ToDictionaryAsync(r => r.Key, r => r.Value.ToArray(), cancellationToken);
     }
 }

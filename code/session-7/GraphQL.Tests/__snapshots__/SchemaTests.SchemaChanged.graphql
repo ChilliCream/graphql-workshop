@@ -121,6 +121,7 @@ type ScheduleSessionPayload {
 }
 
 type Session implements Node {
+  duration: TimeSpan!
   speakers: [Speaker!]! @cost(weight: "10")
   attendees: [Attendee!]! @cost(weight: "10")
   track: Track @cost(weight: "10")
@@ -130,7 +131,6 @@ type Session implements Node {
   abstract: String
   startTime: DateTime
   endTime: DateTime
-  duration: TimeSpan!
 }
 
 type SessionAttendeeCheckIn {
