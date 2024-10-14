@@ -33,7 +33,7 @@ public static class TrackDataLoaders
             .AsNoTracking()
             .Where(s => s.TrackId != null && trackIds.Contains((int)s.TrackId))
             .OrderBy(s => s.Id)
-            .Select(s => s.Id, selector)
+            .Select(s => s.TrackId, selector)
             .ToBatchPageAsync(s => (int)s.TrackId!, pagingArguments, cancellationToken);
     }
 }

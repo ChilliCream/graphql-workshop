@@ -176,7 +176,7 @@ Let's start by implementing the 2nd Relay server specification by adding Relay-c
             .AsNoTracking()
             .Where(s => s.TrackId != null && trackIds.Contains((int)s.TrackId))
             .OrderBy(s => s.Id)
-            .Select(s => s.Id, selector)
+            .Select(s => s.TrackId, selector)
             .ToBatchPageAsync(s => (int)s.TrackId!, pagingArguments, cancellationToken);
     }
     ```
