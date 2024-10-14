@@ -12,6 +12,7 @@ public static partial class TrackType
     {
         descriptor
             .Field(t => t.Name)
+            .ParentRequires(nameof(Track.Name))
             .UseUpperCase();
     }
 

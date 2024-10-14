@@ -88,9 +88,12 @@ After `next` has finished executing, the middleware checks if the result is a `s
     {
         descriptor
             .Field(t => t.Name)
+            .ParentRequires(nameof(Track.Name))
             .UseUpperCase();
     }
     ```
+
+    Note: When we apply middleware to a field, it becomes asynchronous, and will not be projected by default. To enable projection of this field, we use the `ParentRequires` method to indicate that the `Name` property of the parent type `Track` is required.
 
 1. Start your server and query your tracks:
 
