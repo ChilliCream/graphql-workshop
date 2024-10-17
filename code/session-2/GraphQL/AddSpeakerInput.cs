@@ -1,7 +1,6 @@
-namespace ConferencePlanner.GraphQL
-{
-    public record AddSpeakerInput(
-        string Name,
-        string? Bio,
-        string? WebSite);
-}
+namespace ConferencePlanner.GraphQL;
+
+public sealed record AddSpeakerInput(
+    string Name,
+    string? Bio,
+    string? Website);
