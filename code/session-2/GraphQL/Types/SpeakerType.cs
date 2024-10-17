@@ -1,5 +1,5 @@
 using ConferencePlanner.GraphQL.Data;
-using GreenDonut.Projections;
+using GreenDonut.Selectors;
 using HotChocolate.Execution.Processing;
 
 namespace ConferencePlanner.GraphQL.Types;

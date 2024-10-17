@@ -41,7 +41,7 @@ First, we will restructure our GraphQL server so that it will better scale once 
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using GreenDonut.Projections;
+    using GreenDonut.Selectors;
     using HotChocolate.Execution.Processing;
     using Microsoft.EntityFrameworkCore;
 
@@ -250,7 +250,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using GreenDonut.Projections;
+    using GreenDonut.Selectors;
     using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Attendees;
@@ -291,7 +291,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using GreenDonut.Projections;
+    using GreenDonut.Selectors;
     using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Sessions;
@@ -346,7 +346,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using GreenDonut.Projections;
+    using GreenDonut.Selectors;
     using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Tracks;
@@ -389,7 +389,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using GreenDonut.Projections;
+    using GreenDonut.Selectors;
     using HotChocolate.Execution.Processing;
 
     namespace ConferencePlanner.GraphQL.Attendees;
@@ -432,7 +432,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using GreenDonut.Projections;
+    using GreenDonut.Selectors;
     using HotChocolate.Execution.Processing;
 
     namespace ConferencePlanner.GraphQL.Tracks;
@@ -458,7 +458,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
     ```csharp
     using ConferencePlanner.GraphQL.Data;
     using ConferencePlanner.GraphQL.Tracks;
-    using GreenDonut.Projections;
+    using GreenDonut.Selectors;
     using HotChocolate.Execution.Processing;
 
     namespace ConferencePlanner.GraphQL.Sessions;
@@ -800,7 +800,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using GreenDonut.Projections;
+    using GreenDonut.Selectors;
     using HotChocolate.Execution.Processing;
     using Microsoft.EntityFrameworkCore;
 
@@ -841,7 +841,7 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using GreenDonut.Projections;
+    using GreenDonut.Selectors;
     using HotChocolate.Execution.Processing;
     using Microsoft.EntityFrameworkCore;
 

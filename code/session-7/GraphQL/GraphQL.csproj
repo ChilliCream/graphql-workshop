@@ -9,13 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="14.0.0-rc.3" />
-    <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="14.0.0-rc.3" />
-    <PackageReference Include="HotChocolate.Data" Version="14.0.0-rc.3" />
-    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="14.0.0-rc.3" />
-    <PackageReference Include="HotChocolate.Pagination.EntityFramework" Version="14.0.0-rc.3" />
-    <PackageReference Include="HotChocolate.Subscriptions.Redis" Version="14.0.0-rc.3" />
-    <PackageReference Include="HotChocolate.Types.Analyzers" Version="14.0.0-rc.3" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="14.0.0" />
+    <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="14.0.0" />
+    <PackageReference Include="HotChocolate.Data" Version="14.0.0" />
+    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="14.0.0" />
+    <PackageReference Include="HotChocolate.Pagination.EntityFramework" Version="14.0.0" />
+    <PackageReference Include="HotChocolate.Subscriptions.Redis" Version="14.0.0" />
+    <PackageReference Include="HotChocolate.Types.Analyzers" Version="14.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

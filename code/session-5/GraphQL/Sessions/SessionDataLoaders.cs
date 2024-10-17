@@ -1,5 +1,5 @@
 using ConferencePlanner.GraphQL.Data;
-using GreenDonut.Projections;
+using GreenDonut.Selectors;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Sessions;
