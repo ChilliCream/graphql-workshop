@@ -1,17 +1,15 @@
-using HotChocolate.Types;
-using HotChocolate.Types.Descriptors;
 using System.Reflection;
+using HotChocolate.Types.Descriptors;
 
-namespace ConferencePlanner.GraphQL
+namespace ConferencePlanner.GraphQL.Extensions;
+
+public sealed class UseUpperCaseAttribute : ObjectFieldDescriptorAttribute
 {
-    public class UseUpperCaseAttribute : ObjectFieldDescriptorAttribute
+    protected override void OnConfigure(
+        IDescriptorContext context,
+        IObjectFieldDescriptor descriptor,
+        MemberInfo member)
     {
-        public override void OnConfigure(
-            IDescriptorContext context,
-            IObjectFieldDescriptor descriptor,
-            MemberInfo member)
-        {
-            descriptor.UseUpperCase();
-        }
+        descriptor.UseUpperCase();
     }
 }
