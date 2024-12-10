@@ -26,7 +26,7 @@ A schema change test will simply create a snapshot of your schema, and always fa
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
       <PrivateAssets>all</PrivateAssets>
@@ -34,8 +34,8 @@ A schema change test will simply create a snapshot of your schema, and always fa
     </PackageReference>
     ```
 
-1. Add a reference to the NuGet package `CookieCrumble` version `14.1.0`:
-    - `dotnet add GraphQL.Tests package CookieCrumble --version 14.1.0`
+1. Add a reference to the NuGet package `CookieCrumble` version `14.2.0`:
+    - `dotnet add GraphQL.Tests package CookieCrumble --version 14.2.0`
 
 1. Add a reference to the GraphQL server:
     - `dotnet add GraphQL.Tests reference GraphQL`
@@ -80,10 +80,10 @@ A schema change test will simply create a snapshot of your schema, and always fa
 ## Adding a simple query test
 
 1. Add a reference to the following NuGet packages:
-    - `Testcontainers.PostgreSql` version `4.0.0`:
-      - `dotnet add GraphQL.Tests package Testcontainers.PostgreSql --version 4.0.0`
-    - `Testcontainers.Redis` version `4.0.0`:
-      - `dotnet add GraphQL.Tests package Testcontainers.Redis --version 4.0.0`
+    - `Testcontainers.PostgreSql` version `4.1.0`:
+      - `dotnet add GraphQL.Tests package Testcontainers.PostgreSql --version 4.1.0`
+    - `Testcontainers.Redis` version `4.1.0`:
+      - `dotnet add GraphQL.Tests package Testcontainers.Redis --version 4.1.0`
 
 1. Add a new class named `AttendeeTests.cs`:
 
@@ -102,7 +102,7 @@ A schema change test will simply create a snapshot of your schema, and always fa
     public sealed class AttendeeTests : IAsyncLifetime
     {
         private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
-            .WithImage("postgres:17.0")
+            .WithImage("postgres:17.2")
             .Build();
 
         private readonly RedisContainer _redisContainer = new RedisBuilder()
