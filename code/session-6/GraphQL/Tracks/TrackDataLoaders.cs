@@ -1,6 +1,5 @@
 using ConferencePlanner.GraphQL.Data;
-using GreenDonut.Selectors;
-using HotChocolate.Pagination;
+using GreenDonut.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Tracks;

@@ -10,7 +10,7 @@ A schema change test will simply create a snapshot of your schema, and always fa
 1. Create an xUnit test project:
 
     ```shell
-    dotnet new xunit --name GraphQL.Tests
+    dotnet new xunit3 --name GraphQL.Tests
     ```
 
 1. Add the project to our solution:
@@ -22,20 +22,16 @@ A schema change test will simply create a snapshot of your schema, and always fa
 1. Head over to the `GraphQL.Tests.csproj` file and update the package references to the following:
 
     ```xml
-    <PackageReference Include="coverlet.collector" Version="6.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageReference Include="xunit" Version="2.9.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="xunit.v3" Version="1.1.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2" />
     ```
 
-1. Add a reference to the NuGet package `CookieCrumble` version `14.2.0`:
-    - `dotnet add GraphQL.Tests package CookieCrumble --version 14.2.0`
+1. Add a reference to the following NuGet packages:
+    - `CookieCrumble.HotChocolate` version `15.0.3`:
+      - `dotnet add GraphQL.Tests package CookieCrumble.HotChocolate --version 15.0.3`
+    - `CookieCrumble.Xunit3` version `15.0.3`:
+      - `dotnet add GraphQL.Tests package CookieCrumble.Xunit3 --version 15.0.3`
 
 1. Add a reference to the GraphQL server:
     - `dotnet add GraphQL.Tests reference GraphQL`
@@ -44,8 +40,8 @@ A schema change test will simply create a snapshot of your schema, and always fa
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using Microsoft.Extensions.DependencyInjection;
     using CookieCrumble;
+    using Microsoft.Extensions.DependencyInjection;
     using HotChocolate.Execution;
 
     namespace GraphQL.Tests;
@@ -67,10 +63,10 @@ A schema change test will simply create a snapshot of your schema, and always fa
                 .AddSorting()
                 .AddInMemorySubscriptions()
                 .AddGraphQLTypes()
-                .BuildSchemaAsync();
+                .BuildSchemaAsync(cancellationToken: TestContext.Current.CancellationToken);
 
             // Assert
-            schema.MatchSnapshot();
+            schema.MatchSnapshot(extension: ".graphql");
         }
     }
     ```
@@ -80,10 +76,10 @@ A schema change test will simply create a snapshot of your schema, and always fa
 ## Adding a simple query test
 
 1. Add a reference to the following NuGet packages:
-    - `Testcontainers.PostgreSql` version `4.1.0`:
-      - `dotnet add GraphQL.Tests package Testcontainers.PostgreSql --version 4.1.0`
-    - `Testcontainers.Redis` version `4.1.0`:
-      - `dotnet add GraphQL.Tests package Testcontainers.Redis --version 4.1.0`
+    - `Testcontainers.PostgreSql` version `4.2.0`:
+      - `dotnet add GraphQL.Tests package Testcontainers.PostgreSql --version 4.2.0`
+    - `Testcontainers.Redis` version `4.2.0`:
+      - `dotnet add GraphQL.Tests package Testcontainers.Redis --version 4.2.0`
 
 1. Add a new class named `AttendeeTests.cs`:
 
@@ -111,7 +107,7 @@ A schema change test will simply create a snapshot of your schema, and always fa
 
         private IRequestExecutor _requestExecutor = null!;
 
-        public async Task InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
             // Start test containers.
             await Task.WhenAll(_postgreSqlContainer.StartAsync(), _redisContainer.StartAsync());
@@ -160,13 +156,14 @@ A schema change test will simply create a snapshot of your schema, and always fa
                         }
                     }
                 }
-                """);
+                """,
+                TestContext.Current.CancellationToken);
 
             // Assert
             result.MatchSnapshot(extension: ".json");
         }
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             await _postgreSqlContainer.DisposeAsync();
             await _redisContainer.DisposeAsync();

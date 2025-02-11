@@ -1,5 +1,5 @@
 using ConferencePlanner.GraphQL.Data;
-using GreenDonut.Selectors;
+using GreenDonut.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Tracks;

@@ -239,18 +239,11 @@ The idea of a [DataLoader](https://github.com/graphql/dataloader) is to batch mu
 
 While we could write DataLoaders as individual classes, there is also a source generator to remove some of the boilerplate code.
 
-1. In order to use the experimental `ISelectorBuilder` for DataLoader projections in Hot Chocolate 14, we need to suppress warning `GD0001`. Add the following to the `GraphQL.csproj` file:
-
-    ```diff
-      <RootNamespace>ConferencePlanner.GraphQL</RootNamespace>
-    + <NoWarn>GD0001</NoWarn>
-    ```
-
 1. Add a new class named `DataLoaders` with the following code:
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using GreenDonut.Selectors;
+    using GreenDonut.Data;
     using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL;
@@ -293,7 +286,7 @@ While we could write DataLoaders as individual classes, there is also a source g
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using GreenDonut.Selectors;
+    using GreenDonut.Data;
     using HotChocolate.Execution.Processing;
     using Microsoft.EntityFrameworkCore;
 
@@ -390,7 +383,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
-    using GreenDonut.Selectors;
+    using GreenDonut.Data;
     using HotChocolate.Execution.Processing;
 
     namespace ConferencePlanner.GraphQL.Types;

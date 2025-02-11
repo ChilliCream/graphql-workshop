@@ -1,6 +1,6 @@
 using ConferencePlanner.GraphQL.Data;
-using Microsoft.Extensions.DependencyInjection;
 using CookieCrumble;
+using Microsoft.Extensions.DependencyInjection;
 using HotChocolate.Execution;
 
 namespace GraphQL.Tests;
@@ -22,9 +22,9 @@ public sealed class SchemaTests
             .AddSorting()
             .AddInMemorySubscriptions()
             .AddGraphQLTypes()
-            .BuildSchemaAsync();
+            .BuildSchemaAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
-        schema.MatchSnapshot();
+        schema.MatchSnapshot(extension: ".graphql");
     }
 }

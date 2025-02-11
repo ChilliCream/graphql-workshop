@@ -21,7 +21,7 @@ public sealed class AttendeeTests : IAsyncLifetime
 
     private IRequestExecutor _requestExecutor = null!;
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         // Start test containers.
         await Task.WhenAll(_postgreSqlContainer.StartAsync(), _redisContainer.StartAsync());
@@ -70,13 +70,14 @@ public sealed class AttendeeTests : IAsyncLifetime
                     }
                 }
             }
-            """);
+            """,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.MatchSnapshot(extension: ".json");
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await _postgreSqlContainer.DisposeAsync();
         await _redisContainer.DisposeAsync();

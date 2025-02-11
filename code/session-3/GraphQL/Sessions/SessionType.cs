@@ -1,6 +1,6 @@
 using ConferencePlanner.GraphQL.Data;
 using ConferencePlanner.GraphQL.Tracks;
-using GreenDonut.Selectors;
+using GreenDonut.Data;
 using HotChocolate.Execution.Processing;
 
 namespace ConferencePlanner.GraphQL.Sessions;
