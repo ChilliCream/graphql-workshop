@@ -173,12 +173,12 @@ Commands Explained
 ## Adding GraphQL
 
 1. Add a reference to the following NuGet packages:
-    - `HotChocolate.AspNetCore` version `15.1.0`.
-      - `dotnet add GraphQL package HotChocolate.AspNetCore --version 15.1.0`
-    - `HotChocolate.AspNetCore.CommandLine` version `15.1.0`
-      - `dotnet add GraphQL package HotChocolate.AspNetCore.CommandLine --version 15.1.0`
-    - `HotChocolate.Types.Analyzers` version `15.1.0`
-      - `dotnet add GraphQL package HotChocolate.Types.Analyzers --version 15.1.0`
+    - `HotChocolate.AspNetCore` version `15.1.3`.
+      - `dotnet add GraphQL package HotChocolate.AspNetCore --version 15.1.3`
+    - `HotChocolate.AspNetCore.CommandLine` version `15.1.3`
+      - `dotnet add GraphQL package HotChocolate.AspNetCore.CommandLine --version 15.1.3`
+    - `HotChocolate.Types.Analyzers` version `15.1.3`
+      - `dotnet add GraphQL package HotChocolate.Types.Analyzers --version 15.1.3`
 
 1. Set up GraphQL by adding the following code below `AddDbContext` in `Program.cs`:
 
