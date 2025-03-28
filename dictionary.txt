@@ -1,0 +1,17 @@
+aspnet
+ASPNETCORE
+Autoincrement
+autonumber
+buildtransitive
+contentfiles
+deprioritization
+Linq
+ncontains
+nendsWith
+ngte
+nlte
+Npgsql
+nstartsWith
+staib
+Testcontainers
+xunit

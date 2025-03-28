@@ -1,37 +1,33 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ConferencePlanner.GraphQL.Data
+namespace ConferencePlanner.GraphQL.Data;
+
+public sealed class Session
 {
-    public class Session
-    {
-        public int Id { get; set; }
+    public int Id { get; init; }
 
-        [Required]
-        [StringLength(200)]
-        public string? Title { get; set; }
+    [StringLength(200)]
+    public required string Title { get; init; }
 
-        [StringLength(4000)]
-        public string? Abstract { get; set; }
+    [StringLength(4000)]
+    public string? Abstract { get; init; }
 
-        public DateTimeOffset? StartTime { get; set; }
+    public DateTimeOffset? StartTime { get; set; }
 
-        public DateTimeOffset? EndTime { get; set; }
+    public DateTimeOffset? EndTime { get; set; }
 
-        // Bonus points to those who can figure out why this is written this way
-        public TimeSpan Duration =>
-            EndTime?.Subtract(StartTime ?? EndTime ?? DateTimeOffset.MinValue) ??
-                TimeSpan.Zero;
+    // Bonus points to those who can figure out why this is written this way.
+    public TimeSpan Duration =>
+        EndTime?.Subtract(StartTime ?? EndTime ?? DateTimeOffset.MinValue) ??
+        TimeSpan.Zero;
 
-        public int? TrackId { get; set; }
+    public int? TrackId { get; set; }
 
-        public ICollection<SessionSpeaker> SessionSpeakers { get; set; } =
-            new List<SessionSpeaker>();
+    public ICollection<SessionSpeaker> SessionSpeakers { get; init; } =
+        new List<SessionSpeaker>();
 
-        public ICollection<SessionAttendee> SessionAttendees { get; set; } =
-            new List<SessionAttendee>();
+    public ICollection<SessionAttendee> SessionAttendees { get; init; } =
+        new List<SessionAttendee>();
 
-        public Track? Track { get; set; }
-    }
+    public Track? Track { get; init; }
 }
