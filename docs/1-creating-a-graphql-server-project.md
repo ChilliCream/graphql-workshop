@@ -54,8 +54,8 @@
     ```
 
 1. Add a reference to the following NuGet packages:
-    - `Microsoft.EntityFrameworkCore.Relational` version `9.0.3`.
-      - `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Relational --version 9.0.3`
+    - `Microsoft.EntityFrameworkCore.Relational` version `9.0.9`.
+      - `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Relational --version 9.0.9`
     - `Npgsql.EntityFrameworkCore.PostgreSQL` version `9.0.4`.
       - `dotnet add GraphQL package Npgsql.EntityFrameworkCore.PostgreSQL --version 9.0.4`
 
@@ -81,7 +81,7 @@
     services:
       graphql-workshop-postgres:
         container_name: graphql-workshop-postgres
-        image: postgres:17.4
+        image: postgres:17.6
         environment:
           POSTGRES_USER: graphql_workshop
           POSTGRES_PASSWORD: secret
@@ -124,8 +124,8 @@ app.Run();
 
 ## Configuring EF Migrations
 
-1. Add a reference to the NuGet package `Microsoft.EntityFrameworkCore.Design` version `9.0.3`:
-    - `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Design --version 9.0.3`
+1. Add a reference to the NuGet package `Microsoft.EntityFrameworkCore.Design` version `9.0.9`:
+    - `dotnet add GraphQL package Microsoft.EntityFrameworkCore.Design --version 9.0.9`
 
 1. Start the database server using Docker Compose:
 
@@ -139,7 +139,7 @@ app.Run();
 
     ```shell
     dotnet new tool-manifest
-    dotnet tool install dotnet-ef --local --version 9.0.3
+    dotnet tool install dotnet-ef --local --version 9.0.9
     ```
 
 1. Run the following commands in the command prompt:
@@ -173,12 +173,12 @@ Commands Explained
 ## Adding GraphQL
 
 1. Add a reference to the following NuGet packages:
-    - `HotChocolate.AspNetCore` version `15.1.3`.
-      - `dotnet add GraphQL package HotChocolate.AspNetCore --version 15.1.3`
-    - `HotChocolate.AspNetCore.CommandLine` version `15.1.3`
-      - `dotnet add GraphQL package HotChocolate.AspNetCore.CommandLine --version 15.1.3`
-    - `HotChocolate.Types.Analyzers` version `15.1.3`
-      - `dotnet add GraphQL package HotChocolate.Types.Analyzers --version 15.1.3`
+    - `HotChocolate.AspNetCore` version `15.1.10`.
+      - `dotnet add GraphQL package HotChocolate.AspNetCore --version 15.1.10`
+    - `HotChocolate.AspNetCore.CommandLine` version `15.1.10`
+      - `dotnet add GraphQL package HotChocolate.AspNetCore.CommandLine --version 15.1.10`
+    - `HotChocolate.Types.Analyzers` version `15.1.10`
+      - `dotnet add GraphQL package HotChocolate.Types.Analyzers --version 15.1.10`
 
 1. Set up GraphQL by adding the following code below `AddDbContext` in `Program.cs`:
 

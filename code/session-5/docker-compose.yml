@@ -3,7 +3,7 @@ name: graphql-workshop
 services:
   graphql-workshop-postgres:
     container_name: graphql-workshop-postgres
-    image: postgres:17.4
+    image: postgres:17.6
     environment:
       POSTGRES_USER: graphql_workshop
       POSTGRES_PASSWORD: secret

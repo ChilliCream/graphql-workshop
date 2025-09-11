@@ -22,16 +22,16 @@ A schema change test will simply create a snapshot of your schema, and always fa
 1. Head over to the `GraphQL.Tests.csproj` file and update the package references to the following:
 
     ```xml
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    <PackageReference Include="xunit.v3" Version="2.0.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit.v3" Version="3.0.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
     ```
 
 1. Add a reference to the following NuGet packages:
-    - `CookieCrumble.HotChocolate` version `15.1.3`:
-      - `dotnet add GraphQL.Tests package CookieCrumble.HotChocolate --version 15.1.3`
-    - `CookieCrumble.Xunit3` version `15.1.3`:
-      - `dotnet add GraphQL.Tests package CookieCrumble.Xunit3 --version 15.1.3`
+    - `CookieCrumble.HotChocolate` version `15.1.10`:
+      - `dotnet add GraphQL.Tests package CookieCrumble.HotChocolate --version 15.1.10`
+    - `CookieCrumble.Xunit3` version `15.1.10`:
+      - `dotnet add GraphQL.Tests package CookieCrumble.Xunit3 --version 15.1.10`
 
 1. Add a reference to the GraphQL server:
     - `dotnet add GraphQL.Tests reference GraphQL`
@@ -76,10 +76,10 @@ A schema change test will simply create a snapshot of your schema, and always fa
 ## Adding a simple query test
 
 1. Add a reference to the following NuGet packages:
-    - `Testcontainers.PostgreSql` version `4.3.0`:
-      - `dotnet add GraphQL.Tests package Testcontainers.PostgreSql --version 4.3.0`
-    - `Testcontainers.Redis` version `4.3.0`:
-      - `dotnet add GraphQL.Tests package Testcontainers.Redis --version 4.3.0`
+    - `Testcontainers.PostgreSql` version `4.7.0`:
+      - `dotnet add GraphQL.Tests package Testcontainers.PostgreSql --version 4.7.0`
+    - `Testcontainers.Redis` version `4.7.0`:
+      - `dotnet add GraphQL.Tests package Testcontainers.Redis --version 4.7.0`
 
 1. Add a new class named `AttendeeTests.cs`:
 
@@ -98,11 +98,11 @@ A schema change test will simply create a snapshot of your schema, and always fa
     public sealed class AttendeeTests : IAsyncLifetime
     {
         private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
-            .WithImage("postgres:17.4")
+            .WithImage("postgres:17.6")
             .Build();
 
         private readonly RedisContainer _redisContainer = new RedisBuilder()
-            .WithImage("redis:7.4")
+            .WithImage("redis:8.2")
             .Build();
 
         private IRequestExecutor _requestExecutor = null!;
