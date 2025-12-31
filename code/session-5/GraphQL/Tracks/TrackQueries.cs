@@ -1,49 +1,35 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using ConferencePlanner.GraphQL.Data;
-using ConferencePlanner.GraphQL.DataLoader;
-using HotChocolate;
-using HotChocolate.Types;
-using HotChocolate.Types.Relay;
+using GreenDonut.Data;
+using HotChocolate.Execution.Processing;
+using Microsoft.EntityFrameworkCore;
 
-namespace ConferencePlanner.GraphQL.Tracks
+namespace ConferencePlanner.GraphQL.Tracks;
+
+[QueryType]
+public static class TrackQueries
 {
-    [ExtendObjectType(Name = "Query")]
-    public class TrackQueries
+    [UsePaging]
+    public static IQueryable<Track> GetTracks(ApplicationDbContext dbContext)
     {
-        [UseApplicationDbContext]
-        public async Task<IEnumerable<Track>> GetTracksAsync(
-            [ScopedService] ApplicationDbContext context,
-            CancellationToken cancellationToken) =>
-            await context.Tracks.ToListAsync(cancellationToken);
+        return dbContext.Tracks.AsNoTracking().OrderBy(t => t.Name).ThenBy(t => t.Id);
+    }
 
-        [UseApplicationDbContext]
-        public Task<Track> GetTrackByNameAsync(
-            string name,
-            [ScopedService] ApplicationDbContext context,
-            CancellationToken cancellationToken) =>
-            context.Tracks.FirstAsync(t => t.Name == name);
+    [NodeResolver]
+    public static async Task<Track?> GetTrackByIdAsync(
+        int id,
+        ITrackByIdDataLoader trackById,
+        ISelection selection,
+        CancellationToken cancellationToken)
+    {
+        return await trackById.Select(selection).LoadAsync(id, cancellationToken);
+    }
 
-        [UseApplicationDbContext]
-        public async Task<IEnumerable<Track>> GetTrackByNamesAsync(
-            string[] names,
-            [ScopedService] ApplicationDbContext context,
-            CancellationToken cancellationToken) =>
-            await context.Tracks.Where(t => names.Contains(t.Name)).ToListAsync();
-
-        public Task<Track> GetTrackByIdAsync(
-            [ID(nameof(Track))] int id,
-            TrackByIdDataLoader trackById,
-            CancellationToken cancellationToken) =>
-            trackById.LoadAsync(id, cancellationToken);
-
-        public async Task<IEnumerable<Track>> GetTracksByIdAsync(
-            [ID(nameof(Track))] int[] ids,
-            TrackByIdDataLoader trackById,
-            CancellationToken cancellationToken) =>
-            await trackById.LoadAsync(ids, cancellationToken);
+    public static async Task<IEnumerable<Track>> GetTracksByIdAsync(
+        [ID<Track>] int[] ids,
+        ITrackByIdDataLoader trackById,
+        ISelection selection,
+        CancellationToken cancellationToken)
+    {
+        return await trackById.Select(selection).LoadRequiredAsync(ids, cancellationToken);
     }
 }

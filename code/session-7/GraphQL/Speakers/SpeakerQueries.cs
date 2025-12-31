@@ -1,35 +1,35 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using ConferencePlanner.GraphQL.Data;
-using ConferencePlanner.GraphQL.DataLoader;
-using HotChocolate;
-using HotChocolate.Types;
-using HotChocolate.Types.Relay;
-using System.Linq;
+using GreenDonut.Data;
+using HotChocolate.Execution.Processing;
+using Microsoft.EntityFrameworkCore;
 
-namespace ConferencePlanner.GraphQL.Speakers
+namespace ConferencePlanner.GraphQL.Speakers;
+
+[QueryType]
+public static class SpeakerQueries
 {
-    [ExtendObjectType(Name = "Query")]
-    public class SpeakerQueries
+    [UsePaging]
+    public static IQueryable<Speaker> GetSpeakers(ApplicationDbContext dbContext)
     {
-        [UseApplicationDbContext]
-        [UsePaging]
-        public IQueryable<Speaker> GetSpeakers(
-            [ScopedService] ApplicationDbContext context) =>
-            context.Speakers.OrderBy(t => t.Name);
+        return dbContext.Speakers.AsNoTracking().OrderBy(s => s.Name).ThenBy(s => s.Id);
+    }
 
-        public Task<Speaker> GetSpeakerByIdAsync(
-            [ID(nameof(Speaker))]int id,
-            SpeakerByIdDataLoader dataLoader,
-            CancellationToken cancellationToken) =>
-            dataLoader.LoadAsync(id, cancellationToken);
+    [NodeResolver]
+    public static async Task<Speaker?> GetSpeakerByIdAsync(
+        int id,
+        ISpeakerByIdDataLoader speakerById,
+        ISelection selection,
+        CancellationToken cancellationToken)
+    {
+        return await speakerById.Select(selection).LoadAsync(id, cancellationToken);
+    }
 
-        public async Task<IEnumerable<Speaker>> GetSpeakersByIdAsync(
-            [ID(nameof(Speaker))]int[] ids,
-            SpeakerByIdDataLoader dataLoader,
-            CancellationToken cancellationToken) =>
-            await dataLoader.LoadAsync(ids, cancellationToken);
+    public static async Task<IEnumerable<Speaker>> GetSpeakersByIdAsync(
+        [ID<Speaker>] int[] ids,
+        ISpeakerByIdDataLoader speakerById,
+        ISelection selection,
+        CancellationToken cancellationToken)
+    {
+        return await speakerById.Select(selection).LoadRequiredAsync(ids, cancellationToken);
     }
 }
