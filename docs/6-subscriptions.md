@@ -171,7 +171,7 @@ With the base in, we can now focus on putting subscriptions in our GraphQL serve
     ```yaml
     graphql-workshop-redis:
       container_name: graphql-workshop-redis
-      image: redis:8.2
+      image: redis:8.4
       networks: [graphql-workshop]
       ports: [6379:6379]
       volumes:
@@ -186,8 +186,8 @@ With the base in, we can now focus on putting subscriptions in our GraphQL serve
     +  redis-data:
     ```
 
-1. Add a reference to the NuGet package `HotChocolate.Subscriptions.Redis` version `15.1.10`:
-    - `dotnet add GraphQL package HotChocolate.Subscriptions.Redis --version 15.1.10`
+1. Add a reference to the NuGet package `HotChocolate.Subscriptions.Redis` version `15.1.11`:
+    - `dotnet add GraphQL package HotChocolate.Subscriptions.Redis --version 15.1.11`
 
 1. Head over to `Program.cs` and add `app.UseWebSockets()` to the request pipeline. Middleware order is also important with ASP.NET Core, so this middleware needs to come before the GraphQL middleware:
 
