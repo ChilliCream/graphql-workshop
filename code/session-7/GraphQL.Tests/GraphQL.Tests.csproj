@@ -27,12 +27,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CookieCrumble.HotChocolate" Version="15.1.11" />
-    <PackageReference Include="CookieCrumble.Xunit3" Version="15.1.11" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-    <PackageReference Include="Testcontainers.PostgreSql" Version="4.9.0" />
-    <PackageReference Include="Testcontainers.Redis" Version="4.9.0" />
-    <PackageReference Include="xunit.v3" Version="3.2.1" />
+    <PackageReference Include="CookieCrumble.HotChocolate" Version="15.1.14" />
+    <PackageReference Include="CookieCrumble.Xunit3" Version="15.1.14" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.11.0" />
+    <PackageReference Include="Testcontainers.Redis" Version="4.11.0" />
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" />
   </ItemGroup>
 
