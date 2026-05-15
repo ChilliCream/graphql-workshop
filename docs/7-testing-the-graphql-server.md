@@ -28,10 +28,10 @@ A schema change test will simply create a snapshot of your schema, and always fa
     ```
 
 1. Add a reference to the following NuGet packages:
-    - `CookieCrumble.HotChocolate` version `15.1.14`:
-      - `dotnet add GraphQL.Tests package CookieCrumble.HotChocolate --version 15.1.14`
-    - `CookieCrumble.Xunit3` version `15.1.14`:
-      - `dotnet add GraphQL.Tests package CookieCrumble.Xunit3 --version 15.1.14`
+    - `CookieCrumble.HotChocolate` version `16.0.3`:
+      - `dotnet add GraphQL.Tests package CookieCrumble.HotChocolate --version 16.0.3`
+    - `CookieCrumble.Xunit3` version `16.0.3`:
+      - `dotnet add GraphQL.Tests package CookieCrumble.Xunit3 --version 16.0.3`
 
 1. Add a reference to the GraphQL server:
     - `dotnet add GraphQL.Tests reference GraphQL`
@@ -97,13 +97,11 @@ A schema change test will simply create a snapshot of your schema, and always fa
 
     public sealed class AttendeeTests : IAsyncLifetime
     {
-        private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
-            .WithImage("postgres:18.1")
-            .Build();
+        private readonly PostgreSqlContainer _postgreSqlContainer =
+            new PostgreSqlBuilder("postgres:18.3").Build();
 
-        private readonly RedisContainer _redisContainer = new RedisBuilder()
-            .WithImage("redis:8.4")
-            .Build();
+        private readonly RedisContainer _redisContainer =
+            new RedisBuilder("redis:8.6").Build();
 
         private IRequestExecutor _requestExecutor = null!;
 

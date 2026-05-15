@@ -1,12 +1,12 @@
 using ConferencePlanner.GraphQL.Data;
 using GreenDonut.Data;
-using HotChocolate.Execution.Processing;
+using HotChocolate.Execution;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Speakers;
 
 [QueryType]
-public static class SpeakerQueries
+public static partial class SpeakerQueries
 {
     [UsePaging]
     public static IQueryable<Speaker> GetSpeakers(ApplicationDbContext dbContext)

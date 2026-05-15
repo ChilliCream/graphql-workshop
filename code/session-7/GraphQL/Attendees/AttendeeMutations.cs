@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ConferencePlanner.GraphQL.Attendees;
 
 [MutationType]
-public static class AttendeeMutations
+public static partial class AttendeeMutations
 {
     public static async Task<Attendee> RegisterAttendeeAsync(
         RegisterAttendeeInput input,

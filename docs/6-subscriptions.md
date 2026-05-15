@@ -22,13 +22,13 @@ Before we can start with introducing our new subscriptions, we need to first bri
     ```csharp
     using ConferencePlanner.GraphQL.Data;
     using GreenDonut.Data;
-    using HotChocolate.Execution.Processing;
+    using HotChocolate.Execution;
     using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Attendees;
 
     [QueryType]
-    public static class AttendeeQueries
+    public static partial class AttendeeQueries
     {
         [UsePaging]
         public static IQueryable<Attendee> GetAttendees(ApplicationDbContext dbContext)
@@ -81,7 +81,7 @@ We now have the base types integrated and can start adding the attendee mutation
     namespace ConferencePlanner.GraphQL.Attendees;
 
     [MutationType]
-    public static class AttendeeMutations
+    public static partial class AttendeeMutations
     {
         public static async Task<Attendee> RegisterAttendeeAsync(
             RegisterAttendeeInput input,
@@ -171,7 +171,7 @@ With the base in, we can now focus on putting subscriptions in our GraphQL serve
     ```yaml
     graphql-workshop-redis:
       container_name: graphql-workshop-redis
-      image: redis:8.4
+      image: redis:8.6
       networks: [graphql-workshop]
       ports: [6379:6379]
       volumes:
@@ -186,8 +186,8 @@ With the base in, we can now focus on putting subscriptions in our GraphQL serve
     +  redis-data:
     ```
 
-1. Add a reference to the NuGet package `HotChocolate.Subscriptions.Redis` version `15.1.14`:
-    - `dotnet add GraphQL package HotChocolate.Subscriptions.Redis --version 15.1.14`
+1. Add a reference to the NuGet package `HotChocolate.Subscriptions.Redis` version `16.0.3`:
+    - `dotnet add GraphQL package HotChocolate.Subscriptions.Redis --version 16.0.3`
 
 1. Head over to `Program.cs` and add `app.UseWebSockets()` to the request pipeline. Middleware order is also important with ASP.NET Core, so this middleware needs to come before the GraphQL middleware:
 
@@ -214,7 +214,7 @@ With the base in, we can now focus on putting subscriptions in our GraphQL serve
     namespace ConferencePlanner.GraphQL.Sessions;
 
     [SubscriptionType]
-    public static class SessionSubscriptions
+    public static partial class SessionSubscriptions
     {
         [Subscribe]
         [Topic]
@@ -452,7 +452,7 @@ The `onSessionScheduled` subscription was quite simple since we didn't subscribe
     namespace ConferencePlanner.GraphQL.Attendees;
 
     [SubscriptionType]
-    public static class AttendeeSubscriptions
+    public static partial class AttendeeSubscriptions
     {
         [Subscribe(With = nameof(SubscribeToOnAttendeeCheckedInAsync))]
         public static SessionAttendeeCheckIn OnAttendeeCheckedIn(

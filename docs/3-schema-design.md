@@ -37,18 +37,18 @@ First, we will restructure our GraphQL server so that it will better scale once 
     mv GraphQL/Queries.cs GraphQL/Speakers/SpeakerQueries.cs
     ```
 
-1. Now, update the namespace and class name, annotate the renamed class with the `[QueryType]` attribute, and remove the `[Query]` attribute from the methods. The class should look like this now:
+1. Now, update the namespace and class name, annotate the renamed class with the `[QueryType]` attribute, mark it as partial, and remove the `[Query]` attribute from the methods. The class should look like this now:
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
     using GreenDonut.Data;
-    using HotChocolate.Execution.Processing;
+    using HotChocolate.Execution;
     using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Speakers;
 
     [QueryType]
-    public static class SpeakerQueries
+    public static partial class SpeakerQueries
     {
         public static async Task<IEnumerable<Speaker>> GetSpeakersAsync(
             ApplicationDbContext dbContext,
@@ -76,7 +76,7 @@ First, we will restructure our GraphQL server so that it will better scale once 
     mv GraphQL/Mutations.cs GraphQL/Speakers/SpeakerMutations.cs
     ```
 
-1. Now, update the namespace and class name, annotate the renamed class with the `[MutationType]` attribute, and remove the `[Mutation]` attribute from the method. The class should look like this now:
+1. Now, update the namespace and class name, annotate the renamed class with the `[MutationType]` attribute, mark it as partial, and remove the `[Mutation]` attribute from the method. The class should look like this now:
 
     ```csharp
     using ConferencePlanner.GraphQL.Data;
@@ -84,7 +84,7 @@ First, we will restructure our GraphQL server so that it will better scale once 
     namespace ConferencePlanner.GraphQL.Speakers;
 
     [MutationType]
-    public static class SpeakerMutations
+    public static partial class SpeakerMutations
     {
         public static async Task<Speaker> AddSpeakerAsync(
             AddSpeakerInput input,
@@ -390,7 +390,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
     ```csharp
     using ConferencePlanner.GraphQL.Data;
     using GreenDonut.Data;
-    using HotChocolate.Execution.Processing;
+    using HotChocolate.Execution;
 
     namespace ConferencePlanner.GraphQL.Attendees;
 
@@ -433,7 +433,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
     ```csharp
     using ConferencePlanner.GraphQL.Data;
     using GreenDonut.Data;
-    using HotChocolate.Execution.Processing;
+    using HotChocolate.Execution;
 
     namespace ConferencePlanner.GraphQL.Tracks;
 
@@ -459,7 +459,7 @@ We'll start by adding the rest of the DataLoaders that we'll need. Then we'll ad
     using ConferencePlanner.GraphQL.Data;
     using ConferencePlanner.GraphQL.Tracks;
     using GreenDonut.Data;
-    using HotChocolate.Execution.Processing;
+    using HotChocolate.Execution;
 
     namespace ConferencePlanner.GraphQL.Sessions;
 
@@ -567,7 +567,7 @@ This reflection on our subject at hand leads us to two mutations that we need. F
     namespace ConferencePlanner.GraphQL.Sessions;
 
     [MutationType]
-    public static class SessionMutations
+    public static partial class SessionMutations
     {
         [Error<TitleEmptyException>]
         [Error<NoSpeakerException>]
@@ -691,7 +691,7 @@ This reflection on our subject at hand leads us to two mutations that we need. F
     namespace ConferencePlanner.GraphQL.Tracks;
 
     [MutationType]
-    public static class TrackMutations
+    public static partial class TrackMutations
     {
         public static async Task<Track> AddTrackAsync(
             AddTrackInput input,
@@ -801,13 +801,13 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
     ```csharp
     using ConferencePlanner.GraphQL.Data;
     using GreenDonut.Data;
-    using HotChocolate.Execution.Processing;
+    using HotChocolate.Execution;
     using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Sessions;
 
     [QueryType]
-    public static class SessionQueries
+    public static partial class SessionQueries
     {
         public static async Task<IEnumerable<Session>> GetSessionsAsync(
             ApplicationDbContext dbContext,
@@ -842,13 +842,13 @@ In this section, we'll optimize our `Query` type by bringing in more fields to q
     ```csharp
     using ConferencePlanner.GraphQL.Data;
     using GreenDonut.Data;
-    using HotChocolate.Execution.Processing;
+    using HotChocolate.Execution;
     using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL.Tracks;
 
     [QueryType]
-    public static class TrackQueries
+    public static partial class TrackQueries
     {
         public static async Task<IEnumerable<Track>> GetTracksAsync(
             ApplicationDbContext dbContext,

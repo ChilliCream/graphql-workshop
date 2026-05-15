@@ -5,7 +5,7 @@ using HotChocolate.Subscriptions;
 namespace ConferencePlanner.GraphQL.Attendees;
 
 [SubscriptionType]
-public static class AttendeeSubscriptions
+public static partial class AttendeeSubscriptions
 {
     [Subscribe(With = nameof(SubscribeToOnAttendeeCheckedInAsync))]
     public static SessionAttendeeCheckIn OnAttendeeCheckedIn(

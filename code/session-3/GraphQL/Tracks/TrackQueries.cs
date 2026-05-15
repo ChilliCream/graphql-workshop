@@ -1,12 +1,12 @@
 using ConferencePlanner.GraphQL.Data;
 using GreenDonut.Data;
-using HotChocolate.Execution.Processing;
+using HotChocolate.Execution;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Tracks;
 
 [QueryType]
-public static class TrackQueries
+public static partial class TrackQueries
 {
     public static async Task<IEnumerable<Track>> GetTracksAsync(
         ApplicationDbContext dbContext,

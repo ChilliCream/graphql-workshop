@@ -1,12 +1,12 @@
 using ConferencePlanner.GraphQL.Data;
 using GreenDonut.Data;
-using HotChocolate.Execution.Processing;
+using HotChocolate.Execution;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConferencePlanner.GraphQL.Sessions;
 
 [QueryType]
-public static class SessionQueries
+public static partial class SessionQueries
 {
     [UsePaging]
     [UseFiltering]

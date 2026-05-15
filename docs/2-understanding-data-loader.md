@@ -287,7 +287,7 @@ While we could write DataLoaders as individual classes, there is also a source g
     ```csharp
     using ConferencePlanner.GraphQL.Data;
     using GreenDonut.Data;
-    using HotChocolate.Execution.Processing;
+    using HotChocolate.Execution;
     using Microsoft.EntityFrameworkCore;
 
     namespace ConferencePlanner.GraphQL;
@@ -384,7 +384,7 @@ In our specific case, we want to make the GraphQL API nicer and remove the relat
     ```csharp
     using ConferencePlanner.GraphQL.Data;
     using GreenDonut.Data;
-    using HotChocolate.Execution.Processing;
+    using HotChocolate.Execution;
 
     namespace ConferencePlanner.GraphQL.Types;
 

@@ -11,13 +11,11 @@ namespace GraphQL.Tests;
 
 public sealed class AttendeeTests : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:18.1")
-        .Build();
+    private readonly PostgreSqlContainer _postgreSqlContainer =
+        new PostgreSqlBuilder("postgres:18.3").Build();
 
-    private readonly RedisContainer _redisContainer = new RedisBuilder()
-        .WithImage("redis:8.4")
-        .Build();
+    private readonly RedisContainer _redisContainer =
+        new RedisBuilder("redis:8.6").Build();
 
     private IRequestExecutor _requestExecutor = null!;
 
@@ -43,9 +41,8 @@ public sealed class AttendeeTests : IAsyncLifetime
             .BuildRequestExecutorAsync();
 
         // Create database.
-        var dbContext = _requestExecutor.Services
-            .GetApplicationServices()
-            .GetRequiredService<ApplicationDbContext>();
+        var dbContext =
+            _requestExecutor.Schema.GetRootServiceProvider().GetRequiredService<ApplicationDbContext>();
 
         await dbContext.Database.EnsureCreatedAsync();
     }

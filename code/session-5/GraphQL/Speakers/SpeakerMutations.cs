@@ -3,7 +3,7 @@ using ConferencePlanner.GraphQL.Data;
 namespace ConferencePlanner.GraphQL.Speakers;
 
 [MutationType]
-public static class SpeakerMutations
+public static partial class SpeakerMutations
 {
     public static async Task<Speaker> AddSpeakerAsync(
         AddSpeakerInput input,

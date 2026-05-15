@@ -4,7 +4,7 @@ using HotChocolate.Subscriptions;
 namespace ConferencePlanner.GraphQL.Sessions;
 
 [MutationType]
-public static class SessionMutations
+public static partial class SessionMutations
 {
     [Error<TitleEmptyException>]
     [Error<NoSpeakerException>]

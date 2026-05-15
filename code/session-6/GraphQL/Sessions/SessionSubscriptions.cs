@@ -3,7 +3,7 @@ using ConferencePlanner.GraphQL.Data;
 namespace ConferencePlanner.GraphQL.Sessions;
 
 [SubscriptionType]
-public static class SessionSubscriptions
+public static partial class SessionSubscriptions
 {
     [Subscribe]
     [Topic]

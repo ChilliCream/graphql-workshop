@@ -3,7 +3,7 @@ using ConferencePlanner.GraphQL.Data;
 namespace ConferencePlanner.GraphQL.Tracks;
 
 [MutationType]
-public static class TrackMutations
+public static partial class TrackMutations
 {
     public static async Task<Track> AddTrackAsync(
         AddTrackInput input,
