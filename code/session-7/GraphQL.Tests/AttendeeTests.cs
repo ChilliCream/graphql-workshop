@@ -12,10 +12,10 @@ namespace GraphQL.Tests;
 public sealed class AttendeeTests : IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgreSqlContainer =
-        new PostgreSqlBuilder("postgres:18.3").Build();
+        new PostgreSqlBuilder("postgres:18.6").Build();
 
     private readonly RedisContainer _redisContainer =
-        new RedisBuilder("redis:8.6").Build();
+        new RedisBuilder("redis:8.10").Build();
 
     private IRequestExecutor _requestExecutor = null!;
 

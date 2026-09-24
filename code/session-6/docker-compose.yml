@@ -3,7 +3,7 @@ name: graphql-workshop
 services:
   graphql-workshop-postgres:
     container_name: graphql-workshop-postgres
-    image: postgres:18.3
+    image: postgres:18.6
     environment:
       POSTGRES_USER: graphql_workshop
       POSTGRES_PASSWORD: secret
@@ -16,7 +16,7 @@ services:
         target: /var/lib/postgresql
   graphql-workshop-redis:
     container_name: graphql-workshop-redis
-    image: redis:8.6
+    image: redis:8.10
     networks: [graphql-workshop]
     ports: ["6379:6379"]
     volumes:

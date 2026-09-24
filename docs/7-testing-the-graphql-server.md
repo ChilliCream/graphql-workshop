@@ -28,10 +28,10 @@ A schema change test will simply create a snapshot of your schema, and always fa
     ```
 
 1. Add a reference to the following NuGet packages:
-    - `CookieCrumble.HotChocolate` version `16.0.3`:
-      - `dotnet add GraphQL.Tests package CookieCrumble.HotChocolate --version 16.0.3`
-    - `CookieCrumble.Xunit3` version `16.0.3`:
-      - `dotnet add GraphQL.Tests package CookieCrumble.Xunit3 --version 16.0.3`
+    - `CookieCrumble.HotChocolate` version `16.6.7`:
+      - `dotnet add GraphQL.Tests package CookieCrumble.HotChocolate --version 16.6.7`
+    - `CookieCrumble.Xunit3` version `16.6.7`:
+      - `dotnet add GraphQL.Tests package CookieCrumble.Xunit3 --version 16.6.7`
 
 1. Add a reference to the GraphQL server:
     - `dotnet add GraphQL.Tests reference GraphQL`
@@ -76,10 +76,10 @@ A schema change test will simply create a snapshot of your schema, and always fa
 ## Adding a simple query test
 
 1. Add a reference to the following NuGet packages:
-    - `Testcontainers.PostgreSql` version `4.11.0`:
-      - `dotnet add GraphQL.Tests package Testcontainers.PostgreSql --version 4.11.0`
-    - `Testcontainers.Redis` version `4.11.0`:
-      - `dotnet add GraphQL.Tests package Testcontainers.Redis --version 4.11.0`
+    - `Testcontainers.PostgreSql` version `4.15.0`:
+      - `dotnet add GraphQL.Tests package Testcontainers.PostgreSql --version 4.15.0`
+    - `Testcontainers.Redis` version `4.15.0`:
+      - `dotnet add GraphQL.Tests package Testcontainers.Redis --version 4.15.0`
 
 1. Add a new class named `AttendeeTests.cs`:
 
@@ -98,10 +98,10 @@ A schema change test will simply create a snapshot of your schema, and always fa
     public sealed class AttendeeTests : IAsyncLifetime
     {
         private readonly PostgreSqlContainer _postgreSqlContainer =
-            new PostgreSqlBuilder("postgres:18.3").Build();
+            new PostgreSqlBuilder("postgres:18.6").Build();
 
         private readonly RedisContainer _redisContainer =
-            new RedisBuilder("redis:8.6").Build();
+            new RedisBuilder("redis:8.10").Build();
 
         private IRequestExecutor _requestExecutor = null!;
 

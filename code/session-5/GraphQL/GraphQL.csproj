@@ -8,16 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="16.0.3" />
-    <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="16.0.3" />
-    <PackageReference Include="HotChocolate.Data" Version="16.0.3" />
-    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="16.0.3" />
-    <PackageReference Include="HotChocolate.Types.Analyzers" Version="16.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.16">
+    <PackageReference Include="HotChocolate.AspNetCore" Version="16.6.7" />
+    <PackageReference Include="HotChocolate.AspNetCore.CommandLine" Version="16.6.7" />
+    <PackageReference Include="HotChocolate.Data" Version="16.6.7" />
+    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="16.6.7" />
+    <PackageReference Include="HotChocolate.Types.Analyzers" Version="16.6.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.20">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.20" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
 
