@@ -1,18 +1,17 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using HotChocolate.Types;
+namespace ConferencePlanner.GraphQL.Extensions;
 
-namespace ConferencePlanner.GraphQL
+public static class ObjectFieldDescriptorExtensions
 {
-    public static class ObjectFieldDescriptorExtensions
+    public static IObjectFieldDescriptor UseUpperCase(this IObjectFieldDescriptor descriptor)
     {
-        public static IObjectFieldDescriptor UseDbContext<TDbContext>(
-            this IObjectFieldDescriptor descriptor)
-            where TDbContext : DbContext
+        return descriptor.Use(next => async context =>
         {
-            return descriptor.UseScopedService<TDbContext>(
-                create: s => s.GetRequiredService<IDbContextFactory<TDbContext>>().CreateDbContext(),
-                disposeAsync: (s, c) => c.DisposeAsync());
-        }
+            await next(context);
+
+            if (context.Result is string s)
+            {
+                context.Result = s.ToUpperInvariant();
+            }
+        });
     }
 }

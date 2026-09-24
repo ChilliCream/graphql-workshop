@@ -1,19 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 
-    namespace ConferencePlanner.GraphQL.Data
-    {
-        public class Speaker
-        {
-            public int Id { get; set; }
+namespace ConferencePlanner.GraphQL.Data;
 
-            [Required]
-            [StringLength(200)]
-            public string Name { get; set; }
+public sealed class Speaker
+{
+    public int Id { get; init; }
 
-            [StringLength(4000)]
-            public string Bio { get; set; }
+    [StringLength(200)]
+    public required string Name { get; init; }
 
-            [StringLength(1000)]
-            public virtual string WebSite { get; set; }
-        }
-    }
+    [StringLength(4000)]
+    public string? Bio { get; init; }
+
+    [StringLength(1000)]
+    public string? Website { get; init; }
+}

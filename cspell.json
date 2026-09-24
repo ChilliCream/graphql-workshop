@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en",
+  "dictionaries": ["csharp", "custom"],
+  "dictionaryDefinitions": [
+    {
+      "name": "custom",
+      "path": "./dictionary.txt"
+    }
+  ],
+  "ignorePaths": [
+    "code/complete/GraphQL/Imports/NDC_London_2019.json"
+  ]
+}
