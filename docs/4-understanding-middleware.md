@@ -143,7 +143,7 @@ To use middleware on plain C# types, we can wrap them in so-called descriptor at
         protected override void OnConfigure(
             IDescriptorContext context,
             IObjectFieldDescriptor descriptor,
-            MemberInfo member)
+            MemberInfo? member)
         {
             descriptor.UseUpperCase();
         }
