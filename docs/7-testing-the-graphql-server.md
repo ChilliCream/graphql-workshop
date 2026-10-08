@@ -19,19 +19,23 @@ A schema change test will simply create a snapshot of your schema, and always fa
     dotnet sln add GraphQL.Tests
     ```
 
-1. Head over to the `GraphQL.Tests.csproj` file and update the package references to the following:
+1. Head over to the `GraphQL.Tests.csproj` file and make sure that the `<PropertyGroup>` contains the following property:
 
     ```xml
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-    <PackageReference Include="xunit.v3" Version="3.2.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" />
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    ```
+
+1. Update the package references in `GraphQL.Tests.csproj` to the following:
+
+    ```xml
+    <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.1" />
     ```
 
 1. Add a reference to the following NuGet packages:
-    - `CookieCrumble.HotChocolate` version `16.6.7`:
-      - `dotnet add GraphQL.Tests package CookieCrumble.HotChocolate --version 16.6.7`
-    - `CookieCrumble.Xunit3` version `16.6.7`:
-      - `dotnet add GraphQL.Tests package CookieCrumble.Xunit3 --version 16.6.7`
+    - `CookieCrumble.HotChocolate` version `16.6.8`:
+      - `dotnet add GraphQL.Tests package CookieCrumble.HotChocolate --version 16.6.8`
+    - `CookieCrumble.Xunit3` version `16.6.8`:
+      - `dotnet add GraphQL.Tests package CookieCrumble.Xunit3 --version 16.6.8`
 
 1. Add a reference to the GraphQL server:
     - `dotnet add GraphQL.Tests reference GraphQL`
