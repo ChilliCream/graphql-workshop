@@ -7,6 +7,12 @@
 
 A schema change test will simply create a snapshot of your schema, and always fails if the schema changes. This kind of test is often useful when working with pure code-first, where a simple change in C# can create a breaking change in your GraphQL schema.
 
+1. Install the xUnit.net v3 project templates:
+
+    ```shell
+    dotnet new install xunit.v3.templates
+    ```
+
 1. Create an xUnit test project:
 
     ```shell
