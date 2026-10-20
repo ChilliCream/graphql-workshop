@@ -34,14 +34,14 @@ A schema change test will simply create a snapshot of your schema, and always fa
 1. Update the package references in `GraphQL.Tests.csproj` to the following:
 
     ```xml
-    <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.1" />
+    <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.2" />
     ```
 
 1. Add a reference to the following NuGet packages:
-    - `CookieCrumble.HotChocolate` version `16.6.8`:
-      - `dotnet add GraphQL.Tests package CookieCrumble.HotChocolate --version 16.6.8`
-    - `CookieCrumble.Xunit3` version `16.6.8`:
-      - `dotnet add GraphQL.Tests package CookieCrumble.Xunit3 --version 16.6.8`
+    - `CookieCrumble.HotChocolate` version `16.6.9`:
+      - `dotnet add GraphQL.Tests package CookieCrumble.HotChocolate --version 16.6.9`
+    - `CookieCrumble.Xunit3` version `16.6.9`:
+      - `dotnet add GraphQL.Tests package CookieCrumble.Xunit3 --version 16.6.9`
 
 1. Add a reference to the GraphQL server:
     - `dotnet add GraphQL.Tests reference GraphQL`
@@ -86,10 +86,10 @@ A schema change test will simply create a snapshot of your schema, and always fa
 ## Adding a simple query test
 
 1. Add a reference to the following NuGet packages:
-    - `Testcontainers.PostgreSql` version `4.15.0`:
-      - `dotnet add GraphQL.Tests package Testcontainers.PostgreSql --version 4.15.0`
-    - `Testcontainers.Redis` version `4.15.0`:
-      - `dotnet add GraphQL.Tests package Testcontainers.Redis --version 4.15.0`
+    - `Testcontainers.PostgreSql` version `4.16.0`:
+      - `dotnet add GraphQL.Tests package Testcontainers.PostgreSql --version 4.16.0`
+    - `Testcontainers.Redis` version `4.16.0`:
+      - `dotnet add GraphQL.Tests package Testcontainers.Redis --version 4.16.0`
 
 1. Add a new class named `AttendeeTests.cs`:
 
