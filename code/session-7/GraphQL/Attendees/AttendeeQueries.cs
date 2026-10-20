@@ -1,34 +1,35 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using ConferencePlanner.GraphQL.Data;
-using ConferencePlanner.GraphQL.DataLoader;
-using HotChocolate;
-using HotChocolate.Types;
-using HotChocolate.Types.Relay;
+using GreenDonut.Data;
+using HotChocolate.Execution;
+using Microsoft.EntityFrameworkCore;
 
-namespace ConferencePlanner.GraphQL.Attendees
+namespace ConferencePlanner.GraphQL.Attendees;
+
+[QueryType]
+public static partial class AttendeeQueries
 {
-    [ExtendObjectType(Name = "Query")]
-    public class AttendeeQueries
+    [UsePaging]
+    public static IQueryable<Attendee> GetAttendees(ApplicationDbContext dbContext)
     {
-        [UseApplicationDbContext]
-        [UsePaging]
-        public IQueryable<Attendee> GetAttendees(
-            [ScopedService] ApplicationDbContext context) =>
-            context.Attendees;
+        return dbContext.Attendees.AsNoTracking().OrderBy(a => a.Username);
+    }
 
-        public Task<Attendee> GetAttendeeByIdAsync(
-            [ID(nameof(Attendee))] int id,
-            AttendeeByIdDataLoader attendeeById,
-            CancellationToken cancellationToken) =>
-            attendeeById.LoadAsync(id, cancellationToken);
+    [NodeResolver]
+    public static async Task<Attendee?> GetAttendeeByIdAsync(
+        int id,
+        IAttendeeByIdDataLoader attendeeById,
+        ISelection selection,
+        CancellationToken cancellationToken)
+    {
+        return await attendeeById.Select(selection).LoadAsync(id, cancellationToken);
+    }
 
-        public async Task<IEnumerable<Attendee>> GetAttendeesByIdAsync(
-            [ID(nameof(Attendee))] int[] ids,
-            AttendeeByIdDataLoader attendeeById,
-            CancellationToken cancellationToken) =>
-            await attendeeById.LoadAsync(ids, cancellationToken);
+    public static async Task<IEnumerable<Attendee>> GetAttendeesByIdAsync(
+        [ID<Attendee>] int[] ids,
+        IAttendeeByIdDataLoader attendeeById,
+        ISelection selection,
+        CancellationToken cancellationToken)
+    {
+        return await attendeeById.Select(selection).LoadRequiredAsync(ids, cancellationToken);
     }
 }

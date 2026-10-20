@@ -1,28 +1,23 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ConferencePlanner.GraphQL.Data
+namespace ConferencePlanner.GraphQL.Data;
+
+public sealed class Attendee
 {
-    public class Attendee
-    {
-        public int Id { get; set; }
+    public int Id { get; init; }
 
-        [Required]
-        [StringLength(200)]
-        public string? FirstName { get; set; }
+    [StringLength(200)]
+    public required string FirstName { get; init; }
 
-        [Required]
-        [StringLength(200)]
-        public string? LastName { get; set; }
+    [StringLength(200)]
+    public required string LastName { get; init; }
 
-        [Required]
-        [StringLength(200)]
-        public string? UserName { get; set; }
+    [StringLength(200)]
+    public required string Username { get; init; }
 
-        [StringLength(256)]
-        public string? EmailAddress { get; set; }
+    [StringLength(256)]
+    public string? EmailAddress { get; init; }
 
-        public ICollection<SessionAttendee> SessionsAttendees { get; set; } =
-            new List<SessionAttendee>();
-    }
+    public ICollection<SessionAttendee> SessionsAttendees { get; init; } =
+        new List<SessionAttendee>();
 }

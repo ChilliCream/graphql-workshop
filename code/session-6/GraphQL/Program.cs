@@ -1,26 +1,25 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using ConferencePlanner.GraphQL.Data;
+using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
-namespace ConferencePlanner.GraphQL
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
-}
+builder.Services
+    .AddDbContext<ApplicationDbContext>(
+        options => options.UseNpgsql("Host=127.0.0.1;Username=graphql_workshop;Password=secret"))
+    .AddGraphQLServer()
+    .AddGlobalObjectIdentification()
+    .AddMutationConventions()
+    .AddDbContextCursorPagingProvider()
+    .AddPagingArguments()
+    .AddFiltering()
+    .AddSorting()
+    .AddRedisSubscriptions(_ => ConnectionMultiplexer.Connect("127.0.0.1:6379"))
+    .AddGraphQLTypes();
+
+var app = builder.Build();
+
+app.UseWebSockets();
+app.MapGraphQL();
+
+await app.RunWithGraphQLCommandsAsync(args);
